@@ -12,14 +12,14 @@ allowed-tools:
 
 Batched Playwright capture + single tabbed HTML gallery. The artifact you open after a UI change to scan every layout at every breakpoint without re-running anything.
 
-## When to use vs. neighbors
+## When to use
 
-| Tool | Use when |
-|---|---|
-| `browse responsive /tmp/x` (gstack) | One URL, three loose PNGs, immediate spot-check. |
-| `/visual-qa` (this skill) | A SET of URLs grouped by layout, full-page captures, persistent HTML gallery. |
-| `/impeccable audit` | Code-level audit (a11y, tokens, anti-patterns). Pair with `/visual-qa` — code reads + pixels view. |
-| `/crawl-site` | SEO/technical crawl, not visual review. |
+Reach for `/visual-qa` when you have a **set** of URLs grouped by layout and want
+full-page captures at every breakpoint collected into one persistent HTML gallery — the
+artifact you open after a UI change or deploy to scan every layout without re-running
+anything. For a quick one-off look at a single URL, a plain screenshot tool is lighter
+weight; for a code-level audit (accessibility, design tokens) or an SEO crawl, use a tool
+built for that — `/visual-qa` is about reviewing rendered pixels.
 
 ## User-invocable
 

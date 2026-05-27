@@ -40,11 +40,14 @@ installed.
 
 ## The skills
 
-| Skill | What it does | Extra setup |
-|-------|--------------|-------------|
-| **humanizer** | Strips the tells of AI-generated writing (em-dash overuse, rule-of-three, inflated symbolism, vague attributions, …). Optionally matches a per-project `VOICE.md`. | None |
-| **multi-llm-deliberation** | Runs a 3-stage deliberation (diverge → rank → synthesize) across multiple models via OpenRouter for consensus answers on architecture, code review, or hard questions. | `OPENROUTER_API_KEY` in your environment or `~/.env.shared` |
-| **visual-qa** | Captures full-page screenshots of a site at desktop/tablet/mobile widths and renders them into one tabbed HTML gallery for visual review. | Node.js; runs `npm install` (Playwright) on first use via `setup.sh` |
+Grouped by category. (Claude Code discovers plugin skills one level deep, so they live
+flat under `plugins/fw/skills/` — the categories below are organizational, not directories.)
+
+| Category | Skill | What it does | Extra setup |
+|----------|-------|--------------|-------------|
+| Writing | **humanizer** | Strips the tells of AI-generated writing (em-dash overuse, rule-of-three, inflated symbolism, vague attributions, …). Optionally matches a per-project `VOICE.md`. | None |
+| Reasoning | **multi-llm-deliberation** | Runs a 3-stage deliberation (diverge → rank → synthesize) across multiple models via OpenRouter for consensus answers on architecture, code review, or hard questions. | `OPENROUTER_API_KEY` in your environment or `~/.env.shared` |
+| QA | **visual-qa** | Captures full-page screenshots of a site at desktop/tablet/mobile widths and renders them into one tabbed HTML gallery for visual review. | Node.js; runs `npm install` (Playwright) on first use via `setup.sh` |
 
 ## Contributing
 
