@@ -1,0 +1,18 @@
+{
+  "name": "flywheel",
+  "owner": {
+    "name": "The Flywheel",
+    "url": "https://github.com/We-The-Flywheel"
+  },
+  "metadata": {
+    "description": "Reusable Claude Code skills maintained by The Flywheel.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "fw",
+      "source": "./plugins/fw",
+      "description": "The Flywheel skill pack: humanizer, multi-llm-deliberation, visual-qa. Skills resolve as fw:<name>."
+    }
+  ]
+}

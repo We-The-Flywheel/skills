@@ -1,0 +1,14 @@
+{
+  "name": "fw",
+  "displayName": "Flywheel Skills",
+  "version": "0.1.0",
+  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa.",
+  "author": {
+    "name": "The Flywheel",
+    "url": "https://github.com/We-The-Flywheel"
+  },
+  "homepage": "https://help.tfw.bz/skills",
+  "repository": "https://github.com/We-The-Flywheel/skills",
+  "license": "MIT",
+  "keywords": ["claude-code", "skills", "humanizer", "writing", "qa", "deliberation"]
+}

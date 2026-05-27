@@ -1,0 +1,58 @@
+# Flywheel Skills
+
+Reusable [Claude Code](https://code.claude.com) skills maintained by The Flywheel.
+
+Distributed as a Claude Code **plugin marketplace** so you can install everything
+with two commands — no manual file copying.
+
+## Install (recommended — plugin marketplace)
+
+In any Claude Code session:
+
+```
+/plugin marketplace add We-The-Flywheel/skills
+/plugin install fw@flywheel
+```
+
+That's it. The skills are now available, namespaced under `fw:`:
+
+- `fw:humanizer`
+- `fw:multi-llm-deliberation`
+- `fw:visual-qa`
+
+To update later: `/plugin marketplace update flywheel`.
+
+## Install (alternative — clone + script)
+
+If you'd rather not use the marketplace (older Claude Code, or you just prefer
+cloning):
+
+```bash
+git clone https://github.com/We-The-Flywheel/skills.git
+cd skills
+./scripts/install.sh
+```
+
+`install.sh` copies each skill into `~/.claude/skills/` with an `fw-` prefix
+(`fw-humanizer`, `fw-multi-llm-deliberation`, `fw-visual-qa`) so they never clash
+with same-named skills you may already have. Re-running it skips anything already
+installed.
+
+## The skills
+
+| Skill | What it does | Extra setup |
+|-------|--------------|-------------|
+| **humanizer** | Strips the tells of AI-generated writing (em-dash overuse, rule-of-three, inflated symbolism, vague attributions, …). Optionally matches a per-project `VOICE.md`. | None |
+| **multi-llm-deliberation** | Runs a 3-stage deliberation (diverge → rank → synthesize) across multiple models via OpenRouter for consensus answers on architecture, code review, or hard questions. | `OPENROUTER_API_KEY` in your environment or `~/.env.shared` |
+| **visual-qa** | Captures full-page screenshots of a site at desktop/tablet/mobile widths and renders them into one tabbed HTML gallery for visual review. | Node.js; runs `npm install` (Playwright) on first use via `setup.sh` |
+
+## Contributing
+
+New skills welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Every change is gated
+by an automated leak-check that blocks internal hostnames, private paths, and
+credentials from ever landing in this public repo.
+
+## License
+
+MIT (see [LICENSE](LICENSE)). Bundled third-party work is attributed in
+[NOTICE](NOTICE).

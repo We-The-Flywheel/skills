@@ -1,0 +1,10 @@
+{
+  "name": "visual-qa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Capture full-page screenshots at 3 viewports, render to tabbed HTML gallery.",
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}

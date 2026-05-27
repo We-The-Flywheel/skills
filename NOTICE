@@ -1,0 +1,22 @@
+Flywheel Skills — third-party attributions
+===========================================
+
+This repository bundles work derived from third parties. Their licenses and
+attributions are reproduced below. The rest of the repository is © The Flywheel,
+MIT-licensed (see LICENSE).
+
+-------------------------------------------------------------------------------
+skills/humanizer
+-------------------------------------------------------------------------------
+Derived from the "humanizer" Claude Code skill by blader.
+  Source:  https://github.com/blader/humanizer
+  License: MIT
+
+The pattern catalogue is based on Wikipedia's "Signs of AI writing" guide,
+maintained by WikiProject AI Cleanup.
+  Source:  https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
+  License: Creative Commons Attribution-ShareAlike (CC BY-SA)
+
+Modifications by The Flywheel: added an optional VOICE.md voice-profile loading
+step (Step 0) so the skill can match a per-project editorial voice. The VOICE.md
+mechanism is generic and carries no external dependency.

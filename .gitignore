@@ -1,0 +1,5 @@
+# Skill runtime artifacts that should never be committed
+**/node_modules/
+**/__pycache__/
+*.pyc
+.DS_Store
