@@ -26,6 +26,8 @@ PATTERNS=(
   '/Users/(deploy|jesse)'        # absolute home paths
   '[A-Za-z0-9._%+-]+@(flywheel\.bz|prommer\.net)'    # internal emails
   '@thomas_prommer'              # personal handle
+  '\bplannotator\b'              # internal plan-review tool
+  '\b(beauty|health|dating|video|infra|content)-mgmt\b'  # personal management repos
 )
 
 JOINED="$(IFS='|'; echo "${PATTERNS[*]}")"

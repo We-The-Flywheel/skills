@@ -45,7 +45,9 @@ SYNTHESIZER = "google/gemini-3-flash-preview"
 
 
 def emit_progress(event: str, **data):
-    """Emit structured progress event to stderr (consumed by plannotator SSE)."""
+    """Emit a structured progress event to stderr as a single-line JSON object.
+    Wrappers that want to stream progress (e.g. an SSE bridge or TUI) can parse
+    stderr line-by-line; everyone else can ignore it."""
     print(json.dumps({"event": event, **data}), file=sys.stderr, flush=True)
 
 
@@ -378,13 +380,6 @@ def main():
         print(f"\n{'='*60}")
         print(f"  Models: {len(responses)}/{len(MODELS)} responded")
         print(f"{'='*60}\n")
-
-    # Signal to plannotator that a review completed — lets the UI skip
-    # deliberation and jump straight to auto-approve if opened shortly after.
-    import pathlib
-    marker = pathlib.Path.home() / ".plannotator" / "council-done.json"
-    marker.parent.mkdir(parents=True, exist_ok=True)
-    marker.write_text(json.dumps({"ts": time.time(), "models": list(MODELS.keys())}))
 
 
 if __name__ == "__main__":
