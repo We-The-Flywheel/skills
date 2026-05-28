@@ -77,7 +77,7 @@ On a fresh machine, install dependencies once:
 bash <skill-dir>/setup.sh
 ```
 
-`<skill-dir>` is wherever this skill is installed — `~/.claude/skills/fw-visual-qa/`
+`<skill-dir>` is wherever this skill is installed — `~/.claude/skills/wtf-visual-qa/`
 if you used `install.sh`, or the plugin's `skills/visual-qa/` directory if you
 installed via the marketplace. `capture.mjs` exits with a clear hint if Playwright
 isn't installed, so you'll know.

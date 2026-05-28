@@ -7,9 +7,9 @@ run in CI) enforces this, but you are the first line of defense.
 
 ## Add a skill in 4 steps
 
-1. **Create the skill folder** under `plugins/fw/skills/<your-skill>/` with a
+1. **Create the skill folder** under `plugins/wtf/skills/<your-skill>/` with a
    `SKILL.md`. The `name:` in its frontmatter must match the folder name and stay
-   **unprefixed** (e.g. `name: my-skill`). The `fw:` prefix is supplied
+   **unprefixed** (e.g. `name: my-skill`). The `wtf:` prefix is supplied
    automatically by the plugin — don't bake it into the name.
 
 2. **Scrub it.** Before committing, remove anything machine- or business-specific:
@@ -31,7 +31,7 @@ run in CI) enforces this, but you are the first line of defense.
 4. **Register it** in three places so both install paths pick it up:
    - add a row to the skill table in `README.md`
    - add it to the `SKILLS` list in `scripts/install.sh`
-   - bump `version` in `plugins/fw/.claude-plugin/plugin.json` and
+   - bump `version` in `plugins/wtf/.claude-plugin/plugin.json` and
      `.claude-plugin/marketplace.json`
 
 Then open a PR.

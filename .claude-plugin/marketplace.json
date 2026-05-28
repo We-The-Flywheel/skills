@@ -10,9 +10,9 @@
   },
   "plugins": [
     {
-      "name": "fw",
-      "source": "./plugins/fw",
-      "description": "The Flywheel skill pack: humanizer, multi-llm-deliberation, visual-qa. Skills resolve as fw:<name>."
+      "name": "wtf",
+      "source": "./plugins/wtf",
+      "description": "The Flywheel skill pack: humanizer, multi-llm-deliberation, visual-qa. Skills resolve as wtf:<name>."
     }
   ]
 }

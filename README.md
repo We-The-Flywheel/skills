@@ -11,14 +11,14 @@ In any Claude Code session:
 
 ```
 /plugin marketplace add We-The-Flywheel/skills
-/plugin install fw@flywheel
+/plugin install wtf@flywheel
 ```
 
-That's it. The skills are now available, namespaced under `fw:`:
+That's it. The skills are now available, namespaced under `wtf:`:
 
-- `fw:humanizer`
-- `fw:multi-llm-deliberation`
-- `fw:visual-qa`
+- `wtf:humanizer`
+- `wtf:multi-llm-deliberation`
+- `wtf:visual-qa`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -33,15 +33,15 @@ cd skills
 ./scripts/install.sh
 ```
 
-`install.sh` copies each skill into `~/.claude/skills/` with an `fw-` prefix
-(`fw-humanizer`, `fw-multi-llm-deliberation`, `fw-visual-qa`) so they never clash
+`install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
+(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
 ## The skills
 
 Grouped by category. (Claude Code discovers plugin skills one level deep, so they live
-flat under `plugins/fw/skills/` — the categories below are organizational, not directories.)
+flat under `plugins/wtf/skills/` — the categories below are organizational, not directories.)
 
 | Category | Skill | What it does | Extra setup |
 |----------|-------|--------------|-------------|
