@@ -1,8 +1,8 @@
 {
   "name": "wtf",
   "displayName": "Flywheel Skills",
-  "version": "0.2.0",
-  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem.",
+  "version": "0.3.0",
+  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end.",
   "author": {
     "name": "The Flywheel",
     "url": "https://github.com/We-The-Flywheel"
@@ -10,5 +10,5 @@
   "homepage": "https://help.tfw.bz/skills",
   "repository": "https://github.com/We-The-Flywheel/skills",
   "license": "MIT",
-  "keywords": ["claude-code", "skills", "humanizer", "writing", "qa", "deliberation", "premortem", "decision-making"]
+  "keywords": ["claude-code", "skills", "humanizer", "writing", "qa", "deliberation", "premortem", "decision-making", "end", "session", "cleanup", "git"]
 }
