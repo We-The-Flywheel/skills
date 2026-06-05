@@ -100,7 +100,7 @@ def chat(model: str, messages: list[dict], temperature: float = 0.7) -> dict:
     }
 
 
-def stage1_diverge(question: str) -> tuple[dict[str, str], list[dict]]:
+def stage1_diverge(question: str, temperature: float = 0.7) -> tuple[dict[str, str], list[dict]]:
     """All models answer the question independently in parallel.
     Returns (responses dict, model_results list)."""
     prompt = [{"role": "user", "content": question}]
@@ -108,7 +108,7 @@ def stage1_diverge(question: str) -> tuple[dict[str, str], list[dict]]:
     model_results = []
 
     def ask(name: str, model: str) -> tuple[str, dict]:
-        return name, chat(model, prompt)
+        return name, chat(model, prompt, temperature=temperature)
 
     with ThreadPoolExecutor(max_workers=len(MODELS)) as pool:
         futures = {pool.submit(ask, n, m): n for n, m in MODELS.items()}
@@ -282,9 +282,19 @@ def main():
     if json_mode:
         args.remove("--json")
 
+    temperature = 0.7
+    if "--temperature" in args:
+        idx = args.index("--temperature")
+        try:
+            temperature = float(args[idx + 1])
+        except (IndexError, ValueError):
+            print("Error: --temperature requires a numeric value", file=sys.stderr)
+            sys.exit(1)
+        del args[idx:idx + 2]
+
     question = " ".join(args) if args else ""
     if not question:
-        print("Usage: council.py [--json] <question>", file=sys.stderr)
+        print("Usage: council.py [--json] [--temperature 0.7] <question>", file=sys.stderr)
         sys.exit(1)
 
     total_start = time.time()
@@ -300,7 +310,7 @@ def main():
     if not json_mode:
         print("Stage 1: Diverge (4 models answering independently)...")
     s1_start = time.time()
-    responses, s1_models = stage1_diverge(question)
+    responses, s1_models = stage1_diverge(question, temperature=temperature)
     s1_duration = int((time.time() - s1_start) * 1000)
     emit_progress("stage_done", stage="diverge", duration_ms=s1_duration)
     labels = list(responses.keys())

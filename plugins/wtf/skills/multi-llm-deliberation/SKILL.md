@@ -1,6 +1,6 @@
 ---
 name: multi-llm-deliberation
-description: Use when you need diverse AI perspectives on architecture decisions, code review, or complex questions - runs a 3-stage deliberation (diverge, rank, synthesize) across 4 models for consensus answers. Triggers on "ask multiple models", "get consensus", "llm council", or any request for multi-model review.
+description: Use when you need diverse AI perspectives on architecture decisions, code review, or complex questions - runs a 3-stage deliberation (diverge, rank, synthesize) across 4 models for consensus answers. Also runs Content Truth-Check Mode to fact-check claims in content drafts before publishing. Triggers on "ask multiple models", "get consensus", "llm council", "fact-check this draft", "truth check", or any request for multi-model review.
 ---
 
 # Multi-LLM Deliberation - Multi-Model Consensus
@@ -17,6 +17,7 @@ Self-contained — no external backend or dependencies beyond Python 3 and an Op
 - **Complex questions:** When you want multiple AI perspectives
 - **Reduce bias:** Get consensus from diverse models (open-source + commercial)
 - **Plan review:** After a planning exercise, get multi-model critique and improvement
+- **Content truth-check:** Fact-validate a content draft before publishing
 
 ## Plan Review Mode (Default After Planning)
 
@@ -47,6 +48,61 @@ Here is the plan:
 4. After receiving the consensus, **apply the feedback to the plan** — update the plan file or present the improved version, don't just show the raw council output
 
 This saves the user from having to manually copy-paste the plan and write review instructions every time.
+
+## Content Truth-Check Mode (Fact-Validating Drafts)
+
+When the input is a **content piece** (article, blog post, landing page, guide — anything headed for a public URL), frame the deliberation as **fact verification, not opinion consensus**.
+
+**How to detect:** The user says "fact-check this", "truth check", "validate the claims", "is this accurate", on a piece of content (not a plan) — or you're running a pre-publish review pass on a draft.
+
+**Division of labor — read this before running anything:**
+
+The council models have **no web access**. Their verdicts come from training data, so their value is the *cross-model agreement signal*: five diverse models (3 ecosystems) independently disagreeing on a claim is a strong hallucination flag; unanimous agreement on a stable fact is meaningful support. They can NOT settle anything volatile or post-cutoff. **You (the in-session agent) have web search/fetch tools — claim extraction happens before the council, and web verification of everything the council can't settle happens after.** Never treat council consensus alone as ground truth: shared training-data errors exist.
+
+**Steps:**
+
+1. **Extract atomic claims (you, before calling the council).** Decompose the draft into numbered, externally verifiable claims — one fact each: dates, statistics, names/titles, prices, rights/licensing ("X holds the rights through 2029"), version numbers, superlatives ("first/largest/only"), quotes and their attributions. **Exclude** opinions, experience markers ("in our testing"), and normative statements — those are voice, not facts.
+
+2. **Classify volatility.** Mark each claim:
+   - `STABLE` — historical/settled fact, unlikely to have changed
+   - `VOLATILE` — prices, current rights-holders/broadcasters, schedules, "current" anything, claims plausibly changed after model training cutoffs
+
+   VOLATILE claims **skip the council** and go straight to web verification (step 5) — polling offline models about them invites confident staleness.
+
+3. **Construct the council question** for the STABLE claims:
+
+```
+You are fact-checking claims extracted from a machine-generated draft article. The draft may contain hallucinations — do NOT assume any claim is correct because it sounds plausible or appears in the draft.
+
+For EACH numbered claim, give a verdict from your own knowledge:
+- TRUE — confident it is correct
+- FALSE — confident it is wrong (state the correction)
+- UNCERTAIN — you don't know or can't verify
+
+Rules: verdict each claim independently. If a name, date, number, or attribution is even slightly off, answer FALSE with the correction. Calibration matters more than confidence — UNCERTAIN is a good answer.
+
+Claims:
+C1. <claim>
+C2. <claim>
+...
+
+Reply as a list: "C1: TRUE|FALSE|UNCERTAIN — one-line justification or correction".
+```
+
+   Run it with low temperature: `python3 council.py --temperature 0.2 "<question>"`.
+
+4. **Score agreement across models** per claim:
+   - `CONFIRMED` — all responding models say TRUE
+   - `REFUTED` — majority FALSE with a consistent correction
+   - `DISPUTED` — any disagreement, or UNCERTAIN votes
+
+5. **Web-verify (you, after the council):** every `VOLATILE`, `REFUTED`, and `DISPUTED` claim via web search/fetch against authoritative sources (official sites, primary sources — not aggregators). Record the source URL per claim. `CONFIRMED` claims pass without search unless they're load-bearing for the piece's core argument — spot-check those too.
+
+6. **Repair surgically.** Fix only the claims proven wrong or outdated, preserving the surrounding prose and the piece's voice — never rewrite paragraphs wholesale. A claim that can't be verified anywhere → flag it to the user as `UNVERIFIABLE` and ask whether to cut or keep; don't silently decide.
+
+7. **Output a claim table:** `claim | volatility | council verdict | final verdict | source | fix applied`. If the page shows a visible `Updated:` date, confirm no VOLATILE fact predates it.
+
+**Cost:** same as a normal deliberation (~$0.003–0.012) plus your web searches.
 
 ## Process
 
