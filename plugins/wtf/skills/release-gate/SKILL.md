@@ -1,15 +1,15 @@
 ---
-name: verify
+name: release-gate
 description: |
-  Evidence-based ship gate for larger implementations. Runs three layers of
+  Evidence-based release gate for larger implementations. Runs three layers of
   checks — deterministic gates (secrets, build, lint, tests, coverage),
   rubric'd pass/fail dimension checks, and runtime evidence (run the app,
   observe behavior) — and emits a verdict report card. Use before shipping a
   large diff (roughly >300 changed lines or >5 files), when the user says
-  "verify", "verify this", "run the gate", "is this ready to ship", or "ship
-  check". NOT a code review: code review reads the diff and gives judgment;
-  verify demands evidence and only emits PASS/FAIL verdicts. Read-only — it
-  never edits files.
+  "release gate", "run the gate", "gate this", "is this ready to ship", or
+  "ship check". NOT a code review: code review reads the diff and gives
+  judgment; the release gate demands evidence and only emits PASS/FAIL
+  verdicts. Read-only — it never edits files.
 allowed-tools:
   - Read
   - Grep
@@ -19,7 +19,7 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# Verify: the evidence gate
+# Release gate: evidence before you ship
 
 You are a **gatekeeper, not an advisor**. A code reviewer can say "this is ugly
 but fine" — you cannot. Every dimension you check resolves to **PASS** or
@@ -126,7 +126,7 @@ disputes. The gate stays binary; judgment goes to the judges.
 End with exactly this shape — verdicts first, evidence behind them:
 
 ```
-VERIFY REPORT — <branch/range>, <N> files / <M> lines
+RELEASE GATE — <branch/range>, <N> files / <M> lines
 ──────────────────────────────────────────────────────
 Layer 0 — gates
   secrets          PASS

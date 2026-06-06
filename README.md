@@ -22,7 +22,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:premortem`
 - `wtf:end`
 - `wtf:idiocy-check`
-- `wtf:verify`
+- `wtf:release-gate`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -38,7 +38,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-verify`) so they never clash
+(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
@@ -55,7 +55,7 @@ flat under `plugins/wtf/skills/` — the categories below are organizational, no
 | Decisions | **premortem** | Stress-tests a plan before you commit: imagines it's failed months from now, spawns one investigator per failure mode in parallel, then synthesizes the most likely / most dangerous failure, the biggest hidden assumption, a revised plan, and a pre-commit checklist. | None |
 | Workflow | **end** | Wraps up a coding session: shuts down local dev servers, removes temp/backup files, commits and pushes outstanding work, and refreshes project docs (PROJECT_MAP.md + CLAUDE.md). Safe-by-default — confirms before anything destructive. | None |
 | Writing | **idiocy-check** | Fast, ruthless pre-submission review of any document, grant, caption, email, or deliverable. Returns 5–8 items that would embarrass you, get you rejected, or make you look sloppy — not a comprehensive edit. Contributed by Eric Cross. | None |
-| QA | **verify** | Evidence-based ship gate for larger implementations: deterministic gates (secrets scan, build, lint, tests, coverage delta), rubric'd pass/fail dimension checks with adversarial verification of every finding, and runtime evidence (run the app, observe). Emits a PASS/FAIL report card. Read-only — never edits. Supports a per-project `VERIFY_RUBRIC.md`. | None |
+| QA | **release-gate** | Evidence-based ship gate for larger implementations: deterministic gates (secrets scan, build, lint, tests, coverage delta), rubric'd pass/fail dimension checks with adversarial verification of every finding, and runtime evidence (run the app, observe). Emits a PASS/FAIL report card. Read-only — never edits. Supports a per-project `VERIFY_RUBRIC.md`. | None |
 
 ## When to use what — the lifecycle
 
@@ -64,7 +64,7 @@ need all of them on every change — match the phase you're in:
 
 ```
 PLAN ──────────► BUILD ──────────► CHECK ──────────► SHIP ──────────► REFLECT
-premortem        (Claude Code      code review*      verify           retro habits
+premortem        (Claude Code      code review*      release-gate     retro habits
 multi-llm-       plan mode,        visual-qa         end              (what failed →
 deliberation     tests as          humanizer                          new rubric line
                  you go)           idiocy-check                       or skill)
@@ -77,13 +77,13 @@ deliberation     tests as          humanizer                          new rubric
 - **CHECK** — two distinct steps, in order:
   1. *Code review* (judgment — Claude Code's built-in `/code-review`*): findings,
      opinions, suggestions. "Is this good code?"
-  2. `wtf:verify` (evidence — this pack): binary gates with proof. "Does this meet
-     the bar to ship?" Review advises; verify gatekeeps.
+  2. `wtf:release-gate` (evidence — this pack): binary gates with proof. "Does this meet
+     the bar to ship?" Review advises; the gate gatekeeps.
   Plus `wtf:visual-qa` for anything with a UI, and `wtf:humanizer` /
   `wtf:idiocy-check` for prose and deliverables.
-- **SHIP** — `wtf:verify` must be green first; then commit/push/deploy and close the
+- **SHIP** — `wtf:release-gate` must be green first; then commit/push/deploy and close the
   session with `wtf:end`.
-- **REFLECT** — when verify or review caught something late, encode it: add a line to
+- **REFLECT** — when the gate or review caught something late, encode it: add a line to
   your `VERIFY_RUBRIC.md` so the gate catches it automatically next time.
 
 \* `/code-review` is built into Claude Code, not part of this pack — listed for the
