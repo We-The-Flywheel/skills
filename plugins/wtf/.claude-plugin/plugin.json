@@ -1,7 +1,7 @@
 {
   "name": "wtf",
   "displayName": "Flywheel Skills",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end, idiocy-check.",
   "author": {
     "name": "The Flywheel",

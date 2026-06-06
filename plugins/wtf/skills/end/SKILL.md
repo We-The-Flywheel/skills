@@ -20,10 +20,12 @@ allowed-tools:
 
 End-of-session cleanup and verification with intelligent automation. Ensures work is properly saved and documented before exiting.
 
-> **Note:** This skill orchestrates a few optional helpers (a `/ship`-style commit
-> workflow, a learnings/memory step, a session-handoff file). Where one isn't
-> installed, fall back to the plain-git equivalent described inline — the skill never
-> hard-depends on tooling you don't have.
+> **Note:** This skill orchestrates a few optional helpers (a commit-workflow skill
+> such as `/go-live` or `/commit-push`, a learnings/memory step, a session-handoff
+> file). "The commit skill" below means whichever of those is installed. Where one
+> isn't, fall back to the plain-git equivalent described inline — the skill never
+> hard-depends on tooling you don't have. Never reference a commit skill that isn't
+> in your available-skills list.
 
 ## Arguments
 
@@ -46,7 +48,7 @@ $ARGUMENTS
 - Shut down local dev servers this session started (silent)
 - Auto-remove .DS_Store on macOS (silent)
 - Auto-remove .bak backup files on all platforms (silent)
-- Auto-commit via /ship skill
+- Auto-commit via the commit skill (e.g. /go-live or /commit-push), else plain git
 - Auto-push to remote
 - Generate/update PROJECT_MAP.md (comprehensive details)
 - Update CLAUDE.md with essential 20-line context
@@ -263,14 +265,14 @@ git status --short
 1. Announce: "Uncommitted changes detected - committing..."
 
 2. Commit the changes:
-   - If you have a `/ship`-style commit skill, invoke it (it analyzes changes, updates a CHANGELOG if present, and writes the message).
+   - If you have a commit skill installed (e.g. `/go-live`, `/commit-push`), invoke it (it analyzes changes, updates a CHANGELOG if present, and writes the message).
    - Otherwise, stage everything and create a single well-described commit (`git add -A && git commit`) whose message summarizes the actual diff. Update the CHANGELOG yourself if the project keeps one.
 
 3. Monitor for success/failure
 
-**Mixed commits are fine:** The working tree may contain changes from prior sessions, manual edits, or work-in-progress that predates this conversation. Do **not** try to separate "session work" from "pre-existing work", and do **not** stash, revert, or skip files just because you didn't touch them this session. Commit everything that's staged/unstaged as a single coherent set — `/ship` writes a commit message that describes the actual diff, regardless of when the changes were made. If the diff spans clearly unrelated concerns, `/ship` may split into multiple commits on its own; otherwise one mixed commit is the correct outcome.
+**Mixed commits are fine:** The working tree may contain changes from prior sessions, manual edits, or work-in-progress that predates this conversation. Do **not** try to separate "session work" from "pre-existing work", and do **not** stash, revert, or skip files just because you didn't touch them this session. Commit everything that's staged/unstaged as a single coherent set — write a commit message that describes the actual diff, regardless of when the changes were made. If the diff spans clearly unrelated concerns, split into multiple commits; otherwise one mixed commit is the correct outcome.
 
-**If /ship fails:**
+**If the commit step fails:**
 ```
 ❌ Commit workflow failed: [error message]
 
@@ -289,7 +291,7 @@ Handle user choice:
 
 **Manual mode behavior:**
 If `manual` argument provided, ask instead: "Commit these changes?" (Y/n)
-- If yes, invoke /ship skill
+- If yes, run the commit step (commit skill if installed, else plain git)
 - If no, warn that changes will persist uncommitted
 
 ### 5. **Auto-Push**
@@ -578,7 +580,7 @@ head -20 CHANGELOG.MD 2>/dev/null
 
 **Skip this check if:**
 - Not a git repo
-- /ship was run in step 4 (it updates CHANGELOG.MD automatically)
+- a commit skill ran in step 4 and updated CHANGELOG.MD already
 
 ### 7b. **Conversation Distill & Handoff**
 
@@ -767,7 +769,7 @@ Display final summary based on what actually executed:
 ✅ Stopped 2 local server(s) (port 1313, 5100)
 ✅ Cleaned 3 .DS_Store files (macOS)
 ✅ Removed 5 temporary files
-✅ Changes committed via /ship
+✅ Changes committed
 ✅ Pushed to remote: origin/main
 ✅ PROJECT_MAP.md updated (comprehensive details)
 ✅ CLAUDE.md updated (essential context: 20 lines)
@@ -906,7 +908,7 @@ Modified files:
 To resume this work:
   1. git checkout feature/new-ui
   2. Review changes: git status
-  3. Commit when ready: /ship
+  3. Commit when ready (commit skill or plain git)
   4. Create PR: gh pr create or use /pr
 
 ──────────────────────────────────
@@ -942,7 +944,7 @@ If `force` argument provided:
 
 - **NEVER auto-delete files without confirmation** (exceptions: .DS_Store on macOS, .bak files on all platforms)
 - **Server shutdown is local-only** - auto-kill only servers THIS session started; confirm before killing any other dev server; never touch databases, system services, IDEs, the Claude Code process, or remote/production services
-- **NEVER force-commit** - always use /ship skill which does proper analysis
+- **NEVER force-commit** - always analyze the diff and write a message that describes it (commit skill or plain git)
 - **NEVER push if remote has commits we don't have** - check first
 - **OK to commit pre-existing uncommitted work** - the working tree at session-end may include changes you didn't make this session; commit them anyway rather than leaving the tree dirty
 - **NEVER block exit** - all warnings are informational, user can always exit
@@ -959,7 +961,7 @@ When user runs `/end manual`, restore old interactive behavior:
 **Changes in manual mode:**
 - Step 2: Still auto-remove .DS_Store (macOS) and .bak files, but announce counts
 - Step 2.5: Ask "Shut down local dev servers?" instead of auto-stopping session-started servers
-- Step 4: Ask "Commit these changes?" instead of auto-running /ship
+- Step 4: Ask "Commit these changes?" instead of auto-committing
 - Step 5: Ask "Push commits?" instead of auto-pushing
 - Step 6: Ask "Update PROJECT_MAP.md?" instead of auto-generating
 
