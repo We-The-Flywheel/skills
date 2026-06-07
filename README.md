@@ -23,6 +23,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:end`
 - `wtf:idiocy-check`
 - `wtf:release-gate`
+- `wtf:content-gate`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -38,7 +39,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`) so they never clash
+(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
@@ -56,6 +57,7 @@ flat under `plugins/wtf/skills/` — the categories below are organizational, no
 | Workflow | **end** | Wraps up a coding session: shuts down local dev servers, removes temp/backup files, commits and pushes outstanding work, and refreshes project docs (PROJECT_MAP.md + CLAUDE.md). Safe-by-default — confirms before anything destructive. | None |
 | Writing | **idiocy-check** | Fast, ruthless pre-submission review of any document, grant, caption, email, or deliverable. Returns 5–8 items that would embarrass you, get you rejected, or make you look sloppy — not a comprehensive edit. Contributed by Eric Cross. | None |
 | QA | **release-gate** | Evidence-based ship gate for larger implementations: deterministic gates (secrets scan, build, lint, tests, coverage delta), rubric'd pass/fail dimension checks with adversarial verification of every finding, and runtime evidence (run the app, observe). Emits a PASS/FAIL report card. Read-only — never edits. Supports a per-project `VERIFY_RUBRIC.md`. | None |
+| QA | **content-gate** | Nine-step pre-publish gate for web content (blog posts, landing pages, SEO articles): draft quality + voice profile, fact-check, de-AI pass, hero/OG image, full OG/Twitter meta, FAQ + `FAQPage` JSON-LD, schema + E-E-A-T signals, analytics coverage, and AI-citation/zero-click readiness (self-contained answer above the fold — ~60% of searches end without a click). Emits a per-step PASS/FAIL report card; any FAIL blocks publish. Pairs with `wtf:humanizer` (Step 3) and `wtf:multi-llm-deliberation` Truth-Check Mode (Step 2) when installed. | None |
 
 ## When to use what — the lifecycle
 
@@ -65,8 +67,8 @@ need all of them on every change — match the phase you're in:
 ```
 PLAN ──────────► BUILD ──────────► CHECK ──────────► SHIP ──────────► REFLECT
 premortem        (Claude Code      code review*      release-gate     retro habits
-multi-llm-       plan mode,        visual-qa         end              (what failed →
-deliberation     tests as          humanizer                          new rubric line
+multi-llm-       plan mode,        visual-qa         content-gate     (what failed →
+deliberation     tests as          humanizer         end              new rubric line
                  you go)           idiocy-check                       or skill)
 ```
 
@@ -81,8 +83,11 @@ deliberation     tests as          humanizer                          new rubric
      the bar to ship?" Review advises; the gate gatekeeps.
   Plus `wtf:visual-qa` for anything with a UI, and `wtf:humanizer` /
   `wtf:idiocy-check` for prose and deliverables.
-- **SHIP** — `wtf:release-gate` must be green first; then commit/push/deploy and close the
-  session with `wtf:end`.
+- **SHIP** — `wtf:release-gate` must be green first; for anything going to a public URL
+  (blog posts, landing pages, SEO articles), `wtf:content-gate` must also be green —
+  it's the content counterpart to the release gate (meta tags, FAQ + structured data,
+  E-E-A-T, analytics, zero-click/AI-citation readiness). Then commit/push/deploy and
+  close the session with `wtf:end`.
 - **REFLECT** — when the gate or review caught something late, encode it: add a line to
   your `VERIFY_RUBRIC.md` so the gate catches it automatically next time.
 
