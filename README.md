@@ -24,6 +24,8 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:idiocy-check`
 - `wtf:release-gate`
 - `wtf:content-gate`
+- `wtf:moodboard`
+- `wtf:website-build`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -39,7 +41,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`) so they never clash
+(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-moodboard`, `wtf-website-build`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
@@ -58,6 +60,8 @@ flat under `plugins/wtf/skills/` — the categories below are organizational, no
 | Writing | **idiocy-check** | Fast, ruthless pre-submission review of any document, grant, caption, email, or deliverable. Returns 5–8 items that would embarrass you, get you rejected, or make you look sloppy — not a comprehensive edit. Contributed by Eric Cross. | None |
 | QA | **release-gate** | Evidence-based ship gate for larger implementations: deterministic gates (secrets scan, build, lint, tests, coverage delta), rubric'd pass/fail dimension checks with adversarial verification of every finding, and runtime evidence (run the app, observe). Emits a PASS/FAIL report card. Read-only — never edits. Supports a per-project `VERIFY_RUBRIC.md`. | None |
 | QA | **content-gate** | Nine-step pre-publish gate for web content (blog posts, landing pages, SEO articles): draft quality + voice profile, fact-check, de-AI pass, hero/OG image, full OG/Twitter meta, FAQ + `FAQPage` JSON-LD, schema + E-E-A-T signals, analytics coverage, and AI-citation/zero-click readiness (self-contained answer above the fold — ~60% of searches end without a click). Emits a per-step PASS/FAIL report card; any FAIL blocks publish. Pairs with `wtf:humanizer` (Step 3) and `wtf:multi-llm-deliberation` Truth-Check Mode (Step 2) when installed. | None |
+| Design | **moodboard** | Turns visual references (and anti-references) into locked design decisions — background, type category, accent approach, nav scale, interaction patterns, anti-patterns — each traceable to a finding. Includes an in-context type explorer (renders the real wordmark in 8–12 fonts on the actual brand background, one scroll). Produces documented decisions, not pages. | None |
+| Design | **website-build** | Reference-first site build on a four-pillars framework (Audience → Structure → Copy → Design): clarity-paragraph gate, audience filter, four-visitor-jobs structure with an accountability map for every cut, voice spec, and a Design pillar handed to `wtf:moodboard`. Produces a populated brief; blanks are the to-do list. Pairs with `wtf:humanizer` and `wtf:content-gate` when installed. | None |
 
 ## When to use what — the lifecycle
 
