@@ -1,13 +1,15 @@
 ---
 name: humanizer
-version: 2.3.0
+version: 2.4.0
 description: |
   Remove signs of AI-generated writing from text. Use when editing or reviewing
   text to make it sound more natural and human-written. Based on Wikipedia's
-  comprehensive "Signs of AI writing" guide. Detects and fixes patterns including:
+  comprehensive "Signs of AI writing" guide plus current AI-detector research
+  (GPTZero, Originality.ai, Turnitin 2025). Detects and fixes patterns including:
   inflated symbolism, promotional language, superficial -ing analyses, vague
   attributions, em dash overuse, rule of three, AI vocabulary words, negative
-  parallelisms, and excessive conjunctive phrases.
+  parallelisms, excessive conjunctive phrases, transition-word overload, abstract
+  verb inflation, sentence-opener clichés, and uniform sentence length.
 allowed-tools:
   - Read
   - Write
@@ -46,7 +48,7 @@ When given text to humanize:
 4. **Maintain voice** - Match the intended tone. If a `VOICE.md` was loaded, *that* is the
    tone target; otherwise infer from context (formal, casual, technical, etc.)
 5. **Add soul** - Don't just remove bad patterns; inject actual personality
-6. **Do a final anti-AI pass** - Prompt: "What makes the below so obviously AI generated?" Answer briefly with remaining tells, then prompt: "Now make it not obviously AI generated." and revise
+6. **Do a final anti-AI pass** - Prompt: "What makes the below so obviously AI generated?" Check: AI vocabulary clusters, transition-word density, uniform sentence length (burstiness), abstract verb inflation, sentence-opener clichés. Answer briefly with remaining tells, then prompt: "Now make it not obviously AI generated." and revise
 
 ---
 
@@ -174,9 +176,11 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ### 7. Overused "AI Vocabulary" Words
 
-**High-frequency AI words:** Additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+**High-frequency AI words (updated 2025):**
+- **Core list:** Additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+- **Extended list (post-2024 flagged by detectors):** actionable, comprehensive, cutting-edge, ecosystem (abstract), empower/empowers, game-changer/game-changing, holistic, innovative/innovation (when generic), leverage (verb), multifaceted, navigate/navigating (abstract), nuanced (when empty), paradigm, robust, seamless, synergy/synergies, transformative, unlock(s)
 
-**Problem:** These words appear far more frequently in post-2023 text. They often co-occur.
+**Problem:** These words appear far more frequently in post-2023 text. They often co-occur. Modern detectors (GPTZero, Originality.ai) use vocabulary fingerprinting — a cluster of these in one paragraph is a strong positive signal.
 
 **Before:**
 > Additionally, a distinctive feature of Somali cuisine is the incorporation of camel meat. An enduring testament to Italian colonial influence is the widespread adoption of pasta in the local culinary landscape, showcasing how these dishes have integrated into the traditional diet.
@@ -406,6 +410,75 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ---
 
+---
+
+### 25. Transition Word Overload
+
+**Words to watch:** Furthermore, Moreover, Additionally (already in vocab), Consequently, Subsequently, Nevertheless, Nonetheless, Therefore, Thus, Hence, Accordingly, In contrast, On the other hand, It should be noted that, It is worth noting that
+
+**Problem:** AI strings these together in rapid succession — three or four in a single page — creating a "term paper" cadence that human writers don't produce. The individual words aren't wrong; it's the density and mechanical deployment that flags.
+
+**Before:**
+> Furthermore, the policy has had a significant impact. Moreover, stakeholders have raised concerns. Nevertheless, the administration remains committed. Subsequently, a review was commissioned.
+
+**After:**
+> The policy shifted outcomes in ways stakeholders didn't expect. The administration ordered a review — partly to address those concerns, partly to get ahead of the criticism.
+
+---
+
+### 26. Abstract Verb Inflation
+
+**Words to watch:** navigate (challenges/complexity/uncertainty), leverage (capabilities/opportunities/insights), drive (growth/change/innovation), enable (transformation/success), facilitate (progress/alignment), empower (teams/users), unlock (potential/value), foster (collaboration/growth, already in -ing list), harness (the power of)
+
+**Problem:** AI reaches for these action verbs to make passive situations sound dynamic. They're vague by design — you can say anything "drives growth" or "enables transformation" without saying anything. The tell is pairing them with an abstract noun that has no concrete referent.
+
+**Before:**
+> By leveraging our robust platform, teams can navigate the complexities of modern workflows and unlock unprecedented value, empowering every stakeholder to drive meaningful transformation.
+
+**After:**
+> The platform automates handoffs between design and engineering, which cut our review cycle from 5 days to 1.
+
+---
+
+### 27. Sentence-Opener Clichés
+
+**Problem:** AI uses stock opening phrases to signal context-setting or transitions. These are individually mild but cluster in AI text.
+
+**Remove or rewrite when you see:**
+- "In today's [fast-paced/digital/interconnected] world..."
+- "As we navigate [an ever-changing landscape / uncertain times / the future]..."
+- "It's important to note that..." / "It's worth noting that..."
+- "When it comes to [topic]..."
+- "In the world of [industry]..."
+- "At the end of the day..."
+- "At its core..." (already in filler list)
+- "Whether you're a [X] or a [Y], [product] has something for you"
+- "This is where [noun] comes in."
+
+**Before:**
+> In today's fast-paced world, staying competitive requires more than just hard work. When it comes to content creation, it's worth noting that AI tools have transformed the landscape.
+
+**After:**
+> Content teams that used to spend two weeks on a campaign brief now spend two days. That's the actual change.
+
+---
+
+### 28. Uniform Sentence Length (Low Burstiness)
+
+**Problem:** This is the core statistical signal that detectors like GPTZero measure. "Burstiness" is the variance in sentence length — humans write in bursts: some sentences are 3 words, some are 40. AI produces sentences of consistent, medium length (typically 15–25 words), paragraph after paragraph.
+
+**What to look for:** Every sentence in a paragraph landing in the 15–25 word range. No one-sentence paragraphs. No sentence that stops cold after 4 words.
+
+**Before (uniform):**
+> The platform provides a centralized solution for managing distributed teams across multiple time zones. Users can coordinate tasks, share resources, and maintain alignment through an integrated dashboard. The system supports real-time collaboration and includes built-in analytics for tracking team performance. Organizations have reported significant improvements in both efficiency and communication outcomes.
+
+**After (variable):**
+> The platform coordinates distributed teams. That's the pitch.
+>
+> In practice it gives you a dashboard that pulls everyone's tasks and timezones into one view, with built-in analytics so you can see who's blocked without sending a Slack message. Whether that's worth the setup time depends on how scattered your team actually is.
+
+---
+
 ## Process
 
 0. Resolve the nearest `VOICE.md` (walk up from the edited file to repo root, cascade sections); if found, load it as the target voice (see "Your Task" Step 0)
@@ -414,10 +487,12 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 3. Rewrite each problematic section
 4. Ensure the revised text:
    - Sounds natural when read aloud
-   - Varies sentence structure naturally
+   - Varies sentence length deliberately (short sentences exist; some paragraphs are one sentence)
    - Uses specific details over vague claims
    - Maintains appropriate tone for context
    - Uses simple constructions (is/are/has) where appropriate
+   - Has no transition-word chain (Furthermore → Moreover → Consequently in one page)
+   - Has no abstract verb + abstract noun pairs (leverage opportunities, navigate complexity)
 5. Present a draft humanized version
 6. Prompt: "What makes the below so obviously AI generated?"
 7. Answer briefly with the remaining tells (if any)
