@@ -1,11 +1,12 @@
 ---
 name: humanizer
-version: 2.4.0
+version: 2.5.1
 description: |
   Remove signs of AI-generated writing from text. Use when editing or reviewing
   text to make it sound more natural and human-written. Based on Wikipedia's
   comprehensive "Signs of AI writing" guide plus current AI-detector research
-  (GPTZero, Originality.ai, Turnitin 2025). Detects and fixes patterns including:
+  (GPTZero, Originality.ai, Turnitin 2025) and our own empirical Pangram tests
+  (2026-06, see the Pangram-validated evidence note below). Detects and fixes patterns including:
   inflated symbolism, promotional language, superficial -ing analyses, vague
   attributions, em dash overuse, rule of three, AI vocabulary words, negative
   parallelisms, excessive conjunctive phrases, transition-word overload, abstract
@@ -22,6 +23,48 @@ allowed-tools:
 # Humanizer: Remove AI Writing Patterns
 
 You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
+
+## Pangram-validated evidence (read this first — it sets expectations)
+
+We empirically tested the production **Pangram** classifier against our own AI-written PR/marketing
+and narrative drafts (our own test set, 2026-06). The result is blunt and
+changes how to use this skill:
+
+- **Editing AI-origin text does NOT lower a strong AI-detector score.** Vocabulary swaps, em-dash
+  and rule-of-three removal, raising burstiness, paragraph re-chunking, injecting first-person
+  specifics, combining several of these, even fully **scrambling sentence order** or deleting 20% of
+  the text — every one left Pangram pinned at **100% AI**, across two registers. The patterns below
+  are real AI tells, but **removing them from already-AI text will not make a detector call it
+  human.**
+- **Only human origin moves the needle.** Genuine human prose scored **0% AI** on the same detector;
+  our edited-AI variants stayed at 100%. The detector keys on the statistical fingerprint of how the
+  text was *produced*, not on a checklist of surface features.
+- **Partial AI contaminates the whole document — asymmetrically.** Human text that scored 0% flipped
+  to **100% AI after injecting just 25% AI-written sentences**; conversely, splicing up to 75% human
+  sentences into an AI draft never pulled it below 100%. The detector does not score "fraction
+  human." So the common workflow "draft it myself, then AI-polish a few sentences/paragraphs" will
+  still read as fully AI. Keep AI out of any passage that must read as human-origin; use AI for
+  outlines/research/structure, not for generating the prose you need to pass as human.
+- **Advanced rewriting and voice-matching do not help either (tested 2026-07).** We ran a harder
+  round against Pangram: multi-pass regeneration (rewrite the rewrite, 2–3 passes), transplanting a
+  real human passage's exact sentence rhythm, a deliberately "messy human" register (fragments,
+  asides, self-corrections), a spoken/dictated rewrite, and splicing in *real, same-topic* human
+  sentences at 50%. **Every one scored 100% AI.** Critically, **voice-matching to a brand `VOICE.md`
+  cannot lower the score, because the brand's own published gold-standard prose itself scored 100%
+  AI** — the target you'd imitate is already above the line. There is no editing/regeneration/voice
+  process that makes AI-origin text pass; do not promise one.
+- **Therefore: detector-grade ("reads as human") output must START from human text.** If the goal is
+  to pass an AI detector, do not run this skill on a machine draft and expect a low score — draft
+  (or substantively re-dictate) from a human starting point, then use this skill for craft. If the
+  goal is simply *better, more human-sounding writing* (readability, voice, not gaming a detector),
+  this skill is exactly right — keep using all patterns below.
+
+**How to read the tags below:**
+- `[Pangram: no effect on AI-origin detection]` — validated as a *readability / craft / other-detector*
+  rule (GPTZero and Originality weight some of these more than Pangram does), **not** a lever for
+  beating Pangram on AI-origin text. Apply for quality, not for detector evasion.
+- Note this evidence is **Pangram-specific** (2026-06) and directional (small sample); other
+  detectors differ. It does not retire any pattern — it reframes what editing can and cannot achieve.
 
 ## Your Task
 
@@ -175,6 +218,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 ## LANGUAGE AND GRAMMAR PATTERNS
 
 ### 7. Overused "AI Vocabulary" Words
+*[Pangram: vocab swaps alone showed no effect on AI-origin detection — readability/other-detector rule]*
 
 **High-frequency AI words (updated 2025):**
 - **Core list:** Additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
@@ -217,6 +261,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 ---
 
 ### 10. Rule of Three Overuse
+*[Pangram: removing triads showed no effect on AI-origin detection — readability/other-detector rule]*
 
 **Problem:** LLMs force ideas into groups of three to appear comprehensive.
 
@@ -255,6 +300,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 ## STYLE PATTERNS
 
 ### 13. Em Dash Overuse
+*[Pangram: removing em dashes showed no effect on AI-origin detection — readability/voice rule; some VOICE.md profiles ban em dashes outright]*
 
 **Problem:** LLMs use em dashes (—) more than humans, mimicking "punchy" sales writing.
 
@@ -464,6 +510,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 ---
 
 ### 28. Uniform Sentence Length (Low Burstiness)
+*[Pangram: raising burstiness on AI-origin text showed no effect on its score — strongly weighted by GPTZero, but not a Pangram lever on already-AI text]*
 
 **Problem:** This is the core statistical signal that detectors like GPTZero measure. "Burstiness" is the variance in sentence length — humans write in bursts: some sentences are 3 words, some are 40. AI produces sentences of consistent, medium length (typically 15–25 words), paragraph after paragraph.
 

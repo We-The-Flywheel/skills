@@ -58,6 +58,31 @@ failing one on the right page.
 
 ---
 
+## Step 0.5 — Keyword cannibalization
+
+Before drafting or publishing, confirm this page won't **cannibalize** an
+existing one. Cannibalization = two pages on the same site (same locale)
+competing for the same primary keyword/intent, which splits ranking signals and
+can suppress both.
+
+Check:
+
+1. Identify this page's **primary keyword / search intent**.
+2. Search the site's **own corpus** for a page that already targets it — grep the
+   content directory, scan the sitemap, or run a `site:<domain> "<keyword>"`
+   search. Also check whether the live SERP for the target query already ranks
+   **≥2 of the site's own URLs**.
+3. If a same-site/same-locale page already owns that keyword (or ≥2 own URLs
+   already rank), this is a **BLOCK**: consolidate the pages, differentiate the
+   intent/keyword, or 301 the weaker URL **before** publishing.
+
+**PASS:** no existing page competes for the primary keyword.
+**BLOCK (FAIL):** a same-site/same-locale page already owns it.
+**EXEMPT:** brand-new site/keyword with no existing coverage, or a site whose
+corpus you can't inventory — note the exemption in the report, never silently skip.
+
+---
+
 ## Step 1 — Draft with your strongest model, in the property's voice
 
 - Content should be written (or heavily edited) by the **strongest writing
@@ -298,6 +323,7 @@ End every run with:
 
 ```
 CONTENT GATE — <page/URL>
+ 0 Cannibalization      PASS/FAIL/EXEMPT  <competing URL, or "no corpus to check">
  1 Draft + voice        PASS/FAIL  <evidence or what's missing>
  2 Fact-check           PASS/FAIL  <N claims verified, M fixed>
  3 De-AI pass           PASS/FAIL

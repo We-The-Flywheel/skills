@@ -1,11 +1,11 @@
 ---
 name: multi-llm-deliberation
-description: Use when you need diverse AI perspectives on architecture decisions, code review, or complex questions - runs a 3-stage deliberation (diverge, rank, synthesize) across 4 models for consensus answers. Also runs Content Truth-Check Mode to fact-check claims in content drafts before publishing. Triggers on "ask multiple models", "get consensus", "llm council", "fact-check this draft", "truth check", or any request for multi-model review.
+description: Use when you need diverse AI perspectives on architecture decisions, code review, or complex questions - runs a 3-stage deliberation (diverge, rank, synthesize) across 5 models for consensus answers. Also runs Content Truth-Check Mode to fact-check claims in content drafts before publishing. Triggers on "ask multiple models", "get consensus", "llm council", "fact-check this draft", "truth check", or any request for multi-model review.
 ---
 
 # Multi-LLM Deliberation - Multi-Model Consensus
 
-Get diverse AI perspectives through a 3-stage consensus process with 4 models via OpenRouter.
+Get diverse AI perspectives through a 3-stage consensus process with 5 models via OpenRouter.
 
 Self-contained — no external backend or dependencies beyond Python 3 and an OpenRouter API key.
 
@@ -106,20 +106,22 @@ Reply as a list: "C1: TRUE|FALSE|UNCERTAIN — one-line justification or correct
 
 ## Process
 
-1. **Stage 1 - Diverge:** 4 models answer independently (parallel)
+1. **Stage 1 - Diverge:** 5 models answer independently (parallel)
 2. **Stage 2 - Rank:** Models anonymously rank each other's responses (parallel)
 3. **Stage 3 - Synthesize:** Top model creates consensus from all responses
 
 ## Models
 
-- **Gemini 3 Flash** (ultra-cheap) - Google's fast model
-- **Grok 4.1 Fast** (cost-efficient) - xAI's latest
+Authoritative list: the `MODELS` dict in `council.py` — this section mirrors it and must be updated together with it.
+
+- **Gemini 3.1 Flash Lite** (ultra-cheap) - Google's fast model
 - **GPT-4.1 Mini** (cost-efficient) - OpenAI's small model
 - **DeepSeek V3** (ultra-cheap) - DeepSeek's flagship
 - **Mistral Small 3.1** (ultra-cheap) - Mistral's efficient model, European perspective
-- **Synthesizer:** Gemini 3 Flash (creates consensus from ranked responses)
+- **Llama 3.3 70B** (ultra-cheap) - Meta's open-weights model
+- **Synthesizer:** Gemini 3 Flash Preview (creates consensus from ranked responses)
 
-3 AI ecosystems represented: US (Google, xAI, OpenAI), China (DeepSeek), Europe (Mistral).
+3 AI ecosystems represented: US (Google, OpenAI, Meta), China (DeepSeek), Europe (Mistral).
 
 ## Cost
 
@@ -150,7 +152,7 @@ bash skills/multi-llm-deliberation/council.sh "Best database for time-series dat
 
 ## Output
 
-1. Individual responses from all 4 models
+1. Individual responses from all 5 models
 2. Peer rankings (how models rated each other)
 3. Synthesized consensus answer
 4. Cost estimate

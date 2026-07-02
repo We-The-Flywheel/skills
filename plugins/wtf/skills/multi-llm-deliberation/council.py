@@ -3,7 +3,7 @@
 Multi-LLM Deliberation — self-contained, no backend needed.
 Calls OpenRouter API directly for a 3-stage consensus process.
 
-Stage 1: Diverge — 4 models answer independently
+Stage 1: Diverge — 5 models answer independently
 Stage 2: Rank   — each model ranks the other responses
 Stage 3: Synthesize — best synthesizer creates consensus
 """
@@ -308,7 +308,7 @@ def main():
     # Stage 1
     emit_progress("stage_start", stage="diverge", models=list(MODELS.keys()))
     if not json_mode:
-        print("Stage 1: Diverge (4 models answering independently)...")
+        print("Stage 1: Diverge (5 models answering independently)...")
     s1_start = time.time()
     responses, s1_models = stage1_diverge(question, temperature=temperature)
     s1_duration = int((time.time() - s1_start) * 1000)

@@ -1,8 +1,8 @@
 {
   "name": "wtf",
   "displayName": "Flywheel Skills",
-  "version": "0.9.0",
-  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, moodboard, website-build, longterm.",
+  "version": "0.10.0",
+  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, moodboard, website-build, longterm, pangram.",
   "author": {
     "name": "The Flywheel",
     "url": "https://github.com/We-The-Flywheel"
@@ -10,5 +10,5 @@
   "homepage": "https://help.tfw.bz/skills",
   "repository": "https://github.com/We-The-Flywheel/skills",
   "license": "MIT",
-  "keywords": ["claude-code", "skills", "humanizer", "writing", "qa", "deliberation", "premortem", "decision-making", "end", "session", "cleanup", "git", "idiocy-check", "proofreading", "review", "release-gate", "verification", "ship-gate", "quality-gate", "content-gate", "seo", "publishing", "aeo", "structured-data", "moodboard", "design", "website-build", "type-explorer", "longterm", "decision-making", "technical-debt"]
+  "keywords": ["claude-code", "skills", "humanizer", "writing", "qa", "deliberation", "premortem", "decision-making", "end", "session", "cleanup", "git", "idiocy-check", "proofreading", "review", "release-gate", "verification", "ship-gate", "quality-gate", "content-gate", "seo", "publishing", "aeo", "structured-data", "moodboard", "design", "website-build", "type-explorer", "longterm", "decision-making", "technical-debt", "pangram", "ai-detection", "content-scoring"]
 }

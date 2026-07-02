@@ -28,6 +28,11 @@ PATTERNS=(
   '@thomas_prommer'              # personal handle
   '\bplannotator\b'              # internal plan-review tool
   '\b(beauty|health|dating|video|infra|content)-mgmt\b'  # personal management repos
+  '\bOpenBao\b'                  # internal secret manager
+  '\bbao kv\b'                   # internal vault CLI usage
+  'VAULT_ADDR'                   # internal vault address env var
+  'vault\.tfw\.bz'              # internal vault host
+  'secret/(ops-shared|library|admin|growth-engine|team-mgmt|content)/'  # internal vault secret paths
 )
 
 JOINED="$(IFS='|'; echo "${PATTERNS[*]}")"

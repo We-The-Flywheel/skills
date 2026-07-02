@@ -21,11 +21,11 @@ allowed-tools:
 End-of-session cleanup and verification with intelligent automation. Ensures work is properly saved and documented before exiting.
 
 > **Note:** This skill orchestrates a few optional helpers (a commit-workflow skill
-> such as `/go-live` or `/commit-push`, a learnings/memory step, a session-handoff
-> file). "The commit skill" below means whichever of those is installed. Where one
-> isn't, fall back to the plain-git equivalent described inline — the skill never
-> hard-depends on tooling you don't have. Never reference a commit skill that isn't
-> in your available-skills list.
+> such as `/go-live` or `/commit-push`, a learnings step, a memory-consolidation step,
+> a session-handoff/recall file). "The commit skill" below means whichever of those is
+> installed. Where one isn't, fall back to the plain-git or inline equivalent described
+> at each step — the skill never hard-depends on tooling you don't have. Never reference
+> a skill that isn't in your available-skills list.
 
 ## Arguments
 
@@ -39,73 +39,45 @@ $ARGUMENTS
 **Last commit:** $(git log -1 --format="%h %s (%ar)" 2>/dev/null || echo "none")
 
 - `manual` - Use interactive prompts for commits (old behavior)
-- `skip-map` - Don't update PROJECT_MAP.md or CLAUDE.md
+- `skip-map` - Don't update PROJECT_MAP.md or CLAUDE.md (also skips handoff/decisions/learnings)
 - `skip-cleanup` - Skip temp file cleanup AND local server shutdown
 - `keep-servers` - Run cleanup but leave local dev servers running
 - `force` - Exit immediately without processing (shows summary only)
 
 **Default behavior (no arguments):**
 - Shut down local dev servers this session started (silent)
-- Auto-remove .DS_Store on macOS (silent)
-- Auto-remove .bak backup files on all platforms (silent)
-- Auto-commit via the commit skill (e.g. /go-live or /commit-push), else plain git
-- Auto-push to remote
-- Generate/update PROJECT_MAP.md (comprehensive details)
-- Update CLAUDE.md with essential 20-line context
+- Auto-remove .DS_Store (macOS) and .bak files (silent)
+- Distill the conversation → `.session-handoff.md`, `DECISIONS.md`, and codified learnings
+- Generate/update PROJECT_MAP.md + essential CLAUDE.md context
+- Auto-commit everything via the commit skill (docs included), auto-push
+
+**Step order matters:** all file-writing steps (4–8) run BEFORE the commit (Step 9) so handoff, decisions, learnings, and project-map updates ride along in the same commit instead of leaving a dirty tree behind.
 
 ## Workflow
 
-### 1. **Parse Arguments and Detect Environment**
-
-Check arguments provided and detect the current environment:
+### 1. Parse Arguments and Detect Environment
 
 ```bash
-# Detect OS
 OS=$(uname -s)
-
-# Detect git repo
 IS_GIT=$(git rev-parse --git-dir 2>/dev/null && echo "yes" || echo "no")
-
-# Detect merge in progress
 IS_MERGE=$(git status 2>/dev/null | grep -q "merge" && echo "yes" || echo "no")
-
-# Detect detached HEAD
 IS_DETACHED=$(git symbolic-ref -q HEAD || echo "detached")
 ```
 
-**If `force` argument:**
-- Skip all processing
-- Jump directly to session summary (Step 8)
-- Exit immediately
+**If `force` argument:** skip all processing, jump directly to the session summary (Step 12), exit immediately.
 
-**If merge in progress or detached HEAD:**
-- Warn user about state
-- Skip auto-commit operations
-- Suggest completing merge or creating branch first
+**If merge in progress or detached HEAD:** warn the user, skip auto-commit operations, suggest completing the merge or creating a branch first.
 
-### 1b. **Outstanding Work Gate**
+### 2. Outstanding Work Gate
 
-Before any cleanup or wrap-up, check for outstanding work. If found, **STOP** and inform the user — do not proceed to cleanup, commits, or summary.
+Before any cleanup or wrap-up, check for outstanding work. If found, **STOP** and inform the user — do not proceed to cleanup, commits, or summary. (Skipped in `force` mode.)
 
-Skip this gate if `force` argument was provided.
+**Checks:**
 
-**Checks to perform:**
-
-1. **Active tasks** — query TaskList for any tasks with status `in_progress` or `todo`:
-   - If active tasks exist, list them with their status
-
-2. **Uncommitted changes** — already collected in pre-computed context (`git status --short`):
-   - Unstaged modifications or untracked files that look intentional (not temp files)
-
-3. **Stashed changes** — work the user may have forgotten:
-   ```bash
-   git stash list 2>/dev/null | head -5
-   ```
-
-4. **Open TODOs from this session** — scan for `TODO` or `FIXME` added in uncommitted changes:
-   ```bash
-   git diff HEAD 2>/dev/null | grep "^+" | grep -iE "TODO|FIXME|HACK|XXX" | head -10
-   ```
+1. **Active tasks** — query TaskList for tasks with status `in_progress` or `todo`; list them if any
+2. **Uncommitted changes** — from pre-computed context (`git status --short`): unstaged modifications or untracked files that look intentional (not temp files)
+3. **Stashed changes** — `git stash list 2>/dev/null | head -5`
+4. **Open TODOs from this session** — `git diff HEAD 2>/dev/null | grep "^+" | grep -iE "TODO|FIXME|HACK|XXX" | head -10`
 
 **If any outstanding work is found, display:**
 
@@ -116,24 +88,7 @@ Skip this gate if `force` argument was provided.
 
 ⚠️  Cannot wrap up — the following work is still pending:
 
-[If active tasks:]
-📋 Active tasks:
-  - [task name] (in_progress)
-  - [task name] (todo)
-
-[If uncommitted changes:]
-📝 Uncommitted changes:
-  M  src/auth/middleware.ts
-  ??  src/utils/newHelper.ts
-
-[If stashed changes:]
-📦 Stashed changes:
-  stash@{0}: WIP on main: abc123 last commit message
-
-[If TODOs in diff:]
-🔖 New TODOs in uncommitted code:
-  + // TODO: handle edge case for expired tokens
-  + // FIXME: race condition in queue drain
+[List whichever apply: 📋 Active tasks / 📝 Uncommitted changes / 📦 Stashed changes / 🔖 New TODOs in uncommitted code]
 
 ─────────────────────────────────
 
@@ -145,459 +100,72 @@ Options:
 Choose: [1/2/3]
 ```
 
-**Handle user choice:**
-- **1**: Stop the /end command entirely. User returns to normal session.
-- **2**: Proceed with the normal /end workflow (Step 2 onwards).
-- **3**: Jump to Step 8 (session summary only).
+**Handle user choice:** 1 = stop /end entirely; 2 = proceed with the normal workflow (Step 3 onwards); 3 = jump to Step 12 (summary only).
 
-**If NO outstanding work found:** Proceed silently to Step 2.
+**If NO outstanding work found:** proceed silently to Step 3.
 
-### 2. **Silent Cleanup (Auto-Remove Files)**
+### 3. Cleanup
 
-Unless `skip-cleanup` argument provided, auto-remove these files without prompting:
+Skip this entire step if `skip-cleanup` argument provided.
 
-**macOS .DS_Store:**
+**3a. Silent auto-remove (no confirmation):**
+
 ```bash
-# Auto-remove .DS_Store without prompting (macOS only)
-find . -name ".DS_Store" -type f \
-  -not -path "./.git/*" \
-  -not -path "./node_modules/*" \
-  -not -path "./.venv/*" \
-  -print -delete 2>/dev/null | wc -l
+# .DS_Store (macOS only) and .bak files (all platforms)
+find . \( -name ".DS_Store" -o -name "*.bak" \) -type f \
+  -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.venv/*" \
+  -print -delete 2>/dev/null
 ```
 
-Show: "Cleaned N .DS_Store files" (if N > 0, macOS only)
+Show: "Cleaned N .DS_Store / .bak files" (if N > 0).
 
-**Backup files (.bak):**
-```bash
-# Auto-remove .bak files without prompting (all platforms)
-find . -name "*.bak" -type f \
-  -not -path "./.git/*" \
-  -not -path "./node_modules/*" \
-  -not -path "./.venv/*" \
-  -print -delete 2>/dev/null | wc -l
-```
+**3b. Stop servers THIS session started (silent, automatic).**
 
-Show: "Cleaned N .bak files" (if N > 0)
+Dev sessions routinely leave background servers running — `npm run dev`, `hugo server`, `vite`, `next dev`, etc. — holding ports and serving stale builds into the next session's QA. If you launched any background processes this session via `run_in_background`, terminate them now using the background-shell IDs the harness is tracking; do not blanket-kill by name. Show: "Stopped N local server(s) started this session" (if N > 0). Skip if `keep-servers`.
 
-This is **automatic and silent** - no user confirmation needed for .DS_Store (macOS) or .bak files.
-
-### 2.5. **Local Server Shutdown**
-
-Skip this step if `skip-cleanup` or `keep-servers` argument provided.
-
-Dev sessions routinely leave background servers running — `npm run dev`, `hugo server`, `astro dev`, `vite`, `next dev`, `python -m http.server`, `php -S`, etc. — bound to local ports (3000, 5100, 8300, 1313, 4321, …). Left running after the session, they hold ports, burn CPU/battery, and serve stale builds into the next session's QA. Shut them down before wrapping up.
-
-**2.5a. Stop servers THIS session started (silent, automatic).**
-
-If you launched any background processes during this session via `run_in_background` (dev servers, watchers, `browse` daemon spawned for QA), terminate them now. These are unambiguously session-scoped — kill them without prompting. Use the background-shell IDs the harness is tracking; do not blanket-kill by name.
-
-Show: "Stopped N local server(s) started this session" (if N > 0).
-
-**2.5b. Detect other listening dev servers (confirm before killing).**
-
-Scan for dev servers that are still listening but were **not** started by this session — they may belong to another session or to deliberate long-running work:
+**3c. Detect other listening dev servers (confirm before killing).** Skip if `keep-servers`.
 
 ```bash
-# macOS / Linux: list listeners on common dev ports owned by dev-server processes
 lsof -nP -iTCP -sTCP:LISTEN 2>/dev/null \
   | grep -iE 'node|bun|vite|next|hugo|astro|deno|python|php|ruby|rails|webpack' \
   | awk '{print $1, $2, $9}' | sort -u
 ```
 
-**If any are found that this session did NOT start:**
-- List them clearly (process, PID, port)
-- Ask: "Shut down these dev servers too?" (y/N)
-- Default is **NO** — only kill if the user explicitly confirms
-- Never auto-kill a server this session didn't start
+If any are found that this session did NOT start: list them (process, PID, port) and ask "Shut down these dev servers too?" (y/N). Default **NO** — never auto-kill a server this session didn't start.
 
-**Safety:**
-- **Never** kill non-dev-server processes (databases, system services, the user's editor/IDE, the Claude Code process itself).
-- **Never** touch production services on remote hosts — this step is local-only. Do not SSH into a remote/production host and stop services here.
-- If detection is ambiguous, list and ask rather than guess.
+**Safety:** never kill non-dev-server processes (databases, system services, editors/IDEs, the Claude Code process itself). Local-only — never `ssh` to a server and stop remote/production services here. If detection is ambiguous, list and ask.
 
-### 3. **Temp File Cleanup (Other Files)**
-
-Unless `skip-cleanup` argument provided, find other temp files:
+**3d. Other temp files (confirm before deleting):**
 
 ```bash
-# Find temp files (excludes .DS_Store and .bak which are auto-removed in Step 2)
-find . -type f \( \
-  -name "*.tmp" -o \
-  -name "*.swp" -o \
-  -name "*~" -o \
-  -name "*.orig" \
-\) -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.venv/*" 2>/dev/null
-
-# Find temp directories (excluding Python cache which auto-regenerates)
-find . -type d \( \
-  -name ".pytest_cache" -o \
-  -name ".ruff_cache" \
-\) -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.venv/*" 2>/dev/null
+find . -type f \( -name "*.tmp" -o -name "*.swp" -o -name "*~" -o -name "*.orig" \) \
+  -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.venv/*" 2>/dev/null
+find . -type d \( -name ".pytest_cache" -o -name ".ruff_cache" \) \
+  -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.venv/*" 2>/dev/null
 ```
 
-**Python cache files (`*.pyc`, `__pycache__`, `.mypy_cache`) are automatically excluded** - they're regenerated during execution.
+Python cache (`*.pyc`, `__pycache__`, `.mypy_cache`) is excluded — it regenerates. If found: list clearly, ask "Remove these temporary files?" (y/N), default NO.
 
-**If temp files/dirs found:**
-- List them clearly
-- Ask: "Remove these temporary files?" (y/N)
-- Default is NO - only delete if user explicitly confirms
-- Never delete without confirmation
+**3e. Session `/tmp` scratch artifacts:** if this session wrote scratch files to the system temp dir (screenshots, capture prefixes, image-staging dirs), list and remove them with the same y/N confirmation. Only target paths this session actually wrote — never blanket-delete `/tmp`.
 
-**Session `/tmp` scratch artifacts:**
-Sessions commonly write scratch files to the system temp dir — screenshots (`/tmp/*.png`), responsive-shot prefixes, `browse` captures, OG-image staging (`/tmp/og-gen-*`). If you created any such files **during this session**, list and remove them (same y/N confirmation as above). Only target paths this session actually wrote — never blanket-delete `/tmp`, and never touch temp files you can't attribute to this session (other processes and sessions use `/tmp` too).
+### 4. Conversation Distill & Handoff
 
-### 4. **Auto-Commit Workflow**
+Skip if session was trivial (single Q/A, no code changes), or `force`/`skip-map` provided.
 
-Skip this step if:
-- `manual` mode is enabled (go to interactive prompts instead)
-- IS_GIT = "no"
-- IS_MERGE = "yes"
-- IS_DETACHED = "detached"
+Re-read the conversation from the beginning and extract value that didn't make it into commits or files — implicit standards, decisions, loose threads.
 
-**Check for uncommitted changes:**
-```bash
-git status --short
-```
-
-**If uncommitted changes exist:**
-
-1. Announce: "Uncommitted changes detected - committing..."
-
-2. Commit the changes:
-   - If you have a commit skill installed (e.g. `/go-live`, `/commit-push`), invoke it (it analyzes changes, updates a CHANGELOG if present, and writes the message).
-   - Otherwise, stage everything and create a single well-described commit (`git add -A && git commit`) whose message summarizes the actual diff. Update the CHANGELOG yourself if the project keeps one.
-
-3. Monitor for success/failure
-
-**Mixed commits are fine:** The working tree may contain changes from prior sessions, manual edits, or work-in-progress that predates this conversation. Do **not** try to separate "session work" from "pre-existing work", and do **not** stash, revert, or skip files just because you didn't touch them this session. Commit everything that's staged/unstaged as a single coherent set — write a commit message that describes the actual diff, regardless of when the changes were made. If the diff spans clearly unrelated concerns, split into multiple commits; otherwise one mixed commit is the correct outcome.
-
-**If the commit step fails:**
-```
-❌ Commit workflow failed: [error message]
-
-Options:
-1. Fix manually (session stays open)
-2. Skip commit (continue with other cleanup)
-3. Abort /end command
-
-Choose: [1/2/3]
-```
-
-Handle user choice:
-- 1: Keep session open, don't proceed
-- 2: Continue to next step without committing
-- 3: Exit /end command immediately
-
-**Manual mode behavior:**
-If `manual` argument provided, ask instead: "Commit these changes?" (Y/n)
-- If yes, run the commit step (commit skill if installed, else plain git)
-- If no, warn that changes will persist uncommitted
-
-### 5. **Auto-Push**
-
-Skip this step if:
-- `manual` mode is enabled (go to interactive prompts instead)
-- IS_GIT = "no"
-- Previous commit step failed and user chose to skip
-
-**Check for unpushed commits:**
-```bash
-UNPUSHED=$(git log --oneline @{upstream}..HEAD 2>/dev/null)
-```
-
-**If unpushed commits exist:**
-
-1. Announce: "Pushing commits to remote..."
-
-2. Attempt push:
-```bash
-git push 2>&1
-```
-
-**If push fails:**
-```
-❌ Push failed: [error details]
-
-Common causes:
-- Network issue
-- Remote has changes (try: git pull --rebase)
-- Permission issue (check SSH keys)
-
-Options:
-1. Retry push
-2. Skip push (commits stay local)
-3. Abort /end
-
-Choose: [1/2/3]
-```
-
-**Manual mode behavior:**
-If `manual` argument provided:
-- Ask: "Push commits?" (Y/n)
-
-### 6. **Generate PROJECT_MAP.md**
-
-Skip this step if `skip-map` argument provided.
-
-This step generates/updates TWO files:
-1. **PROJECT_MAP.md** - Comprehensive detailed documentation (200 lines max)
-2. **CLAUDE.md** - Essential 20-line context (token-efficient)
-
-#### 6a. Gather Context
-
-Collect information about the project:
-
-```bash
-# Directory structure
-ls -la
-find . -maxdepth 2 -type d 2>/dev/null | head -30
-
-# Git activity (last 20 commits)
-git log --oneline -20 2>/dev/null
-
-# Files changed in recent commits
-git diff --name-status HEAD~5..HEAD 2>/dev/null
-
-# Tech stack detection
-cat package.json 2>/dev/null | head -50
-cat pyproject.toml 2>/dev/null | head -50
-cat requirements.txt 2>/dev/null | head -50
-cat Cargo.toml 2>/dev/null | head -30
-cat go.mod 2>/dev/null | head -30
-cat composer.json 2>/dev/null | head -30
-
-# Existing documentation
-cat CLAUDE.md 2>/dev/null | head -100
-cat README.md 2>/dev/null | head -100
-
-# Check if PROJECT_MAP.md already exists
-cat PROJECT_MAP.md 2>/dev/null
-```
-
-#### 6b. Generate PROJECT_MAP.md (Comprehensive Details)
-
-Generate a comprehensive PROJECT_MAP.md file with this structure:
-
-```markdown
-# Project Map
-
-**Last Updated:** YYYY-MM-DD (auto-generated by /end)
-**Project:** [directory name]
-
----
-
-## ⚡ Quick Reference (Start Here)
-
-**What:** [1-2 sentence description of what this project does]
-**Tech:** [Primary language + framework]
-**Start:** `[main command to start dev environment]`
-
-**Top 5 Files to Know:**
-1. `file1` - [1-line description]
-2. `file2` - [1-line description]
-3. `file3` - [1-line description]
-4. `file4` - [1-line description]
-5. `file5` - [1-line description]
-
----
-
-## Tech Stack
-
-- **Language:** [detected from files]
-- **Framework:** [detected from package.json, etc.]
-- **Database:** [if applicable]
-- **Key Dependencies:** [top 3-5 most important packages]
-
-## Directory Structure
-
-```
-project/
-├── dir1/          - [purpose inferred from contents]
-├── dir2/          - [purpose]
-│   ├── subdir/    - [purpose]
-├── dir3/          - [purpose]
-└── config/        - [purpose]
-```
-
-## Critical Files
-
-**Configuration:**
-- `file1` - [what it configures]
-- `file2` - [purpose]
-
-**Core Logic:**
-- `file3` - [what it does]
-- `file4` - [purpose]
-- `file5` - [purpose]
-
-**Deployment:**
-- `file6` - [deployment script/config]
-- `file7` - [infrastructure]
-
-## Recent Session Work
-
-[Generated from git log of commits from this session - list 3-5 most recent commits with short descriptions]
-
-Example:
-- 2026-01-23: Added authentication middleware (abc123)
-- 2026-01-23: Fixed race condition in payment processing (def456)
-- 2026-01-23: Updated API documentation (ghi789)
-
-## Quick Start Commands
-
-```bash
-# Development
-[commands to start dev environment - from package.json scripts, README, or CLAUDE.md]
-
-# Testing
-[test commands if applicable]
-
-# Deployment
-[if CLAUDE.md has deployment info, reference it; otherwise show basic deploy command]
-```
-
-## Architecture Highlights
-
-[Key architectural decisions or patterns detected in the codebase]
-- [Decision 1 with rationale]
-- [Decision 2 with rationale]
-- [Notable pattern or design choice]
-
-## External Integrations
-
-[If any external APIs, services, or databases are detected]
-- **[Service Name]** - [purpose, auth method if visible]
-- **[Database]** - [connection details from CLAUDE.md if present]
-
-## Notes
-
-[Preserve any manual notes that were in previous version of PROJECT_MAP.md]
-
-[This section is for human-added context that should survive regeneration]
-
----
-
-*Auto-generated by Claude Code's /end command. For deployment details and environment-specific instructions, see CLAUDE.md.*
-```
-
-**Update behavior if PROJECT_MAP.md already exists:**
-- Preserve the "Notes" section entirely (manual edits)
-- Update "Last Updated" timestamp
-- Update "Recent Session Work" with current session commits
-- Update "Tech Stack" if dependencies changed
-- Refresh "Directory Structure" if new directories added
-- Update "Top 5 Files" in Quick Reference if critical files changed
-- Keep other sections unless significant changes detected
-
-**Fallback if generation fails:**
-Use a basic template with just:
-- Project name
-- Last updated timestamp
-- Tech stack from files
-- Directory listing
-- Note that full generation failed
-
-#### 6c. Update CLAUDE.md with Essential Context
-
-This is **critical for token efficiency** - new agent sessions get essential info immediately.
-
-**Check if CLAUDE.md exists:**
-```bash
-test -f CLAUDE.md
-```
-
-**If CLAUDE.md exists:**
-
-1. Extract essentials from PROJECT_MAP.md:
-   - 1-sentence purpose from Quick Reference
-   - Top 3-5 key directories with purposes
-   - Top 3-5 main files with purposes
-   - 1-3 quick start commands
-
-2. Check if "## Project Map" section exists:
-```bash
-grep -q "## Project Map" CLAUDE.md
-```
-
-3. If section exists:
-   - Use Edit tool to replace content between "## Project Map" and next "##" heading
-   - Keep to 20 lines max (excluding markdown formatting)
-   - Show: "✅ Updated Project Map section in CLAUDE.md (20 lines)"
-
-4. If section doesn't exist:
-   - Use Edit tool to add section after "## Tech Stack" (or near top if no Tech Stack)
-   - Show: "✅ Added Project Map section to CLAUDE.md (20 lines)"
-
-**Essential context format for CLAUDE.md:**
-
-```markdown
-## Project Map
-
-**Purpose:** [1 sentence - extracted from PROJECT_MAP.md Quick Reference]
-
-**Key Directories:**
-- `dir1/` - [purpose]
-- `dir2/` - [purpose]
-- `dir3/` - [purpose]
-
-**Main Files:**
-- `path/to/file1` - [purpose]
-- `path/to/file2` - [purpose]
-- `path/to/file3` - [purpose]
-
-**Quick Start:**
-```bash
-[1-3 essential commands extracted from PROJECT_MAP.md]
-```
-
-**Full Details:** See [PROJECT_MAP.md](PROJECT_MAP.md) for architecture notes, integration points, and comprehensive structure.
-```
-
-**If CLAUDE.md doesn't exist:**
-- Show note: "No CLAUDE.md found - PROJECT_MAP.md created as standalone"
-- Skip CLAUDE.md update
-
-**Benefits of this two-tier approach:**
-- CLAUDE.md: ~20 lines of essential context (always loaded, minimal tokens)
-- PROJECT_MAP.md: Comprehensive details (loaded only when needed)
-- New agents get critical info immediately without token waste
-- Deep details available when required
-
-### 7. **CHANGELOG.MD Audit**
-
-Check if CHANGELOG.MD exists and appears current:
-
-```bash
-# Compare last commit date vs CHANGELOG modification
-git log -1 --format="%h %s" 2>/dev/null
-head -20 CHANGELOG.MD 2>/dev/null
-```
-
-**If CHANGELOG.MD doesn't exist or looks stale:**
-- Show informational note: "ℹ️  CHANGELOG.MD may need updating for recent changes"
-- This is informational only - don't block or prompt
-
-**Skip this check if:**
-- Not a git repo
-- a commit skill ran in step 4 and updated CHANGELOG.MD already
-
-### 7b. **Conversation Distill & Handoff**
-
-Re-read the conversation from the beginning and extract value that didn't make it into commits or files. This captures the epistemic side of the session — implicit standards, decisions, and loose threads.
-
-**Scan the conversation for these signal types:**
+**Scan for these signal types:**
 
 | Signal | Action |
 |--------|--------|
-| User corrections to your approach | Save as feedback memory (`/memory`) |
+| User corrections to your approach | Save as a feedback memory (if a memory store exists) |
 | Design decisions with rationale | Note in handoff file |
 | Unfinished threads ("we should also check X" — never did) | Note in handoff file as TODO |
-| User preferences expressed in passing | Save as user memory (`/memory`) |
+| User preferences expressed in passing | Save as a user memory (if a memory store exists) |
 | Discoveries about system behavior | Note in handoff file |
 | Root cause analyses worth preserving | Note in handoff file |
 | Escalations that saved time or prevented mistakes | Note in handoff `## Escalation outcomes` |
-| Escalations that should have happened but didn't (caught late) | Note in handoff + save as feedback memory |
+| Escalations that should have happened but didn't (caught late) | Note in handoff + save as a feedback memory |
 | Agent outcomes (which agents succeeded, failed, or were blocked) | Note in handoff `## Agent outcomes` |
 | QC review findings (from post-wave review or /code-review) | Note in handoff `## QC findings` |
 | Papercuts noticed but not fixed | Note in handoff `## Sweep candidates` |
@@ -628,151 +196,325 @@ Re-read the conversation from the beginning and extract value that didn't make i
 
 ## Decisions made
 - [Key decisions with rationale — especially non-obvious ones]
+- [This section is the **staging buffer** for the durable decision log: Step 5 promotes the lasting "we chose X over Y, because…" entries from here into committed `DECISIONS.md`. Capture rationale and the rejected alternative even for decisions you'll log durably — this buffer is overwritten next session.]
 
 ## Escalation outcomes
-- [What was escalated to the user and whether it was the right call]
-- [Anything that should have been escalated but wasn't — caught late]
-- [Omit this section if no escalations occurred]
+- [What was escalated and whether it was the right call; anything caught late. Omit if none.]
 
 ## Agent outcomes
-- [Which agents were spawned, what they produced, pass/fail/block]
-- [Any agent that consistently failed or needed retry — pattern worth noting]
-- [Omit this section if no agents were spawned]
+- [Agents spawned, what they produced, pass/fail/block; retry patterns. Omit if none.]
 
 ## QC findings
-- [Issues caught by post-wave review, /code-review, or /gstack-review]
-- [False positives that wasted time]
-- [Omit this section if no QC ran]
+- [Issues caught by review; false positives that wasted time. Omit if no QC ran.]
 
 ## Sweep candidates
-- [Papercuts, tech debt, or quick wins noticed but not addressed]
-- [Good input for a future /sweep run]
-- [Omit this section if none noticed]
+- [Papercuts, tech debt, or quick wins noticed but not addressed. Omit if none.]
 
 ## Next steps
 - [Suggested continuation points, ordered by priority]
 ```
 
-**Skip handoff if:**
-- Session was trivial (single question/answer, no code changes)
-- `force` argument was provided
-- `skip-map` argument was provided
+**Note:** `.session-handoff.md` is overwritten each session (not appended). Add to `.gitignore` if not already there. A recall/catchup step (if you have one) surfaces it at the start of the next session.
 
-**Note:** `.session-handoff.md` is overwritten each session (not appended). Add to `.gitignore` if not already there. The `/catchup` command already reads this file.
+### 5. Harvest Decisions (Durable Decision Log)
 
-### 7b.5. **Codify Learnings**
+Skip if session was trivial, or `force`/`skip-map` provided.
 
-Skip this step if:
-- Session was trivial (no commits, no code changes)
-- `force` argument was provided
-- `skip-map` argument was provided
+Promote the **durable** decisions from the ephemeral `## Decisions made` staging buffer (Step 4) into a committed, append-only `DECISIONS.md` at the repo root. This is the immutable "why" tier: `.session-handoff.md` is gone next session, `PROJECT_MAP.md` is a regenerated snapshot, `CHANGELOG.md` records *what* shipped — `DECISIONS.md` is the only durable record of *why we chose X over Y*, and what a future session reads instead of re-litigating a settled choice.
 
-Codify the session's learnings. If you have a `/learnings`-style skill, invoke it; otherwise do the same work inline. This closes the knowledge loop — patterns, gotchas, and reusable workflows discovered this session get written into the right file (project `CLAUDE.md`, `PROJECT_MAP.md`, or a rules file) so they compound across sessions rather than evaporating.
+Runs **before** the learnings step (Step 6) and PROJECT_MAP (Step 7) so Architecture Highlights can derive from a freshly-written log, and **before** the commit (Step 9) so the file ships in this session's commit.
 
-The process: identify what was learned, categorize by scope, write it down (with a dedup check against existing entries so you update rather than duplicate), and report what was captured and where.
+**5a. Filter — what qualifies.** Log an entry **only** when all hold:
+- It resolved a real fork (architecture, tooling, schema, data model, process, API contract, "X over Y").
+- It has lasting rationale — a future session could otherwise reasonably re-debate it.
+- There was a rejected alternative worth recording.
 
-**Then, if the project keeps a memory store, check its health.** Memories accumulate forever unless pruned. Count files in the project memory dir (skip this if no such dir exists):
+Do **not** log: implementation mechanics or routine bug fixes (commits/`CHANGELOG.md`), reusable patterns or gotchas (the learnings step, Step 6), or ephemeral task choices. If nothing qualifies, skip silently — never force an entry.
+
+**5b. Dedup gate (required before writing).** For each candidate, grep the existing log for its key noun/concept first:
 
 ```bash
-MEM_DIR="$HOME/.claude/projects/-$(pwd | sed 's|/|-|g')/memory"
+# Example candidate: "use a single append-only DECISIONS.md, not per-file ADRs"
+grep -in "DECISIONS\.md\|per-file ADR\|decision log" DECISIONS.md 2>/dev/null
+```
+
+| Result | Action |
+|--------|--------|
+| Identical decision already logged | **Skip** — report "already logged: DECISIONS.md:<line>" |
+| Prior decision now reversed/changed by this session | **Supersede** — append a new entry AND flip the old entry's `**Status:**` to `superseded by [<this entry's date+title>]` (the only permitted edit to history) |
+| Genuinely new decision | **Append** a new entry at the top (newest-on-top) |
+
+**5c. Write the entry.** Create `DECISIONS.md` if absent (newest-on-top, append-only). Each entry, ~6 lines:
+
+```markdown
+## YYYY-MM-DD — <decision title>
+**Status:** accepted
+**Context:** <the forcing question — what made this a real choice>
+**Decision:** <what we chose>
+**Alternatives:** <what we rejected, and the one-line why>
+**Consequences:** <what this locks in or costs later>   ← optional, omit if obvious
+```
+
+**Rules:** append-only (sole exception: flipping a `**Status:**` line when superseding); newest entry at the top under `# Decisions`; keep entries tight — this is not a design doc. `DECISIONS.md` is **committed** (tracked) — never `.gitignore` it. Report: "📋 Logged N decision(s) to DECISIONS.md" (or skip silently).
+
+### 6. Codify Learnings
+
+Skip if session was trivial, or `force`/`skip-map` provided.
+
+Codify the session's learnings. If you have a `/learnings`-style skill, invoke it; otherwise do the same work inline. This closes the knowledge loop — patterns, gotchas, and reusable workflows discovered this session get written into the right file (project `CLAUDE.md`, `PROJECT_MAP.md`, or a rules file) so they compound across sessions rather than evaporating. The process: identify what was learned, categorize by scope, write it down with a dedup check against existing entries (so you update rather than duplicate), and report what was captured and where.
+
+**After learnings are codified, check memory health** (skip if the project has no memory store). Memories accumulate forever unless pruned. The trigger is a *judgment*, not a raw count:
+
+```bash
+# NOTE: pwd's leading "/" already becomes the leading "-" via sed — do NOT add an
+# extra "-" prefix (that produces a double-dash dir that doesn't exist on disk).
+MEM_DIR="$HOME/.claude/projects/$(pwd | sed 's|/|-|g')/memory"
 MEM_COUNT=$(find "$MEM_DIR" -maxdepth 1 -name '*.md' -not -name 'MEMORY.md' 2>/dev/null | wc -l | tr -d ' ')
+MEM_RECENT=$(find "$MEM_DIR" -maxdepth 1 -name '*.md' -not -name 'MEMORY.md' -mtime -7 2>/dev/null | wc -l | tr -d ' ')
+if [ -f "$MEM_DIR/.last-consolidated" ]; then
+  LAST=$(cat "$MEM_DIR/.last-consolidated")
+  DAYS_SINCE=$(( ( $(date +%s) - $(date -j -f %Y-%m-%dT%H:%M:%SZ "$LAST" +%s 2>/dev/null || date -d "$LAST" +%s 2>/dev/null || echo 0) ) / 86400 ))
+else
+  DAYS_SINCE="never"
+fi
 ```
 
-Apply this threshold:
+Apply this judgment (treat `never` as "long overdue"):
 
-| Count | Action |
-|-------|--------|
-| < 15 | Skip silently |
-| 15–25 | Inline note: "ℹ️ Memory has $MEM_COUNT entries — consider consolidating soon" |
-| > 25 | Inline note + consolidate now: ground claims against the codebase, prune stale entries, deduplicate (use a `/memory-consolidate`-style skill if you have one) |
+| Situation | Action |
+|-----------|--------|
+| `MEM_COUNT` < 15 | Skip silently — too little to consolidate |
+| Consolidated in the last ~3 days (`DAYS_SINCE` ≤ 3) | Skip silently — even at high count |
+| 15–25 entries, some recent churn, not consolidated recently | Inline note: "ℹ️ Memory has $MEM_COUNT entries ($MEM_RECENT added this week, last consolidated ${DAYS_SINCE}d ago) — consider consolidating soon" |
+| > 25 entries AND (`DAYS_SINCE` ≥ 7 or `never`) | Inline note + consolidate now (use a `/memory-consolidate`-style skill if you have one, else do it inline: ground claims against the codebase, prune stale entries, deduplicate) |
 
-This pairs with the dedup check in the learnings step: that prevents new duplicates at
-write time, this prunes accumulated decay at session end.
+If borderline (high count but consolidated 4–6 days ago, little churn), prefer the note over auto-running. This pairs with the learnings dedup gate: that prevents new duplicates at write time, this prunes accumulated decay at session end.
 
-### 7c. **Session Metrics (Structured Log)**
+### 7. Generate PROJECT_MAP.md + CLAUDE.md Context
 
-Append a structured JSONL entry to `.session-metrics.jsonl` in the project root. This enables `/retro` and future analysis to detect patterns across sessions — which agent types succeed, what escalation patterns recur, where QC catches real issues vs false positives.
+Skip if `skip-map` argument provided.
 
-**Collect from the conversation:**
+Generates/updates TWO files: **PROJECT_MAP.md** (comprehensive, 200 lines max) and **CLAUDE.md** (essential ~20-line context, token-efficient).
+
+#### 7a. Gather Context
 
 ```bash
-# Git metrics for this session
-COMMITS=$(git log --oneline --since="$(date -v-4H +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -d '4 hours ago' +%Y-%m-%dT%H:%M:%S 2>/dev/null)" 2>/dev/null | wc -l | tr -d ' ')
-FILES_CHANGED=$(git diff --name-only HEAD~${COMMITS}..HEAD 2>/dev/null | wc -l | tr -d ' ')
+ls -la
+find . -maxdepth 2 -type d 2>/dev/null | head -30
+git log --oneline -20 2>/dev/null
+git diff --name-status HEAD~5..HEAD 2>/dev/null
+# Tech stack detection (whichever exist)
+head -50 package.json pyproject.toml requirements.txt 2>/dev/null
+head -30 Cargo.toml go.mod composer.json 2>/dev/null
+# Existing documentation
+head -100 CLAUDE.md README.md 2>/dev/null
+cat PROJECT_MAP.md 2>/dev/null
 ```
 
-**Build and append the metrics entry:**
+#### 7b. Generate PROJECT_MAP.md
+
+Structure:
+
+```markdown
+# Project Map
+
+**Last Updated:** YYYY-MM-DD (auto-generated by /end)
+**Project:** [directory name]
+
+---
+
+## ⚡ Quick Reference (Start Here)
+
+**What:** [1-2 sentence description]
+**Tech:** [Primary language + framework]
+**Start:** `[main command to start dev environment]`
+
+**Top 5 Files to Know:**
+1-5. `file` - [1-line description each]
+
+---
+
+## Tech Stack
+[Language / Framework / Database / Key Dependencies — detected from files]
+
+## Directory Structure
+[Tree with 1-line purpose per directory]
+
+## Critical Files
+[Configuration / Core Logic / Deployment — grouped, 1-line purpose each]
+
+## Recent Session Work
+[3-5 most recent commits with short descriptions, dated]
+
+## Quick Start Commands
+[Development / Testing / Deployment commands from package.json scripts, README, or CLAUDE.md]
+
+## Architecture Highlights
+[Key architectural decisions or patterns — derive from DECISIONS.md where entries exist]
+
+## External Integrations
+[External APIs, services, databases — purpose + auth method if visible]
+
+## Notes
+[Preserve any manual notes from the previous version — human-added context that survives regeneration]
+
+---
+
+*Auto-generated by Claude Code's /end command. For deployment details, see CLAUDE.md.*
+```
+
+**Update behavior if PROJECT_MAP.md already exists:** preserve the "Notes" section entirely; update Last Updated, Recent Session Work, Tech Stack (if deps changed), Directory Structure (if new dirs), Top 5 Files (if critical files changed); keep other sections unless significant changes detected.
+
+**Fallback if generation fails:** basic template — project name, timestamp, tech stack, directory listing, note that full generation failed.
+
+#### 7c. Update CLAUDE.md with Essential Context
+
+Critical for token efficiency — new sessions get essential info immediately.
+
+If `CLAUDE.md` exists: extract essentials from PROJECT_MAP.md (1-sentence purpose, top 3-5 directories, top 3-5 files, 1-3 quick-start commands). If a `## Project Map` section exists, replace its content (Edit tool, between the heading and the next `##`); otherwise add the section after `## Tech Stack` (or near the top). Keep to 20 lines max. Show: "✅ Updated/Added Project Map section in CLAUDE.md".
+
+Format:
+
+```markdown
+## Project Map
+
+**Purpose:** [1 sentence]
+
+**Key Directories:**
+- `dir/` - [purpose]  (×3)
+
+**Main Files:**
+- `path/file` - [purpose]  (×3)
+
+**Quick Start:**
+```bash
+[1-3 essential commands]
+```
+
+**Full Details:** See [PROJECT_MAP.md](PROJECT_MAP.md).
+```
+
+If `CLAUDE.md` doesn't exist: note "No CLAUDE.md found - PROJECT_MAP.md created as standalone" and skip.
+
+### 8. Session Metrics (Structured Log)
+
+Skip entirely if session was trivial (no commits, no code changes).
+
+Append a structured JSONL entry to `.session-metrics.jsonl` in the project root — input for periodic retrospectives and cross-session pattern analysis (which agent types succeed, what escalation patterns recur, where QC catches real issues vs false positives).
 
 ```json
 {
   "date": "YYYY-MM-DDTHH:MM:SS",
   "branch": "[current branch]",
   "duration_min": "[estimated from first to last commit, or conversation length]",
-  "commits": "[N]",
+  "commits": "[N this session]",
   "files_changed": "[N]",
-  "agents_spawned": [
-    {"type": "code-reviewer", "outcome": "pass", "model": "sonnet"},
-    {"type": "debugger", "outcome": "completed", "model": "sonnet"}
-  ],
-  "escalations": {
-    "count": "[N]",
-    "categories": ["auth", "schema"],
-    "correct": "[N that were the right call]",
-    "missed": "[N that should have escalated but didn't]"
-  },
-  "qc_verdicts": {
-    "pass": "[N]",
-    "flag": "[N]",
-    "block": "[N]"
-  },
-  "sweep_candidates": "[N papercuts noticed]",
-  "skills_used": ["ship", "debug", "code-review"],
+  "agents_spawned": [{"type": "code-reviewer", "outcome": "pass", "model": "sonnet"}],
+  "escalations": {"count": 0, "categories": [], "correct": 0, "missed": 0},
+  "qc_verdicts": {"pass": 0, "flag": 0, "block": 0},
+  "sweep_candidates": 0,
+  "skills_used": ["go-live", "debug"],
   "model": "[primary model used]"
 }
 ```
 
 ```bash
-# Append (never overwrite)
 echo '{...}' >> .session-metrics.jsonl
 ```
 
-**Rules:**
-- Append-only — never overwrite or truncate the file
-- Add `.session-metrics.jsonl` to `.gitignore` if not already there (local analytics, not committed)
-- If no agents were spawned and no escalations occurred, still log the basic metrics (commits, files, duration, skills) — the absence of agent usage is itself a data point
-- Skip entirely if session was trivial (no commits, no code changes)
-- `/retro` should read this file when analyzing weekly patterns
+**Rules:** append-only — never overwrite or truncate; add `.session-metrics.jsonl` to `.gitignore` if not already there (local analytics, not committed); if no agents/escalations occurred, still log the basic metrics — absence is itself a data point.
 
-### 8. **Session Summary**
+### 9. Auto-Commit (via the commit skill)
 
-First, detect if on a non-main branch:
+Skip this step if: `manual` mode (interactive prompt instead), IS_GIT = "no", IS_MERGE = "yes", or IS_DETACHED = "detached".
+
+**Check for uncommitted changes:** `git status --short`
+
+**If uncommitted changes exist:**
+
+1. Announce: "Uncommitted changes detected - committing..."
+2. Commit the changes:
+   - If you have a commit skill installed (e.g. `/go-live`, `/commit-push`), invoke it — it analyzes changes, updates a `CHANGELOG.md` if present, and writes the message. Prefer a commit-only mode (no server deploy / cache purge) if the skill offers one.
+   - Otherwise, stage everything and create a single well-described commit (`git add -A && git commit`) whose message summarizes the actual diff. Update the `CHANGELOG.md` yourself if the project keeps one.
+3. Monitor for success/failure.
+
+**Mixed commits are fine:** the working tree may contain changes from prior sessions, manual edits, or pre-existing WIP. Do **not** try to separate "session work" from "pre-existing work", and do **not** stash, revert, or skip files you didn't touch this session. Commit everything as a single coherent set — write a message describing the actual diff. If the diff spans clearly unrelated concerns, split into multiple commits; otherwise one mixed commit is correct.
+
+**If the commit step fails:**
+
+```
+❌ Commit workflow failed: [error message]
+
+Options:
+1. Fix manually (session stays open)
+2. Skip commit (continue with other cleanup)
+3. Abort /end command
+
+Choose: [1/2/3]
+```
+
+**Manual mode:** ask "Commit these changes?" (Y/n); if yes, run the commit step (commit skill if installed, else plain git); if no, warn that changes persist uncommitted.
+
+### 10. Auto-Push
+
+Skip if: `manual` mode (ask "Push commits?" instead), IS_GIT = "no", or the commit step failed and user chose to skip. (A commit skill often pushes already — this step catches commits it left behind.)
+
+```bash
+UNPUSHED=$(git log --oneline @{upstream}..HEAD 2>/dev/null)
+```
+
+If unpushed commits exist: announce "Pushing commits to remote..." and `git push 2>&1`.
+
+**If push fails:**
+
+```
+❌ Push failed: [error details]
+
+Common causes: network issue · remote has changes (try: git pull --rebase) · permission issue (check SSH keys)
+
+Options:
+1. Retry push
+2. Skip push (commits stay local)
+3. Abort /end
+
+Choose: [1/2/3]
+```
+
+### 11. CHANGELOG.md Audit
+
+Skip if not a git repo, or if the commit skill ran in Step 9 (it updates `CHANGELOG.md` automatically).
+
+```bash
+git log -1 --format="%h %s" 2>/dev/null
+head -20 CHANGELOG.md 2>/dev/null
+```
+
+If `CHANGELOG.md` doesn't exist or looks stale: show informational note "ℹ️  CHANGELOG.md may need updating for recent changes" — informational only, don't block or prompt.
+
+### 12. Session Summary
+
+Detect branch context first:
 
 ```bash
 CURRENT_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "detached")
 MAIN_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
-IS_FEATURE_BRANCH="no"
-
-if [ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ] && [ "$CURRENT_BRANCH" != "detached" ]; then
-  IS_FEATURE_BRANCH="yes"
-fi
+IS_FEATURE_BRANCH=$([ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ] && [ "$CURRENT_BRANCH" != "detached" ] && echo yes || echo no)
 ```
 
-Display final summary based on what actually executed:
+Display a final summary of what actually executed:
 
 ```
 ═══════════════════════════════════
        SESSION COMPLETE
 ═══════════════════════════════════
 
-[Conditional lines based on what ran:]
-
+[Conditional lines — only for operations that ran:]
 ✅ Stopped 2 local server(s) (port 1313, 5100)
-✅ Cleaned 3 .DS_Store files (macOS)
-✅ Removed 5 temporary files
+✅ Cleaned 3 .DS_Store files
+✅ Handoff written (.session-handoff.md); 1 decision logged to DECISIONS.md
+✅ PROJECT_MAP.md + CLAUDE.md updated
 ✅ Changes committed
 ✅ Pushed to remote: origin/main
-✅ PROJECT_MAP.md updated (comprehensive details)
-✅ CLAUDE.md updated (essential context: 20 lines)
 
 ─────────────────────────────────
 
@@ -782,33 +524,13 @@ Repository Status:
   Status:      Working tree clean
 
 [If IS_FEATURE_BRANCH = "yes":]
-🌿 FEATURE BRANCH SESSION
-──────────────────────────────────
-You are ending this session on branch: [branch-name]
-
-[If unpushed commits exist:]
-⚠️  This branch has [N] unpushed commit(s)
-   Work is saved locally but not on remote
-
-[If working tree is dirty:]
-⚠️  This branch has uncommitted changes
-   Changes are only in your working directory
-
-[If branch has both unpushed and uncommitted:]
-⚠️  This branch has uncommitted changes AND [N] unpushed commits
-   Work is saved locally but not on remote
-
-To resume this work:
-  1. git checkout [branch-name]
-  2. Continue development
-  3. When ready: git push (if not already pushed)
-  4. Create PR: gh pr create or use /pr
-
-──────────────────────────────────
+🌿 FEATURE BRANCH SESSION — ending on branch: [branch-name]
+[⚠️ note unpushed commits and/or uncommitted changes if any]
+To resume: git checkout [branch-name] → continue → git push → open a PR (gh pr create)
 
 [If warnings exist:]
 ⚠️  Warnings:
-  - CHANGELOG.MD may be stale
+  - CHANGELOG.md may be stale
   - 2 stashed changes pending
 
 ─────────────────────────────────
@@ -818,153 +540,39 @@ To resume this work:
 You can now /exit if all work is done and there is nothing more to clarify.
 ```
 
-**Adapt checkmarks dynamically:**
-- Show ✅ only for operations that succeeded
-- Show ❌ for operations that failed
-- Omit lines for operations that were skipped
-- If `manual` mode: note "(manual mode)" in summary
-- If `force` mode: show minimal summary only
-
-**Example variations:**
-
-*Nothing to do:*
-```
-═══════════════════════════════════
-       SESSION COMPLETE
-═══════════════════════════════════
-
-✅ No temporary files found
-✅ Working tree clean
-✅ All commits pushed
-
-No changes made this session.
-
-You can now /exit if all work is done and there is nothing more to clarify.
-```
-
-*Errors occurred:*
-```
-═══════════════════════════════════
-       SESSION COMPLETE
-═══════════════════════════════════
-
-❌ Push failed: remote has newer commits
-✅ PROJECT_MAP.md updated
-
-─────────────────────────────────
-
-Repository Status:
-  Branch:      feature/auth
-  Last commit: a1b2c3d Fix authentication bug
-  Status:      3 commits ahead of origin
-
-🌿 FEATURE BRANCH SESSION
-──────────────────────────────────
-You are ending this session on branch: feature/auth
-
-⚠️  This branch has 3 unpushed commit(s)
-   Work is saved locally but not on remote
-
-To resume this work:
-  1. git checkout feature/auth
-  2. Resolve push conflict: git pull --rebase
-  3. Push changes: git push
-  4. Create PR: gh pr create or use /pr
-
-──────────────────────────────────
-
-Resolve the push conflict before continuing.
-
-You can now /exit if all work is done and there is nothing more to clarify.
-```
-
-*Feature branch with uncommitted changes:*
-```
-═══════════════════════════════════
-       SESSION COMPLETE
-═══════════════════════════════════
-
-✅ No temporary files found
-✅ PROJECT_MAP.md updated
-
-─────────────────────────────────
-
-Repository Status:
-  Branch:      feature/new-ui
-  Last commit: b4c5d6e Update button styles
-  Status:      Working tree has 2 modified files
-
-🌿 FEATURE BRANCH SESSION
-──────────────────────────────────
-You are ending this session on branch: feature/new-ui
-
-⚠️  This branch has uncommitted changes
-   Changes are only in your working directory
-
-Modified files:
-  - src/components/Header.tsx
-  - src/styles/theme.css
-
-To resume this work:
-  1. git checkout feature/new-ui
-  2. Review changes: git status
-  3. Commit when ready (commit skill or plain git)
-  4. Create PR: gh pr create or use /pr
-
-──────────────────────────────────
-
-You can now /exit if all work is done and there is nothing more to clarify.
-```
-
-## Force Mode
-
-If `force` argument provided:
-- Skip all steps 1-7
-- Show minimal summary:
-  - Current branch
-  - Last commit
-  - Working tree status
-- Exit immediately without any prompts or processing
+**Adapt dynamically:** show ✅ only for operations that succeeded, ❌ for failures, omit skipped operations. Note "(manual mode)" if applicable. In `force` mode show only branch, last commit, and working-tree status.
 
 ## Error Handling
 
-- **Not a git repo**: Skip all git operations, still do cleanup and PROJECT_MAP.md (if applicable)
-- **Merge in progress**: Warn user, skip auto-commit, suggest: "Complete merge first with: git merge --continue"
-- **Detached HEAD**: Warn user, skip auto-commit, suggest: "Create branch with: git checkout -b <branch-name>"
-- **Ship fails**: Show error, offer retry/skip/abort options, wait for user choice
-- **Push fails**: Show error with common causes, offer retry/skip/abort
-- **PROJECT_MAP.md generation fails**: Use basic fallback template with directory listing and tech stack
-- **CLAUDE.md update fails**: Show warning, PROJECT_MAP.md still created successfully
-- **CHANGELOG.MD missing**: Show informational note only (non-blocking)
-- **Find command fails**: Skip cleanup, show warning, proceed to next step
-- **Not on macOS**: Skip .DS_Store cleanup silently
-- **`lsof` unavailable or server kill fails**: Show warning, skip server detection, proceed to next step — never block exit on a failed shutdown
+- **Not a git repo**: skip all git operations; still do cleanup and PROJECT_MAP.md
+- **Merge in progress**: warn, skip auto-commit, suggest `git merge --continue`
+- **Detached HEAD**: warn, skip auto-commit, suggest `git checkout -b <branch-name>`
+- **Commit or push fails**: show error, offer retry/skip/abort, wait for user choice
+- **PROJECT_MAP.md generation fails**: use basic fallback template
+- **CLAUDE.md update fails**: warn; PROJECT_MAP.md still created
+- **CHANGELOG.md missing**: informational note only (non-blocking)
+- **Find command fails**: skip cleanup, warn, proceed
+- **Not on macOS**: skip .DS_Store cleanup silently
+- **`lsof` unavailable or server kill fails**: warn, skip server detection, proceed — never block exit on a failed shutdown
 
 ## Safety Rules
 
-- **NEVER auto-delete files without confirmation** (exceptions: .DS_Store on macOS, .bak files on all platforms)
-- **Server shutdown is local-only** - auto-kill only servers THIS session started; confirm before killing any other dev server; never touch databases, system services, IDEs, the Claude Code process, or remote/production services
-- **NEVER force-commit** - always analyze the diff and write a message that describes it (commit skill or plain git)
-- **NEVER push if remote has commits we don't have** - check first
-- **OK to commit pre-existing uncommitted work** - the working tree at session-end may include changes you didn't make this session; commit them anyway rather than leaving the tree dirty
-- **NEVER block exit** - all warnings are informational, user can always exit
-- **Always show what will be deleted** before deleting (except .DS_Store on macOS and .bak files)
-- **Always give user options** if auto-operations fail (retry/skip/abort)
-- **Always preserve manual edits** in PROJECT_MAP.md "Notes" section during updates
-- **Never modify PROJECT_MAP.md structure** if user has customized it - only update specific sections
-- **Always verify git state** before auto-operations (check for merge, detached HEAD, etc.)
+- **NEVER auto-delete files without confirmation** (exceptions: .DS_Store on macOS, .bak files)
+- **Server shutdown is local-only** — auto-kill only servers THIS session started; confirm for anything else; never touch databases, system services, IDEs, the Claude Code process, or remote/production services
+- **NEVER force-commit** — always analyze the diff and write a message that describes it (commit skill or plain git)
+- **NEVER push if remote has commits we don't have** — check first
+- **OK to commit pre-existing uncommitted work** — commit it rather than leaving the tree dirty
+- **NEVER block exit** — all warnings are informational
+- **Always show what will be deleted** before deleting (except the two silent-delete exceptions)
+- **Always preserve manual edits** in PROJECT_MAP.md "Notes"; never restructure a user-customized PROJECT_MAP.md — only update specific sections
+- **Always verify git state** before auto-operations (merge, detached HEAD, etc.)
 
 ## Manual Mode (Escape Hatch)
 
-When user runs `/end manual`, restore old interactive behavior:
+`/end manual` restores interactive behavior:
+- Step 3: still auto-remove .DS_Store/.bak, but announce counts; ask before shutting down any dev server
+- Step 9: ask "Commit these changes?" instead of auto-committing
+- Step 10: ask "Push commits?" instead of auto-pushing
+- Step 7: ask "Update PROJECT_MAP.md?" instead of auto-generating
 
-**Changes in manual mode:**
-- Step 2: Still auto-remove .DS_Store (macOS) and .bak files, but announce counts
-- Step 2.5: Ask "Shut down local dev servers?" instead of auto-stopping session-started servers
-- Step 4: Ask "Commit these changes?" instead of auto-committing
-- Step 5: Ask "Push commits?" instead of auto-pushing
-- Step 6: Ask "Update PROJECT_MAP.md?" instead of auto-generating
-
-This preserves the old workflow for users who want fine-grained control.
-
-All other steps (temp file cleanup, CHANGELOG audit, summary) work the same as default mode.
+All other steps work the same as default mode.
