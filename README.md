@@ -28,6 +28,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:website-build`
 - `wtf:longterm`
 - `wtf:pangram`
+- `wtf:ultrahumanizer`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -43,7 +44,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-moodboard`, `wtf-website-build`, `wtf-longterm`, `wtf-pangram`) so they never clash
+(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-moodboard`, `wtf-website-build`, `wtf-longterm`, `wtf-pangram`, `wtf-ultrahumanizer`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
@@ -66,6 +67,7 @@ flat under `plugins/wtf/skills/` — the categories below are organizational, no
 | Design | **website-build** | Reference-first site build on a four-pillars framework (Audience → Structure → Copy → Design): clarity-paragraph gate, audience filter, four-visitor-jobs structure with an accountability map for every cut, voice spec, and a Design pillar handed to `wtf:moodboard`. Produces a populated brief; blanks are the to-do list. Pairs with `wtf:humanizer` and `wtf:content-gate` when installed. | None |
 | Decisions | **longterm** | When several approaches are on the table, picks and proceeds with the one that's correct for the long term — scoring each on root-cause correctness, maintainability, robustness, reversibility, and total cost over time, accepting more effort now to avoid compounding debt. Guards against over-engineering and stops to confirm on auth/schema/billing/infra/security choices. | None |
 | QA | **pangram** | Scores text for AI-generated content via the Pangram Labs API — returns overall AI fraction (0–100%), prediction label, and per-sentence highlights, with a cost estimate per call. Pairs with `wtf:humanizer` (humanize → re-score → repeat). | `PANGRAM_API_KEY` in your environment |
+| Writing | **ultrahumanizer** | Human-in-the-loop loop to a passing Pangram verdict: scores the draft, maps flagged ~380-word windows back to passages, reduces them to content bullets, and coaches the *human* to rewrite those passages in their own words — then re-scores until pass or honest stall. The agent never regenerates flagged prose itself (empirically, agent rewrites don't move Pangram). Builds on `wtf:humanizer` + `wtf:pangram`. | `PANGRAM_API_KEY` in your environment |
 
 ## When to use what — the lifecycle
 

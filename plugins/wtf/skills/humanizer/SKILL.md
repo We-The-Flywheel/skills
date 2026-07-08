@@ -1,6 +1,6 @@
 ---
 name: humanizer
-version: 2.5.1
+version: 2.5.2
 description: |
   Remove signs of AI-generated writing from text. Use when editing or reviewing
   text to make it sound more natural and human-written. Based on Wikipedia's
@@ -39,12 +39,22 @@ changes how to use this skill:
 - **Only human origin moves the needle.** Genuine human prose scored **0% AI** on the same detector;
   our edited-AI variants stayed at 100%. The detector keys on the statistical fingerprint of how the
   text was *produced*, not on a checklist of surface features.
-- **Partial AI contaminates the whole document — asymmetrically.** Human text that scored 0% flipped
-  to **100% AI after injecting just 25% AI-written sentences**; conversely, splicing up to 75% human
-  sentences into an AI draft never pulled it below 100%. The detector does not score "fraction
-  human." So the common workflow "draft it myself, then AI-polish a few sentences/paragraphs" will
-  still read as fully AI. Keep AI out of any passage that must read as human-origin; use AI for
-  outlines/research/structure, not for generating the prose you need to pass as human.
+- **Partial AI contamination is threshold- and voice-dependent (updated 2026-07-08).** June test:
+  human text at 0% flipped to **100% AI after injecting 25% AI-written sentences**; conversely,
+  splicing up to 75% human sentences into an AI draft never pulled it below 100%. July counter-test
+  (a real-world agency blog post, verified via the Pangram API): a strongly idiosyncratic
+  human-voiced draft carrying ~10–15% verbatim AI material — including one full AI paragraph
+  word-for-word identical to the all-AI version — still scored **0% / fully human** across all
+  windows; the *same paragraph* scored 100% inside the AI-register version. Read together: Pangram
+  scores ~380-word windows, and a small AI span can be **masked** when the rest of its window is
+  high-variance human prose (asides, rhetorical questions, uneven rhythm); a larger or
+  evenly-distributed AI share tips the window past threshold and the whole document reads 100% AI.
+  **Do NOT treat masking as a safety margin.** It is probabilistic and fragile: sensitive to where
+  window boundaries fall, detector-specific (GPTZero/Originality window differently), can vanish on
+  a Pangram model update, and the dashboard's sentence-level heatmap may still paint the AI
+  sentences red even when the API verdict says human. The safe rule stands: keep AI out of prose
+  that must read as human-origin; use AI for outlines/research/structure, not for generating the
+  prose itself.
 - **Advanced rewriting and voice-matching do not help either (tested 2026-07).** We ran a harder
   round against Pangram: multi-pass regeneration (rewrite the rewrite, 2–3 passes), transplanting a
   real human passage's exact sentence rhythm, a deliberately "messy human" register (fragments,
