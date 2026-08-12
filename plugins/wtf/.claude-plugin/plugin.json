@@ -1,8 +1,8 @@
 {
   "name": "wtf",
   "displayName": "Flywheel Skills",
-  "version": "0.11.0",
-  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, moodboard, website-build, longterm, pangram, ultrahumanizer.",
+  "version": "0.12.0",
+  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, moodboard, website-build, longterm, pangram, ultrahumanizer, riff.",
   "author": {
     "name": "The Flywheel",
     "url": "https://github.com/We-The-Flywheel"
@@ -47,6 +47,8 @@
     "content-scoring",
     "ultrahumanizer",
     "pangram-loop",
-    "human-in-the-loop"
+    "human-in-the-loop",
+    "riff",
+    "ideation"
   ]
 }
