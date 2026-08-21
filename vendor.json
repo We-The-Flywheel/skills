@@ -5,6 +5,12 @@
       "license": "MIT",
       "license_verified": "2026-08-21",
       "license_file_hash": "4ac4810254ab36d45419141aeb8e69bf50652cfafe5b2dab947d06d44e5cbf96"
+    },
+    "mattpocock-skills": {
+      "repo": "https://github.com/mattpocock/skills",
+      "license": "MIT",
+      "license_verified": "2026-08-22",
+      "license_file_hash": "0e7ac423bf2c6e223b7c5b156f8cf72da49d748e56a1641402c31f22ad07dbb5"
     }
   },
   "skills": [
@@ -16,6 +22,30 @@
       "last_synced": "2026-08-21",
       "local_modifications": true,
       "notes": "Retroactive entry, backfilled 2026-08-21 when vendor-sync.sh was introduced. The exact upstream commit humanizer was originally forked from (fw-skills added it 2026-05-28 as local v2.3.0) could not be determined with confidence: Flywheel's local version numbers don't correspond to upstream's git tags (earliest upstream tag is v2.9.0, from 2026-06), and NOTICE/README don't record a source SHA. pinned_sha above is upstream's HEAD as observed at this audit (2026-08-21), used from here on as the diff baseline for `vendor-sync.sh check` -- it is NOT a claim about the historical fork point. local_modifications is true because the skill has been substantially rewritten locally since import (VOICE.md step, Pangram-validated-evidence section, expanded pattern catalogue -- see NOTICE); `vendor-sync.sh pull humanizer` will therefore print a diff for manual merge rather than overwrite."
+    },
+    {
+      "name": "writing-for-agents",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/productivity/writing-for-agents",
+      "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "last_synced": "2026-08-22",
+      "local_modifications": false
+    },
+    {
+      "name": "diagnosing-bugs",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/engineering/diagnosing-bugs",
+      "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "last_synced": "2026-08-22",
+      "local_modifications": false
+    },
+    {
+      "name": "grilling",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/productivity/grilling",
+      "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "last_synced": "2026-08-22",
+      "local_modifications": false
     }
   ]
 }
