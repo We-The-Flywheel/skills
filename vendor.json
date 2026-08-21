@@ -1,0 +1,21 @@
+{
+  "sources": {
+    "blader-humanizer": {
+      "repo": "https://github.com/blader/humanizer",
+      "license": "MIT",
+      "license_verified": "2026-08-21",
+      "license_file_hash": "4ac4810254ab36d45419141aeb8e69bf50652cfafe5b2dab947d06d44e5cbf96"
+    }
+  },
+  "skills": [
+    {
+      "name": "humanizer",
+      "source": "blader-humanizer",
+      "upstream_path": "SKILL.md",
+      "pinned_sha": "e2e92e7b4b8229253ed5c8e81dc65463fdeddda5",
+      "last_synced": "2026-08-21",
+      "local_modifications": true,
+      "notes": "Retroactive entry, backfilled 2026-08-21 when vendor-sync.sh was introduced. The exact upstream commit humanizer was originally forked from (fw-skills added it 2026-05-28 as local v2.3.0) could not be determined with confidence: Flywheel's local version numbers don't correspond to upstream's git tags (earliest upstream tag is v2.9.0, from 2026-06), and NOTICE/README don't record a source SHA. pinned_sha above is upstream's HEAD as observed at this audit (2026-08-21), used from here on as the diff baseline for `vendor-sync.sh check` -- it is NOT a claim about the historical fork point. local_modifications is true because the skill has been substantially rewritten locally since import (VOICE.md step, Pangram-validated-evidence section, expanded pattern catalogue -- see NOTICE); `vendor-sync.sh pull humanizer` will therefore print a diff for manual merge rather than overwrite."
+    }
+  ]
+}
