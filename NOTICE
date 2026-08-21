@@ -20,3 +20,24 @@ maintained by WikiProject AI Cleanup.
 Modifications by The Flywheel: added an optional VOICE.md voice-profile loading
 step (Step 0) so the skill can match a per-project editorial voice. The VOICE.md
 mechanism is generic and carries no external dependency.
+
+-------------------------------------------------------------------------------
+skills/writing-for-agents
+-------------------------------------------------------------------------------
+Derived from "skills/productivity/writing-for-agents" in https://github.com/mattpocock/skills (pinned at 5b15a47f2d7150f545fbcacbfe381787fc0230dc).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT
+
+-------------------------------------------------------------------------------
+skills/diagnosing-bugs
+-------------------------------------------------------------------------------
+Derived from "skills/engineering/diagnosing-bugs" in https://github.com/mattpocock/skills (pinned at 5b15a47f2d7150f545fbcacbfe381787fc0230dc).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT
+
+-------------------------------------------------------------------------------
+skills/grilling
+-------------------------------------------------------------------------------
+Derived from "skills/productivity/grilling" in https://github.com/mattpocock/skills (pinned at 5b15a47f2d7150f545fbcacbfe381787fc0230dc).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT

@@ -30,6 +30,9 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:longterm`
 - `wtf:pangram`
 - `wtf:ultrahumanizer`
+- `wtf:writing-for-agents`
+- `wtf:diagnosing-bugs`
+- `wtf:grilling`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -45,7 +48,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-website-build`, `wtf-longterm`, `wtf-pangram`, `wtf-ultrahumanizer`) so they never clash
+(`wtf-humanizer`, `wtf-multi-llm-deliberation`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-website-build`, `wtf-longterm`, `wtf-pangram`, `wtf-ultrahumanizer`, `wtf-writing-for-agents`, `wtf-diagnosing-bugs`, `wtf-grilling`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
@@ -71,6 +74,9 @@ flat under `plugins/wtf/skills/` — the categories below are organizational, no
 | Decisions | **longterm** | When several approaches are on the table, picks and proceeds with the one that's correct for the long term — scoring each on root-cause correctness, maintainability, robustness, reversibility, and total cost over time, accepting more effort now to avoid compounding debt. Guards against over-engineering and stops to confirm on auth/schema/billing/infra/security choices. | None |
 | QA | **pangram** | Scores text for AI-generated content via the Pangram Labs API — returns overall AI fraction (0–100%), prediction label, and per-sentence highlights, with a cost estimate per call. Pairs with `wtf:humanizer` (humanize → re-score → repeat). | `PANGRAM_API_KEY` in your environment |
 | Writing | **ultrahumanizer** | Human-in-the-loop loop to a passing Pangram verdict: scores the draft, maps flagged ~380-word windows back to passages, reduces them to content bullets, and coaches the *human* to rewrite those passages in their own words — then re-scores until pass or honest stall. The agent never regenerates flagged prose itself (empirically, agent rewrites don't move Pangram). Builds on `wtf:humanizer` + `wtf:pangram`. | `PANGRAM_API_KEY` in your environment |
+| Writing | **writing-for-agents** | Reference for writing any document an agent consumes — a skill, an `AGENTS.md`/`CLAUDE.md`, a doc reached by a pointer. Covers context pointers, branch coverage, and pruning so the agent takes the same process every run. Includes `SKILL-MECHANICS.md` for frontmatter, invocation choice, and router-skill design. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
+| Debugging | **diagnosing-bugs** | Discipline for hard bugs and performance regressions: redact-first artifact capture, phase-gated diagnosis loop, and an optional human-in-the-loop script (`scripts/hitl-loop.template.sh`) for iterating with a human in the loop. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
+| Decisions | **grilling** | Interviews the user relentlessly about a plan, decision, or idea until reaching shared understanding — maps the decision as a tree, works the frontier in numbered rounds with recommended answers, and won't move on until every branch is settled. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
 
 ## When to use what — the lifecycle
 

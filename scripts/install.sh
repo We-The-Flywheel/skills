@@ -9,7 +9,7 @@ set -euo pipefail
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/plugins/wtf/skills"
 DEST_ROOT="$HOME/.claude/skills"
 
-SKILLS=(humanizer multi-llm-deliberation visual-qa premortem end idiocy-check release-gate content-gate og-meta-check moodboard website-build longterm pangram ultrahumanizer)
+SKILLS=(humanizer multi-llm-deliberation visual-qa premortem end idiocy-check release-gate content-gate og-meta-check moodboard website-build longterm pangram ultrahumanizer riff writing-for-agents diagnosing-bugs grilling)
 
 mkdir -p "$DEST_ROOT"
 
