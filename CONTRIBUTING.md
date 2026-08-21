@@ -36,6 +36,40 @@ run in CI) enforces this, but you are the first line of defense.
 
 Then open a PR.
 
+## Declared references (`uses:`)
+
+Skills (and internal slash commands) can declare a dependency on another skill
+via a `uses:` frontmatter field. Skill Atlas (the internal graph tool that
+renders every SKILL.md as a node) reads this field to draw real edges between
+skills instead of a flat, disconnected grid.
+
+```yaml
+uses:
+  - skill: og-meta-check
+    relation: delegates          # optional; default: orchestrates
+    why: Step 5 of the gate is owned by that skill
+department: content              # optional; see below
+```
+
+Schema:
+- `uses` is an array. Each item is either a bare string (skill id, shorthand
+  for `{ skill: <id>, relation: orchestrates }`) or an object with `skill`
+  (required), `relation`, and `why`.
+- `relation` is one of `orchestrates`, `delegates`, `requires`, `extends`.
+  Default `orchestrates`. This becomes the visible edge label in the graph.
+- `skill` may be a bare id (`crawl-site`) or source-qualified (`wtf:content-gate`,
+  `internal:crawl-site`) when disambiguation is needed across repos.
+- `department` is an optional single-value field for graph clustering. Enum:
+  `content`, `seo`, `design`, `engineering`, `ops`, `media`, `comms`, `research`.
+
+Only declare a `uses:` edge for a **real** dependency — a skill your SKILL.md
+tells the agent to run, delegate to, or that composes with this one. Don't add
+edges just to populate the graph.
+
+Both fields are inert to Claude Code itself — unknown frontmatter keys are
+ignored at runtime, so adding `uses:`/`department:` to a live SKILL.md carries
+no behavioral risk.
+
 ## Third-party skills
 
 If the skill (or part of it) comes from someone else, confirm its license permits

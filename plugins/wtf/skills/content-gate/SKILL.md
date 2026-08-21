@@ -17,6 +17,10 @@ allowed-tools:
   - Bash
   - WebFetch
   - AskUserQuestion
+uses:
+  - skill: og-meta-check
+    relation: delegates
+    why: Step 5 of the gate is owned by that skill
 ---
 
 # Content gate: nine checks before anything goes public
@@ -154,44 +158,16 @@ visually consistent with the site, no garbled generated text.
 
 ## Step 5 — Full OG / Twitter meta-tag set
 
-Rendered from **one shared layout** (pages pass props) — never hand-pasted
-per page. Required on every page:
+**Owned by `wtf:og-meta-check`**, extracted so it can run standalone without
+pulling in the other eight steps. Delegate to it and fold its one-line
+verdict into this gate's report card below.
 
-```html
-<title>…</title>
-<meta name="description" content="…" />
-<link rel="canonical" href="{absolute URL}" />
-
-<meta property="og:site_name" content="…" />
-<meta property="og:type" content="website|article|profile" />
-<meta property="og:title" content="…" />              <!-- ≤ 70 chars -->
-<meta property="og:description" content="…" />        <!-- ≤ 200 chars -->
-<meta property="og:url" content="{absolute URL}" />
-<meta property="og:locale" content="…" />
-<meta property="og:image" content="{absolute URL}" />
-<meta property="og:image:secure_url" content="{absolute URL}" />
-<meta property="og:image:type" content="image/jpeg" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="624" />
-<meta property="og:image:alt" content="…" />
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="…" />
-<meta name="twitter:description" content="…" />
-<meta name="twitter:image" content="{absolute URL}" />
-<meta name="twitter:image:alt" content="…" />
-```
-
-**Hard rules:** all URLs **absolute** (scrapers don't resolve relative paths —
-they silently drop the preview); `twitter:card` must be `summary_large_image`;
-`og:image:alt` present and descriptive.
-
-**Verify:**
-
-```bash
-# after build — expect ~18+ matches per page (OG + Twitter + canonical)
-grep -oE '<(meta|link)[^>]*(og:|twitter:|canonical)[^>]*>' dist/path/index.html | wc -l
-```
+**PASS criterion (self-describing standalone):** the page renders the full
+required OG + Twitter Card + canonical tag set (≥18 tags) from one shared
+layout, all URLs absolute, `twitter:card=summary_large_image`, `og:image:alt`
+present. **FAIL:** any required tag missing or a hard rule violated — see
+`wtf:og-meta-check` for the full tag list, hard-rules table, and verification
+command.
 
 ## Step 6 — FAQ block + FAQPage JSON-LD
 
