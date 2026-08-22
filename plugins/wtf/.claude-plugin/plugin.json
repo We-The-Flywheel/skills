@@ -1,8 +1,8 @@
 {
   "name": "wtf",
   "displayName": "Flywheel Skills",
-  "version": "0.14.0",
-  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, og-meta-check, moodboard, website-build, longterm, pangram, ultrahumanizer, riff, writing-for-agents, diagnosing-bugs, grilling.",
+  "version": "0.15.0",
+  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm-deliberation, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, og-meta-check, moodboard, website-build, longterm, pangram, ultrahumanizer, riff, diagnosing-bugs, grilling, skill-writing, verification, receiving-code-review.",
   "author": {
     "name": "The Flywheel",
     "url": "https://github.com/We-The-Flywheel"
@@ -53,13 +53,17 @@
     "human-in-the-loop",
     "riff",
     "ideation",
-    "writing-for-agents",
     "agents-md",
     "skill-authoring",
     "diagnosing-bugs",
     "debugging",
     "hitl",
     "grilling",
-    "requirements-gathering"
+    "requirements-gathering",
+    "skill-writing",
+    "pressure-testing",
+    "receiving-code-review",
+    "code-review",
+    "yagni"
   ]
 }
