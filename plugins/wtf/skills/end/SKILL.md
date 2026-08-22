@@ -16,6 +16,7 @@ allowed-tools:
   - Edit
   - Glob
   - Grep
+department: ops
 ---
 
 End-of-session cleanup and verification with intelligent automation. Ensures work is properly saved and documented before exiting.

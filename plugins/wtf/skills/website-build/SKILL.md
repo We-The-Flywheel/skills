@@ -18,6 +18,14 @@ allowed-tools:
   - AskUserQuestion
   - Skill
   - WebFetch
+uses:
+  - skill: moodboard
+    relation: delegates
+    why: Design pillar hands off to moodboard
+  - skill: humanizer
+    relation: requires
+    why: drafted copy must be de-AI'd
+department: design
 ---
 
 # Website build: four pillars, reference-first

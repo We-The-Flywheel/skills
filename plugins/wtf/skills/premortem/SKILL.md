@@ -17,6 +17,7 @@ allowed-tools:
   - Write
   - Task
   - AskUserQuestion
+department: unassigned
 ---
 
 # Premortem: find out how the plan dies before you live it

@@ -24,6 +24,11 @@ allowed-tools:
   - AskUserQuestion
   - Skill
   - WebFetch
+uses:
+  - skill: moodboard
+    relation: delegates
+    why: winning direction hands off to moodboard for tokens.json/DESIGN.md
+department: design
 ---
 
 # Riff — divergent design ideation

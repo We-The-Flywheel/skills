@@ -11,6 +11,7 @@ allowed-tools:
   - Bash
   - Read
   - AskUserQuestion
+department: content
 ---
 
 # Pangram AI Detection Scorer
