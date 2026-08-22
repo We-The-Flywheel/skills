@@ -2,6 +2,7 @@
 name: idiocy-check
 aliases: [sanity-check]
 description: Fast, ruthless pre-submission review of any document, grant, caption, email, or deliverable. Returns 5–8 things that would embarrass you, get you rejected, or make you look sloppy — not a comprehensive edit. Triggers on "idiocy check", "sanity check", "anything embarrassing in here", "just tell me if anything's wrong", "quick scan", "anything that stands out", "i don't have time for a full edit". Contributed by Eric Cross.
+department: content
 ---
 
 # Idiocy Check — Fast Pre-Submission Review

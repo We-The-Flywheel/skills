@@ -1,6 +1,7 @@
 ---
 name: multi-llm-deliberation
 description: Use when you need diverse AI perspectives on architecture decisions, code review, or complex questions - runs a 3-stage deliberation (diverge, rank, synthesize) across 5 models for consensus answers. Also runs Content Truth-Check Mode to fact-check claims in content drafts before publishing. Triggers on "ask multiple models", "get consensus", "llm council", "fact-check this draft", "truth check", or any request for multi-model review.
+department: research
 ---
 
 # Multi-LLM Deliberation - Multi-Model Consensus

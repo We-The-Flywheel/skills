@@ -21,6 +21,13 @@ uses:
   - skill: og-meta-check
     relation: delegates
     why: Step 5 of the gate is owned by that skill
+  - skill: humanizer
+    relation: delegates
+    why: Step 3 drafting quality
+  - skill: multi-llm-deliberation
+    relation: delegates
+    why: Step 2 truth-check
+department: content
 ---
 
 # Content gate: nine checks before anything goes public

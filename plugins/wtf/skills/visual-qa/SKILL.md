@@ -6,6 +6,7 @@ allowed-tools:
   - Read
   - Write
   - Glob
+department: design
 ---
 
 # /visual-qa — Full-Page Visual Review Gallery

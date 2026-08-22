@@ -2,6 +2,7 @@
 name: longterm
 aliases: [right-approach, do-it-right]
 description: Use when several approaches are on the table and you want the one that's correct for the long term, not the fastest to ship. Triggers on "/longterm", "take the right long-term approach", "do it the right way even if it takes longer", "pick the durable option", "no shortcuts". Picks and proceeds with the option that ages best, accepting more time/effort now.
+department: engineering
 ---
 
 # Long-Term Approach

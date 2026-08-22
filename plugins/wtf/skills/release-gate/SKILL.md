@@ -17,6 +17,7 @@ allowed-tools:
   - Bash
   - Task
   - AskUserQuestion
+department: engineering
 ---
 
 # Release gate: evidence before you ship

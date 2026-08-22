@@ -20,6 +20,7 @@ allowed-tools:
   - AskUserQuestion
   - Skill
   - WebFetch
+department: design
 ---
 
 # Moodboard: references → locked design decisions

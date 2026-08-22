@@ -20,6 +20,14 @@ allowed-tools:
   - Grep
   - Glob
   - AskUserQuestion
+uses:
+  - skill: humanizer
+    relation: requires
+    why: runs the humanizer skill's craft patterns
+  - skill: pangram
+    relation: requires
+    why: scores text via score_all.py
+department: content
 ---
 
 # Ultrahumanizer: Human-in-the-Loop Pangram Pass Loop

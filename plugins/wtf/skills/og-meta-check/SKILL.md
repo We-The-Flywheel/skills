@@ -13,6 +13,7 @@ allowed-tools:
   - Glob
   - Bash
   - WebFetch
+department: content
 ---
 
 # OG meta check: Open Graph + Twitter Card verification
