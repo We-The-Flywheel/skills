@@ -31,9 +31,12 @@ When given text to humanize:
 0. **Load the voice profile (if any)** - Before scanning, resolve the **nearest
    `VOICE.md`**: starting from the directory of the file being edited (or the project
    root if editing pasted text), walk **up** the tree to the repo root and use the first
-   `VOICE.md` found. A property can have a root `VOICE.md` plus more specific ones in
-   subdirectories (e.g. `src/pages/en/tech/VOICE.md` vs `src/pages/en/training/VOICE.md`);
-   the nearest one wins. Then **cascade**: for any section the nearest file marks
+   `VOICE.md` found. **Check both `VOICE.md` and `_VOICE.md` at every level.** A property
+   can have a root `VOICE.md` plus more specific ones in subdirectories (e.g.
+   `src/pages/en/tech/_VOICE.md` vs `src/pages/en/training/_VOICE.md`); the nearest one
+   wins. Nested profiles under `src/pages/` are `_VOICE.md` because Astro would route a
+   bare `VOICE.md` as a page — if you look only for `VOICE.md` you will find nothing,
+   fall back to generic voice, and get no error telling you so. Then **cascade**: for any section the nearest file marks
    `inherit` or omits, fall back to that section in the next `VOICE.md` up the chain, up
    to the root. If one is found, treat the resolved profile as the target voice:
    - Apply its **§5 Lexicon** — banned phrases there *extend* (do not replace) the
@@ -482,7 +485,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ## Process
 
-0. Resolve the nearest `VOICE.md` (walk up from the edited file to repo root, cascade sections); if found, load it as the target voice (see "Your Task" Step 0)
+0. Resolve the nearest `VOICE.md` / `_VOICE.md` (walk up from the edited file to repo root, checking both names, cascade sections); if found, load it as the target voice (see "Your Task" Step 0)
 1. Read the input text carefully
 2. Identify all instances of the patterns above
 3. Rewrite each problematic section
