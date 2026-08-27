@@ -9,7 +9,7 @@ set -euo pipefail
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/plugins/wtf/skills"
 DEST_ROOT="$HOME/.claude/skills"
 
-SKILLS=(humanizer multi-llm-deliberation visual-qa premortem end idiocy-check release-gate content-gate og-meta-check moodboard website-build longterm pangram ultrahumanizer riff diagnosing-bugs grilling skill-writing verification receiving-code-review)
+SKILLS=(humanizer multillm multi-llm-deliberation visual-qa premortem end idiocy-check release-gate content-gate og-meta-check moodboard website-build longterm pangram ultrahumanizer riff diagnosing-bugs grilling skill-writing verification receiving-code-review)
 
 mkdir -p "$DEST_ROOT"
 
@@ -43,4 +43,4 @@ done
 
 echo
 echo "Done. Restart Claude Code (fresh terminal window) to pick up new skills."
-echo "Invoke them as /wtf-humanizer, /wtf-multi-llm-deliberation, /wtf-visual-qa, /wtf-premortem."
+echo "Invoke them as /wtf-humanizer, /wtf-multillm, /wtf-visual-qa, /wtf-premortem."
