@@ -51,7 +51,15 @@ the loop.
 
 ## Step 0 — Scope negotiation (once, up front, before looping)
 
-Ask the human exactly once, before starting the loop, for whatever isn't already clear:
+**First check for a crashed or interrupted prior run**: if `.claude/autopilot-graph.local.json`
+already exists and no `<promise>` ever fired for it (the ralph-loop state file
+`.claude/ralph-loop.local.md` is gone but the graph has non-`validated` nodes), this is a
+resumption, not a fresh start. Tell the human what you found (node counts by status, last
+decision-log entry) and confirm whether to resume or discard and restart. Don't silently
+pick either.
+
+For a genuinely fresh run, ask the human exactly once, before starting the loop, for
+whatever isn't already clear:
 - The goal and what "done" looks like (the exit criteria in Step 4 need a concrete target).
 - Any additions to the hard-gate list below specific to this task (e.g. "don't touch the
   billing table" or "staging only, never prod").
@@ -63,24 +71,39 @@ unattended — mirror that. Anything else that comes up mid-run either gets reso
 autonomously (Step 3) or hits the hard-gate list (Step 2) — there is no third category of
 "check in with the human for a status update."
 
-## Step 1 — Initialize state (three files, all `.local` so they don't get committed by accident unless the user wants the log kept)
+## Step 1 — Initialize state (four files, all `.local` so they don't get committed by accident unless the user wants the log kept)
+
+Before creating anything, write `.claude/autopilot.lock` containing the start timestamp
+and a one-line goal summary. Its presence means a run is active in this directory — if
+you find one already there and it's not the crash-resumption case above, stop and tell
+the human two autopilot runs would collide here rather than starting a second one.
+Remove the lock file as the very last action when the loop ends (success or escalation).
+
+All writes to the JSON/JSONL state files below must be atomic: write to a temp file in
+the same directory, then rename over the target. A crash mid-write must never leave a
+half-written graph or log — that's how resumption (above) stays trustworthy.
 
 Create in the project root:
 
-**`.claude/autopilot-goal.local.md`** — the confirmed goal, exit criteria, and any
-task-specific hard-gate additions from Step 0. Human-readable, written once.
+**`.claude/autopilot-goal.local.md`** — the confirmed goal, exit criteria, any
+task-specific hard-gate additions from Step 0, and a running `## Resources created this
+run` list. Every time a node creates something that didn't exist before (a service, a
+DNS record, a file, a branch), append it here immediately. This list is the literal
+definition of "new" for the infra hard-gate in Step 2 — if it's not on this list, treat it
+as pre-existing and gated, even if it looks like something you'd expect to be new.
 
 **`.claude/autopilot-graph.local.json`** — the task graph:
 ```json
 {
   "goal": "...",
   "nodes": [
-    {"id": "n1", "title": "...", "depends_on": [], "status": "pending", "validation": "..."},
-    {"id": "n2", "title": "...", "depends_on": ["n1"], "status": "pending", "validation": "..."}
+    {"id": "n1", "title": "...", "depends_on": [], "status": "pending", "attempt_count": 0, "validation": "..."},
+    {"id": "n2", "title": "...", "depends_on": ["n1"], "status": "pending", "attempt_count": 0, "validation": "..."}
   ]
 }
 ```
-`status` is one of `pending`, `in_progress`, `done`, `validated`, `blocked`. Break the
+`status` is one of `pending`, `in_progress`, `validated`, or `blocked` (3 failed attempts —
+see Step 3's watchdog clause; a `blocked` node needs a human, not a 4th retry). Break the
 goal into nodes the size of "one subagent dispatch" — a node should be independently
 verifiable, not a whole feature. Milestones are just nodes whose children all depend on
 them; you don't need a separate milestone concept, dependency edges are enough.
@@ -153,9 +176,15 @@ Instruction block (this is what iterates):
 > When the subagent reports back: run the node's validation (tests, a smoke check, a
 > curl, whatever "verified" means for that node — write it into the node's `validation`
 > field when you create the node, don't invent verification standards ad hoc per node).
-> If it passes, mark the node `validated`. If it fails, mark it `pending` again and
-> either retry with adjusted instructions or split it into smaller nodes — append a
-> decision-log entry either way explaining what failed and what you changed.
+> If it passes, mark the node `validated`. If it fails, increment the node's
+> `attempt_count` (start every node at 0) and either retry with adjusted instructions or
+> split it into smaller nodes — append a decision-log entry either way explaining what
+> failed and what you changed. **This is the loop's watchdog: a node that hits 3 failed
+> attempts is not retried a 4th time.** Mark it `blocked`, log why, and treat it as a
+> hard-gate hit for the orchestrator — this is the "cannot be resolved by trying" case
+> Step 2 already covers, not a new escalation path. Retrying the same failing approach a
+> 4th time burns iterations without changing the outcome; a human unblocking it beats an
+> infinite loop of near-identical attempts.
 >
 > For every non-trivial choice made this iteration (which approach, which library, how
 > to resolve an ambiguity, which of two reasonable defaults you picked, why a node was
@@ -168,6 +197,14 @@ Instruction block (this is what iterates):
 > Commit any files the node produced with a small, scoped commit message before moving
 > to the next node — Ralph-style atomic commits, so a bad node can be reverted without
 > losing earlier progress.
+>
+> If `.claude/autopilot-decisions.local.jsonl` has grown past ~150 lines, roll it so it
+> doesn't eat the context budget of every future iteration: move the file as-is to
+> `.claude/autopilot-decisions.archive-<N>.local.jsonl` (never delete or summarize-over
+> the raw lines — the archive is still the full audit trail, just not the active file),
+> start a fresh empty `.claude/autopilot-decisions.local.jsonl`, and add one line to
+> `.claude/autopilot-goal.local.md` noting the archive file exists and roughly what it
+> covers. A human reviewing later reads all archive files plus the active one, in order.
 >
 > **Finalize step** (all nodes validated): write a closing summary to
 > `.claude/autopilot-decisions.local.jsonl` (one final entry, `node: "orchestrator"`,
@@ -188,6 +225,9 @@ re-reviewing every file from scratch.
 
 Whether by success or by hard-gate escalation, the `<promise>AUTOPILOT RUN ENDED</promise>`
 tag ends it (same mechanism as `/cancel-ralph`, which also just removes
-`.claude/ralph-loop.local.md` if you need to abort manually mid-run). After it ends,
-report to the human: node count, validated count, decision count, whether this was a
-clean finish or an escalation, and the path to the decision log.
+`.claude/ralph-loop.local.md` if you need to abort manually mid-run). Remove
+`.claude/autopilot.lock` as the last action before the promise fires — a leftover lock
+file is what would make the crash-resumption check in Step 0 misfire on the next run.
+After it ends, report to the human: node count, validated count, decision count, whether
+this was a clean finish or an escalation, and the path to the decision log (plus any
+archive files from log rolling).
