@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Reusable Claude Code skills maintained by The Flywheel.",
-    "version": "0.18.0"
+    "version": "0.19.0"
   },
   "plugins": [
     {
       "name": "wtf",
       "source": "./plugins/wtf",
-      "description": "The Flywheel skill pack: humanizer, multillm, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, og-meta-check, moodboard, website-build, longterm, pangram, ultrahumanizer, riff, diagnosing-bugs, grilling, skill-writing, verification, receiving-code-review. Skills resolve as wtf:<name>."
+      "description": "The Flywheel skill pack: humanizer, multillm, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, og-meta-check, moodboard, website-build, longterm, pangram, ultrahumanizer, riff, diagnosing-bugs, grilling, skill-writing, verification, receiving-code-review, knowledgepanel. Skills resolve as wtf:<name>."
     }
   ]
 }
