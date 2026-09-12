@@ -3,7 +3,7 @@
     "blader-humanizer": {
       "repo": "https://github.com/blader/humanizer",
       "license": "MIT",
-      "license_verified": "2026-08-21",
+      "license_verified": "2026-09-12",
       "license_file_hash": "4ac4810254ab36d45419141aeb8e69bf50652cfafe5b2dab947d06d44e5cbf96"
     },
     "mattpocock-skills": {
@@ -24,10 +24,10 @@
       "name": "humanizer",
       "source": "blader-humanizer",
       "upstream_path": "SKILL.md",
-      "pinned_sha": "e2e92e7b4b8229253ed5c8e81dc65463fdeddda5",
-      "last_synced": "2026-08-21",
+      "pinned_sha": "9862685f575c65a8247f90369951df1b3416e3d6",
+      "last_synced": "2026-09-12",
       "local_modifications": true,
-      "notes": "Retroactive entry, backfilled 2026-08-21 when vendor-sync.sh was introduced. The exact upstream commit humanizer was originally forked from (fw-skills added it 2026-05-28 as local v2.3.0) could not be determined with confidence: Flywheel's local version numbers don't correspond to upstream's git tags (earliest upstream tag is v2.9.0, from 2026-06), and NOTICE/README don't record a source SHA. pinned_sha above is upstream's HEAD as observed at this audit (2026-08-21), used from here on as the diff baseline for `vendor-sync.sh check` -- it is NOT a claim about the historical fork point. local_modifications is true because the skill has been substantially rewritten locally since import (VOICE.md step, Pangram-validated-evidence section, expanded pattern catalogue -- see NOTICE); `vendor-sync.sh pull humanizer` will therefore print a diff for manual merge rather than overwrite."
+      "notes": "Re-synced 2026-09-12 against upstream v3.0.0 (9862685, 2026-09-06). This is a real merge, not an overwrite: upstream's structural half was adopted -- the severity model (act-on-sight vs 'weak alone'), the structure-before-vocabulary A-E grouping, the fact guardrail, the three output modes, the prompt-injection line, the 'when not to act' exemptions, and patterns 2, 3, 4, 5, 7, 10, 11, 17, 30, 31. Flywheel-only content was kept: the VOICE.md/_VOICE.md nearest-ancestor resolution and cascade (Step 0), the personality-and-soul section, and patterns for burstiness, transition-word density, elegant variation, false ranges, abstract verb inflation and filler phrases, which upstream does not carry. Result is local v3.0.0 with 31 patterns. local_modifications stays true, so 'vendor-sync.sh pull humanizer' will print a diff for manual merge rather than overwrite -- that is correct, the two catalogues have diverged by design. The earlier retroactive pinned_sha (e2e92e7, 2026-08-21 HEAD) was a diff baseline, not a fork point; this one is a real sync point."
     },
     {
       "name": "writing-for-agents",

@@ -17,9 +17,20 @@ maintained by WikiProject AI Cleanup.
   Source:  https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
   License: Creative Commons Attribution-ShareAlike (CC BY-SA)
 
-Modifications by The Flywheel: added an optional VOICE.md voice-profile loading
-step (Step 0) so the skill can match a per-project editorial voice. The VOICE.md
-mechanism is generic and carries no external dependency.
+Last synced against upstream v3.0.0 (commit 9862685, 2026-09-06) on 2026-09-12.
+
+Modifications by The Flywheel: added an optional VOICE.md / _VOICE.md
+voice-profile loading step (Step 0, nearest-ancestor resolution with section
+cascade) so the skill can match a per-project editorial voice; added a
+personality-and-soul section; and added patterns upstream does not carry
+(uniform sentence length, transition-word overload, elegant variation, false
+ranges, abstract verb inflation, filler phrases). The VOICE.md mechanism is
+generic and carries no external dependency.
+
+Adopted from upstream v3.0.0: the severity model (act-on-sight vs "weak
+alone"), the structure-before-vocabulary A-E grouping, the fact guardrail, the
+three output modes, the prompt-injection line, the "when not to act"
+exemptions, and patterns 2, 3, 4, 5, 7, 10, 11, 17, 30 and 31.
 
 -------------------------------------------------------------------------------
 skills/_archive/writing-for-agents  (retired 2026-08-22, no longer an installable skill)
