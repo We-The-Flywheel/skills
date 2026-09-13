@@ -1,11 +1,12 @@
 ---
 name: content-gate
 description: |
-  Nine-step pre-publish gate for web content — blog posts, landing pages, SEO
+  Ten-step pre-publish gate for web content — blog posts, landing pages, SEO
   articles, product pages, anything destined for a public URL. Checks drafting
   quality, fact-checking, de-AI-ing, hero/OG image, full OG/Twitter meta tags,
   FAQ + FAQPage JSON-LD, schema + E-E-A-T signals, analytics coverage, and
-  AI-citation/zero-click readiness (self-contained answer above the fold).
+  AI-citation/zero-click readiness (self-contained answer above the fold),
+  and Google's Preferred Sources button in the post template.
   Use before publishing any web content, when the user says "content gate",
   "run the content gate", "is this ready to publish", or "can this page go
   live". Emits a per-step PASS/FAIL report card; any FAIL blocks publish and
@@ -30,7 +31,7 @@ uses:
 department: content
 ---
 
-# Content gate: nine checks before anything goes public
+# Content gate: ten checks before anything goes public
 
 You are a **gatekeeper, not an editor**. Every step below resolves to **PASS**
 or **FAIL** with evidence — a rendered tag, a file path, a screenshot, a grep
@@ -280,6 +281,53 @@ verbatim as the answer — zero-click test — it fails.
 For pure tool/calculator pages: 9.4–9.6 still apply; 9.1–9.3 and 9.8 are
 relaxed.
 
+## Step 10 — Google Preferred Sources button
+
+Since 2026-08-20 Google lets publishers embed an "Add as preferred source"
+button. A reader who clicks it adds your **domain** to their Google source
+preferences, and Google then shows that domain more often, badged, in Top
+Stories, AI Overviews and AI Mode (Google reports roughly 2x click-through for
+preferred sources). Docs:
+<https://developers.google.com/search/docs/appearance/preferred-sources>
+
+- **Eligibility is per domain/subdomain**, checked once at
+  <https://www.google.com/preferences/source> (enter the domain in the search
+  box). `www.example.com` and `code.example.com` qualify; a subdirectory
+  (`www.example.com/blog`) does not — mark the step EXEMPT and record why.
+- Render from the **shared post/article template** (the same layout that
+  carries the analytics tag), not per page. The `<div>` belongs on article
+  pages only, not index/tag/alias pages.
+- Keep a plain-link fallback for CMSes or readers that block scripts, with
+  `q=` set to your own domain.
+- Expect the signal to get noisy as review-service profile farms start
+  clicking it on client sites — real early clicks are the cheap version. Add
+  "preferred-source clicks" to your monthly checklist.
+
+```html
+<!-- head, once per page -->
+<script async src="https://news.google.com/swg/js/v1/publisher.js"></script>
+
+<!-- post template: byline row or end of article -->
+<div google-add-preferred-source-btn data-theme="light" data-lang="en"></div>
+<noscript><a href="https://www.google.com/preferences/source?q=example.com" rel="nofollow noopener" target="_blank">Add example.com as a preferred source on Google</a></noscript>
+```
+
+`data-theme` is `light` or `dark`; drop `data-lang` to let the button
+auto-translate.
+
+**Verify:**
+
+```bash
+DOMAIN="example.com"
+grep -rl "news.google.com/swg/js/v1/publisher.js" dist/ | wc -l     # >= article page count
+grep -rl "google-add-preferred-source-btn" dist/ | wc -l            # == article page count
+grep -rho 'preferences/source?q=[^"&]*' dist/ | sort -u             # ONLY $DOMAIN
+```
+
+After deploy, open a live article, confirm the button renders, and click it
+once from a signed-in Google account to confirm the tool opens with the right
+domain.
+
 ---
 
 ## Gate artifacts must be committed
@@ -316,6 +364,7 @@ CONTENT GATE — <page/URL>
  7 Schema + E-E-A-T     PASS/FAIL  <schemas found; missing signals>
  8 Analytics            PASS/FAIL  <ID verified>
  9 AI-citation          PASS/FAIL  <failed sub-checks>
+10 Preferred Sources    PASS/FAIL/EXEMPT  <script+div+fallback counts, or ineligible domain>
  — Artifacts committed  PASS/FAIL
 
 VERDICT: READY TO PUBLISH / BLOCKED — missing: <list>
