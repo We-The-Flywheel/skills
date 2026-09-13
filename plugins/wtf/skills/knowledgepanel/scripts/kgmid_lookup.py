@@ -84,7 +84,13 @@ def http_json(url, data=None, headers=None, timeout=30):
 
 def lookup_kg(query, limit=5):
     """Google Knowledge Graph Search API. Returns a result dict."""
-    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    # GOOGLE_KG_API_KEY first: on this fleet GOOGLE_API_KEY and GEMINI_API_KEY
+    # are the SAME key, restricted to generativelanguage.googleapis.com, so
+    # they return API_KEY_SERVICE_BLOCKED here no matter how many times the
+    # service is enabled. A dedicated kgsearch-scoped key is the fix.
+    key = (os.environ.get("GOOGLE_KG_API_KEY")
+           or os.environ.get("GOOGLE_API_KEY")
+           or os.environ.get("GEMINI_API_KEY"))
     if not key:
         return {
             "source": "kg",
@@ -118,12 +124,21 @@ def lookup_kg(query, limit=5):
                 "source": "kg",
                 "ok": False,
                 "blocker": (
-                    "The API key is VALID but kgsearch.googleapis.com is not "
-                    "enabled on its project.\n"
+                    "The API key is VALID but cannot reach kgsearch. Two "
+                    "separate causes, check BOTH:\n"
+                    "    1. the service is not enabled on the project\n"
+                    "    2. the key has an API restriction that excludes "
+                    "kgsearch (most common)\n"
                     f"    Fix:  gcloud services enable kgsearch.googleapis.com "
                     f"--project={KG_PROJECT}\n"
                     "    Or:   https://console.cloud.google.com/apis/library/"
-                    f"kgsearch.googleapis.com?project={KG_PROJECT}"
+                    f"kgsearch.googleapis.com?project={KG_PROJECT}\n"
+                    "    Restriction fix: create a dedicated key --\n"
+                    "      gcloud services api-keys create "
+                    f"--project={KG_PROJECT} \\\n"
+                    "        --display-name='Knowledge Graph Search' \\\n"
+                    "        --api-target=service=kgsearch.googleapis.com\n"
+                    "    then export it as GOOGLE_KG_API_KEY."
                 ),
                 "entities": [],
             }
