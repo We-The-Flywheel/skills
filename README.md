@@ -17,7 +17,7 @@ In any Claude Code session:
 That's it. The skills are now available, namespaced under `wtf:`:
 
 - `wtf:humanizer`
-- `wtf:multillm` (alias: `wtf:multi-llm-deliberation`)
+- `wtf:multillm`
 - `wtf:visual-qa`
 - `wtf:premortem`
 - `wtf:end`
@@ -92,8 +92,8 @@ need all of them on every change — match the phase you're in:
 ```
 PLAN ──────────► BUILD ──────────► CHECK ──────────► SHIP ──────────► REFLECT
 premortem        (Claude Code      code review*      release-gate     retro habits
-multi-llm-       plan mode,        visual-qa         content-gate     (what failed →
-deliberation     tests as          humanizer         end              new rubric line
+multillm         plan mode,        visual-qa         content-gate     (what failed →
+                 tests as          humanizer         end              new rubric line
                  you go)           idiocy-check                       or skill)
 ```
 
