@@ -51,6 +51,44 @@ durable facts.
 **This is the single most common gap.** A site can have flawless homepage
 JSON-LD and still fail here.
 
+### Facet pages: keep the Entity Home lean
+
+The machine has two jobs for a person: **separate** them from every namesake
+and **unite** their many faces (the same person can be a founder, a podcaster,
+and a marathon runner). The Entity Home handles the first. Facet pages handle
+the second: each facet is a mini entity page the machine can go to when it
+wants that aspect. Put everything on the Entity Home and it overwhelms the
+machine, so keep only the fundamentals there and link to each facet and back.
+
+**What stays on the Entity Home (the budget):** name and aliases, subtitle,
+the 150-word summary, the disambiguation sentence, birth date/place, current
+role(s) with the organization named, a short career line (most senior roles
+only), education, 3+ real captioned photos, one line per facet linking to its
+page, every `sameAs` profile as a visible link, and a contact route. Race
+lists, press lists, publication lists, and full career histories do not
+belong on it.
+
+**What each facet page carries:** the complete, dated, sourced list for that
+facet (every race with time and date, every publication with outlet and URL,
+every role change or award with date and announcement link), an opening
+sentence that names the entity and the facet ("Jane Doe's marathon race
+results"), a link back to the Entity Home in the first paragraph, a real image
+specific to the facet, and schema whose `about` / `mainEntity` references the
+entity `@id`, never a second Person node.
+
+**Typical person facets:** competition results, publications, press coverage,
+career announcements, speaking, podcast appearances, patents. Create a facet
+only when there is real, dated material to list. A facet page with one item is
+weaker than a line on the Entity Home.
+
+**Placement:** nest facets under the Entity Home (`/about/<name>/results/`,
+`/about/<name>/publications/`) or in a real category, never at root. Surface
+them in the top menu where the chrome allows. Footer links count for less.
+
+**Facet data is single-sourced.** A facet's list lives in one data file that
+every page repeating it imports. The same date typed into two templates is
+how an entity ends up with three founding dates.
+
 ---
 
 ## Step 2 — the corroboration loop
@@ -87,6 +125,13 @@ inspection and is not.
 | Muck Rack | https://muckrack.com/ | Trusted journalist and author profiles |
 | Trustpilot | https://www.trustpilot.com/ | Trusted review-entity profile |
 | X | https://x.com/ | Fast-indexed, widely cross-referenced |
+
+**Personal brands use personal profiles.** For a person entity, the
+corroboration set is the person's own accounts: LinkedIn, X, Instagram,
+Facebook, YouTube, GitHub, Medium, plus the sites they founded. The Org and
+Crunchbase are secondary for a person. Each account's website/link field must
+be the Entity Home URL (`/about/<name>/`), not the homepage. That field is the
+cheapest loop to close and the one most often left pointing at `/`.
 
 **Checking the loop:** fetch each `sameAs` target and confirm it links back to
 the Entity Home URL. Two hosts must be special-cased — **LinkedIn returns `999`
@@ -277,6 +322,7 @@ ENTITY AUDIT — <entity name> @ <site>
 12  Description follows Step 4 rules          PASS/FAIL
 13  KGMID present                             FOUND/NOT-FOUND  <kgmid, score>
 14  Google's url == Entity Home               PASS/FAIL  <what Google holds>
+15  Entity Home within budget, facets single-sourced  PASS/FAIL/N-A
 
 VERDICT: <n> failing
 ```

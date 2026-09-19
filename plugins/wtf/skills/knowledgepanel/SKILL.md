@@ -36,7 +36,7 @@ fill.
 
 **Read `references/entity-method.md` (next to this file) now and execute
 it.** It owns the Entity Home rule, the corroboration loop, the schema
-table, the copywriting rules, the tools, the sequencing, and the 14-row
+table, the copywriting rules, the tools, the sequencing, and the 15-row
 report card. Do not paraphrase it from memory.
 
 ## Modes
@@ -45,7 +45,7 @@ Invoked as `/wtf:knowledgepanel [mode] [target]`. Default is `audit`.
 
 | Mode | Does |
 |---|---|
-| `audit` | Read-only report card against the 14-row checklist. Never edits. |
+| `audit` | Read-only report card against the 15-row checklist. Never edits. |
 | `copy` | Writes the 150-word executive summary and modular blocks to the method's Step 4 rules. |
 | `kgmid` | Runs the lookup script below. |
 | `fix` | Applies the audit's findings. **Only after an audit has run** — never fix what you have not measured. |
@@ -108,9 +108,15 @@ exact split this skill exists to catch. Preserve any existing `@id`
 verbatim, because changing one orphans every piece of corroboration built
 against it.
 
+When the Entity Home carries overflow (full race, press, publication, or
+career lists), move it into nested facet pages backed by one data file each,
+per the method file's "Facet pages" section. Never delete a claim during the
+move without the operator's OK. A claim that can't be matched to a record
+goes on the open-items list, not onto either page.
+
 ## Output
 
-Emit the 14-row report card from the method file, then:
+Emit the 15-row report card from the method file, then:
 
 ```
 VERDICT: <n> failing — <structural blockers first, if any>
@@ -118,7 +124,7 @@ VERDICT: <n> failing — <structural blockers first, if any>
 
 Rows 1, 5 and 6 (Entity Home exists, stable `@id`, `url` → Entity Home)
 are structural. A FAIL on any of them makes the rest moot, so say that
-rather than handing back fourteen equal-weight items:
+rather than handing back fifteen equal-weight items:
 
 > "Entity setup incomplete. `<entity>` fails: [rows]. Entity Home and a
 > stable `@id` have to be right before corroboration is worth building —
