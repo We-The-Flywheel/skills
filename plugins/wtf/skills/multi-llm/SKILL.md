@@ -1,5 +1,5 @@
 ---
-name: multillm
+name: multi-llm
 description: Use when you need diverse AI perspectives on architecture decisions, code review, or complex questions - runs a 3-stage deliberation (diverge, rank, synthesize) across 5 models for consensus answers. Also runs Content Truth-Check Mode to fact-check claims in content drafts before publishing. Triggers on "ask multiple models", "get consensus", "llm council", "fact-check this draft", "truth check", or any request for multi-model review.
 department: research
 ---
@@ -132,23 +132,24 @@ Authoritative list: the `MODELS` dict in `council.py` — this section mirrors i
 
 ```bash
 # From Claude Code
-/multillm "Your question here"
+/wtf:multi-llm "Your question here"
 
 # Direct
-python3 skills/multillm/council.py "Should we use Redis or Memcached?"
-bash skills/multillm/council.sh "Best database for time-series data?"
+python3 skills/multi-llm/council.py "Should we use Redis or Memcached?"
+bash skills/multi-llm/council.sh "Best database for time-series data?"
 ```
 
 ## Requirements
 
-- `OPENROUTER_API_KEY` in environment or `~/.env.shared`
+- `OPENROUTER_API_KEY` in environment or `~/.env.shared`, or an OpenAI-compatible gateway: `AI_GATEWAY_OPENROUTER_URL` + `MULTILLM_GATEWAY_TOKEN` (used when both are set)
+- Optional: `MULTILLM_USAGE_LOG` sets where per-run token usage is appended (default: `usage_log.jsonl` next to `council.py`)
 - Python 3.10+ (stdlib only, no pip install needed)
 
 ## Error Handling
 
 **IMPORTANT:** If the script fails (exit code 2), report the error message to the user verbatim. Do NOT silently fall back to using Claude subagents or any alternative approach. Common errors:
 - **HTTP 402**: OpenRouter has no credits — tell the user to top up at https://openrouter.ai/settings/credits
-- **HTTP 401**: API key invalid — tell the user to check OPENROUTER_API_KEY
+- **HTTP 401**: API key invalid — tell the user to check OPENROUTER_API_KEY (or MULTILLM_GATEWAY_TOKEN when using a gateway)
 - **HTTP 429**: Rate limited — tell the user to wait and retry
 
 ## Output
