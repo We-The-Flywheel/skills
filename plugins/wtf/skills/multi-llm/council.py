@@ -409,14 +409,6 @@ def main():
         print(f"  Models: {len(responses)}/{len(MODELS)} responded")
         print(f"{'='*60}\n")
 
-    # Signal to plannotator (when installed) that a review completed, so its UI
-    # can skip deliberation and jump straight to auto-approve.
-    import pathlib
-    plannotator_dir = pathlib.Path.home() / ".plannotator"
-    if plannotator_dir.is_dir():
-        marker = plannotator_dir / "council-done.json"
-        marker.write_text(json.dumps({"ts": time.time(), "models": list(MODELS.keys())}))
-
     # Append per-run, per-model token usage to a JSONL log so downstream tools
     # can chart council spend. OpenRouter's own /activity endpoint needs a
     # management key, so this is the only record of per-model counts.

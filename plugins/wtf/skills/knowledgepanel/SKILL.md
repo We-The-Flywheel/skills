@@ -36,7 +36,7 @@ fill.
 
 **Read `references/entity-method.md` (next to this file) now and execute
 it.** It owns the Entity Home rule, the corroboration loop, the schema
-table, the copywriting rules, the tools, the sequencing, and the 15-row
+table, the copywriting rules, the tools, the sequencing, and the 16-row
 report card. Do not paraphrase it from memory.
 
 ## Modes
@@ -45,7 +45,7 @@ Invoked as `/wtf:knowledgepanel [mode] [target]`. Default is `audit`.
 
 | Mode | Does |
 |---|---|
-| `audit` | Read-only report card against the 15-row checklist. Never edits. |
+| `audit` | Read-only report card against the 16-row checklist. Never edits. |
 | `copy` | Writes the 150-word executive summary and modular blocks to the method's Step 4 rules. |
 | `kgmid` | Runs the lookup script below. |
 | `fix` | Applies the audit's findings. **Only after an audit has run** — never fix what you have not measured. |
@@ -116,7 +116,7 @@ goes on the open-items list, not onto either page.
 
 ## Output
 
-Emit the 15-row report card from the method file, then:
+Emit the 16-row report card from the method file, then:
 
 ```
 VERDICT: <n> failing — <structural blockers first, if any>

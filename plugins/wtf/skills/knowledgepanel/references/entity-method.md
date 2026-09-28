@@ -77,7 +77,9 @@ specific to the facet, and schema whose `about` / `mainEntity` references the
 entity `@id`, never a second Person node.
 
 **Typical person facets:** competition results, publications, press coverage,
-career announcements, speaking, podcast appearances, patents. Create a facet
+career announcements, speaking, podcast appearances, patents, photos (a
+captioned photos page of the person; Edward Sturm reports it supplied about a
+quarter of his Google Images results for his name, ahead of namesakes). Create a facet
 only when there is real, dated material to list. A facet page with one item is
 weaker than a line on the Entity Home.
 
@@ -118,13 +120,34 @@ inspection and is not.
 
 | Platform | URL | Why it carries weight |
 |---|---|---|
-| Wikidata | https://www.wikidata.org/ | Structured, open, directly ingested into knowledge graphs |
+| Wikidata | https://www.wikidata.org/ | Structured, open, directly ingested into knowledge graphs. **Only once notable**, see below |
 | Crunchbase | https://www.crunchbase.com/ | Trusted company and founder data |
 | LinkedIn | https://www.linkedin.com/ | Highest-confidence person↔organization employment link |
 | The Org | https://theorg.com/ | Trusted organizational charts and role data |
 | Muck Rack | https://muckrack.com/ | Trusted journalist and author profiles |
-| Trustpilot | https://www.trustpilot.com/ | Trusted review-entity profile |
+| Trustpilot | https://www.trustpilot.com/ | Trusted review-entity profile. A national review platform works too; have at least one, including persons who sell a service |
 | X | https://x.com/ | Fast-indexed, widely cross-referenced |
+
+Barnard on this set: with the Entity Home, these profiles and one review
+platform, "you would expect to get a knowledge panel in a few months, three
+months to a year", no guarantee.
+
+**Industry and government databases** count too, where the entity qualifies:
+IMDb, ORCID, a national library record (Barnard's is at the French BNF),
+company registers. "Government ones are the really strong ones."
+
+**Wikidata timing.** "One big mistake people make is to create a Wikidata page
+too early", before there is proof the entity is notable. A deleted item is a
+worse signal than none. Create it once the identifiers exist (Crunchbase,
+IMDb/ORCID, a registry or library record, press), and fill its identifiers
+section carefully: that section is what makes the item worth having. Until
+then, a missing Wikidata id is an expected state, not an audit failure.
+**Wikipedia** is more dangerous: no self-editing, only through an editor with
+community standing, disclosed.
+
+**Keep every source current.** When the story changes (new title, new company,
+new summary), update the profile, the page and the Crunchbase record in the
+same pass. Barnard calls this the most important maintenance step.
 
 **Personal brands use personal profiles.** For a person entity, the
 corroboration set is the person's own accounts: LinkedIn, X, Instagram,
@@ -197,6 +220,19 @@ organizations. Each one is an anchor point that maps your new entity onto
 existing structure. An entity described only in novel terms has nothing to
 attach to.
 
+### Claim, Frame, Proof
+
+Kalicube's stated method for every piece of copy: make the **claim** (who you
+are, what you are best at), **frame** it in the words you want the machine to
+repeat, then link the **proof** (third-party page, award, press, registry
+record). A claim with no linked proof is self-declaration, which has a
+stability ceiling that third-party proof does not.
+
+Barnard's extension of E-E-A-T is **N-E-E-A-T-T**: Experience, Expertise,
+Authoritativeness, Trustworthiness plus **Notability** and **Transparency**.
+Notability is third-party proof and the source set in Step 2. Transparency is
+contact, registration and legal facts on the Entity Home.
+
 ### The 150-word executive summary
 
 150 words because that is what fits Crunchbase's primary description field.
@@ -252,6 +288,13 @@ and buyers take them; Barnard calls this the rabbit hole of due diligence. Run
 the entity question, then the three or four follow-ups the engine itself
 suggests, and record any answer that is wrong, vague or pulls in a namesake.
 Each one points at a missing fact on the Entity Home or a missing proof link.
+
+Barnard's model for why one setup serves every surface: the **algorithmic
+trinity**, search engines, knowledge graphs and LLM chatbots, all read the same
+underlying data. Control the Entity Home and the source set and you control
+what all three repeat. His funnel stages: understandability (the Knowledge
+Graph gets the facts right) gives control, credibility gives influence,
+deliverability gives visibility. Fix understandability first.
 
 The two APIs answer different questions and disagreement between them is
 itself the finding. The graph can hold an entity that Google declines to render
@@ -317,6 +360,8 @@ Order matters. Doing these out of order wastes the corroboration.
 | Different `@id` per site for the same person | The split this method exists to prevent |
 | Expecting results in days | It is corroboration over time, not a ranking change |
 | Scoring a LinkedIn `999` or Crunchbase `403` as a broken link | Permanent false negative |
+| Creating a Wikidata item before notability can be proven | Deletion, a worse signal than no item |
+| Self-declared "best X" lists and "we beat competitor Y" pages | Barnard's opinion, not proven: no longer carry weight and may hurt the brand in LLMs. Earned best-of mentions on third-party sites are the goal |
 
 ---
 
@@ -339,6 +384,7 @@ ENTITY AUDIT — <entity name> @ <site>
 13  KGMID present                             FOUND/NOT-FOUND  <kgmid, score>
 14  Google's url == Entity Home               PASS/FAIL  <what Google holds>
 15  Entity Home within budget, facets single-sourced  PASS/FAIL/N-A
+16  Source set: Crunchbase, The Org, review platform, industry/gov databases, Wikidata-when-notable  PASS/FAIL/MANUAL
 
 VERDICT: <n> failing
 ```
