@@ -133,6 +133,11 @@ Crunchbase are secondary for a person. Each account's website/link field must
 be the Entity Home URL (`/about/<name>/`), not the homepage. That field is the
 cheapest loop to close and the one most often left pointing at `/`.
 
+**Temporal proof.** Third-party citations spread across many years show a claim
+is long-standing, which a burst of recent mentions cannot. When the Entity Home
+frames experience ("since 2004"), link proof from across that span, not only
+the latest coverage.
+
 **Checking the loop:** fetch each `sameAs` target and confirm it links back to
 the Entity Home URL. Two hosts must be special-cased — **LinkedIn returns `999`
 and Crunchbase returns `403` to automated requests**. Those are bot-blocks, not
@@ -239,6 +244,14 @@ that separates a named proper noun (an entity) from a generic action.
 | Does Google's graph hold my entity, under what KGMID, at what confidence, and pointing at which URL? | Google Knowledge Graph Search API — `kgmid_lookup.py` | Free |
 | What does the panel actually *render* in the SERP? | DataForSEO SERP `knowledge_graph` item — `kgmid_lookup.py --source serp` | Paid per call |
 | Manual KGMID lookup and confidence score | Kalicube Knowledge Graph Explorer, below | Free |
+| What do AI engines say about the entity? | Ask ChatGPT, Google AI Mode, Gemini, Perplexity, Copilot "who is <entity>", then the follow-ups below | Manual |
+
+**Follow the due-diligence chain.** A prospect rarely stops at "who is X". AI
+interfaces suggest follow-ups ("is X legit", "X vs <competitor>", "X reviews")
+and buyers take them; Barnard calls this the rabbit hole of due diligence. Run
+the entity question, then the three or four follow-ups the engine itself
+suggests, and record any answer that is wrong, vague or pulls in a namesake.
+Each one points at a missing fact on the Entity Home or a missing proof link.
 
 The two APIs answer different questions and disagreement between them is
 itself the finding. The graph can hold an entity that Google declines to render
@@ -282,7 +295,10 @@ Order matters. Doing these out of order wastes the corroboration.
    to the Entity Home URL.
 5. **Add `sameAs`** for each profile, closing the loop.
 6. **Wait.** Weeks to months. This is corroboration accumulating, not a
-   deploy taking effect.
+   deploy taking effect. A brand-new, unique brand name takes roughly 6 months
+   before AI engines hold it at all. Barnard treats the panel as the leading
+   indicator: AI engines start recommending the entity roughly 3 months after
+   it appears.
 7. **Measure** with Step 5, re-measure periodically, and never change the `@id`.
 
 ---
