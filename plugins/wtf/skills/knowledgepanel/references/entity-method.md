@@ -178,7 +178,7 @@ the exact split this whole exercise prevents.
 | Property | Requirement |
 |---|---|
 | `@id` | **The load-bearing one.** A stable, permanent URI (e.g. `https://example.com/#jane-doe`). Never change it. Every site that references this entity uses this same string — that is what makes one identity out of several sites |
-| `url` | Absolute URL of the Entity Home |
+| `url` | Persons: absolute URL of the Entity Home. Organizations: the website homepage, per Google's own definition ("the URL of the website of your organization"); tie the About page to the entity with `AboutPage.mainEntity` instead |
 | `name`, `givenName`, `familyName` | Exact, consistently capitalized |
 | `description` | The 150-word executive summary from Step 4 |
 | `disambiguatingDescription` | **Required if any namesake exists.** One explicit sentence separating you from them |
@@ -333,7 +333,8 @@ Order matters. Doing these out of order wastes the corroboration.
 1. **Build or fix the Entity Home** — nothing else works until one URL is the
    answer.
 2. **Write the 150-word summary** to Step 4's rules.
-3. **Ship the schema** with a permanent `@id`, pointing `url` at the Entity Home.
+3. **Ship the schema** with a permanent `@id`, pointing `url` at the Entity Home
+   (organizations: the homepage, with the About page's `mainEntity` on the `@id`).
 4. **Populate external profiles** with the identical summary, each linking back
    to the Entity Home URL.
 5. **Add `sameAs`** for each profile, closing the loop.
@@ -374,7 +375,7 @@ ENTITY AUDIT — <entity name> @ <site>
  3  Entity Home reachable from nav/body       PASS/FAIL
  4  Single entity node, no duplicates         PASS/FAIL  <count>
  5  Stable @id present                        PASS/FAIL  <@id>
- 6  url → Entity Home                         PASS/FAIL
+ 6  url → Entity Home (org: homepage)        PASS/FAIL
  7  sameAs complete                           PASS/FAIL  <n profiles>
  8  Corroboration loop closed                 PASS/FAIL/MANUAL  <n/n>
  9  disambiguatingDescription                 PASS/FAIL/N-A

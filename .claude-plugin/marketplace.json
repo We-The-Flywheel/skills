@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Reusable Claude Code skills maintained by The Flywheel.",
-    "version": "0.23.2"
+    "version": "0.23.3"
   },
   "plugins": [
     {
