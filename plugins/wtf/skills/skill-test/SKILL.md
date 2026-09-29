@@ -1,5 +1,5 @@
 ---
-name: skill-writing
+name: skill-test
 description: Use when authoring or editing a Claude Code skill (SKILL.md) and you need to test whether its guidance actually works — run pressure scenarios, a no-guidance control, and wording micro-tests before deploying, rather than trusting the doc reads clearly
 department: engineering
 ---
@@ -279,8 +279,8 @@ wc -w skills/path/SKILL.md
 **When writing documentation that references other skills:**
 
 Use skill name only, with explicit requirement markers:
-- ✅ Good: `**REQUIRED SUB-SKILL:** Use wtf:verification`
-- ✅ Good: `**REQUIRED BACKGROUND:** You MUST understand wtf:diagnosing-bugs`
+- ✅ Good: `**REQUIRED SUB-SKILL:** Use wtf:verify-claim`
+- ✅ Good: `**REQUIRED BACKGROUND:** You MUST understand wtf:diagnose`
 - ❌ Bad: `See skills/testing/test-driven-development` (unclear if required)
 - ❌ Bad: `@skills/testing/test-driven-development/SKILL.md` (force-loads, burns context)
 
@@ -397,7 +397,7 @@ Different skill types need different test approaches:
 
 ### Discipline-Enforcing Skills (rules/requirements)
 
-**Examples:** TDD, verification, designing-before-coding
+**Examples:** TDD, verify-claim, designing-before-coding
 
 **Test with:**
 - Academic questions: Do they understand the rules?

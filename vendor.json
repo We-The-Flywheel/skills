@@ -46,12 +46,13 @@
       "notes": "Retired 2026-08-22: superseded by obra-superpowers 'skill-writing' (see that skill's notes), which covers the same creating/editing-a-skill trigger without competing. No longer independently invocable -- files relocated to plugins/wtf/skills/_archive/writing-for-agents/ (not plugins/wtf/skills/writing-for-agents/) to preserve the MIT-attributed vendored content per NOTICE. 'vendor-sync.sh pull writing-for-agents' will fail with 'does not exist locally' against the old path -- expected, do not re-adopt at the old location."
     },
     {
-      "name": "diagnosing-bugs",
+      "name": "diagnose",
       "source": "mattpocock-skills",
       "upstream_path": "skills/engineering/diagnosing-bugs",
       "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       "last_synced": "2026-08-22",
-      "local_modifications": false
+      "local_modifications": true,
+      "notes": "Renamed locally from upstream 'diagnosing-bugs' to 'diagnose'."
     },
     {
       "name": "grilling",
@@ -62,31 +63,31 @@
       "local_modifications": false
     },
     {
-      "name": "skill-writing",
+      "name": "skill-test",
       "source": "obra-superpowers",
       "upstream_path": "skills/writing-skills",
       "pinned_sha": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
       "last_synced": "2026-08-22",
       "local_modifications": true,
-      "notes": "Renamed locally from upstream 'writing-skills' to 'skill-writing' (supersedes the retired mattpocock writing-for-agents skill; see plugins/wtf/skills/_archive/writing-for-agents/). Post-adopt edits: deleted anthropic-best-practices.md (Anthropic's own docs redistributed under Jesse Vincent's MIT license -- not covered by that license, so it can't be vendored) and its SKILL.md reference; de-namespaced 4 'superpowers:test-driven-development'/'superpowers:systematic-debugging' cross-refs (upstream skills we did not adopt) into self-contained explanations or wtf: namespace examples; rewrote description to differentiate from the retired writing-for-agents (testing whether skill guidance works, not general document authoring)."
+      "notes": "Renamed locally from upstream 'writing-skills' to 'skill-test' (previously renamed to 'skill-writing'; supersedes the retired mattpocock writing-for-agents skill; see plugins/wtf/skills/_archive/writing-for-agents/). Post-adopt edits: deleted anthropic-best-practices.md (Anthropic's own docs redistributed under Jesse Vincent's MIT license -- not covered by that license, so it can't be vendored) and its SKILL.md reference; de-namespaced 4 'superpowers:test-driven-development'/'superpowers:systematic-debugging' cross-refs (upstream skills we did not adopt) into self-contained explanations or wtf: namespace examples; rewrote description to differentiate from the retired writing-for-agents (testing whether skill guidance works, not general document authoring)."
     },
     {
-      "name": "verification",
+      "name": "verify-claim",
       "source": "obra-superpowers",
       "upstream_path": "skills/verification-before-completion",
       "pinned_sha": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
       "last_synced": "2026-08-22",
       "local_modifications": true,
-      "notes": "Renamed locally from upstream 'verification-before-completion' to 'verification'. Post-adopt edit: appended a line to the description distinguishing it from /release-gate (lightweight per-claim reflex vs. full evidence-gate ceremony)."
+      "notes": "Renamed locally from upstream 'verification-before-completion' to 'verify-claim' (previously renamed to 'verification'). Post-adopt edit: appended a line to the description distinguishing it from /release-gate (lightweight per-claim reflex vs. full evidence-gate ceremony)."
     },
     {
-      "name": "receiving-code-review",
+      "name": "review-feedback",
       "source": "obra-superpowers",
       "upstream_path": "skills/receiving-code-review",
       "pinned_sha": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
       "last_synced": "2026-08-22",
       "local_modifications": true,
-      "notes": "Name unchanged from upstream. Post-adopt edit: de-personalized voice (upstream addressed a named human partner directly; rewritten to neutral 'the user'/'User:'), and softened the blanket anti-gratitude rule (upstream banned any expression of thanks outright; rewritten to warn against empty praise standing in for substance) -- substantive content (verify-before-implementing, clarify-all-items-first, YAGNI grep-before-building check) unchanged."
+      "notes": "Renamed locally from upstream 'receiving-code-review' to 'review-feedback'. Post-adopt edit: de-personalized voice (upstream addressed a named human partner directly; rewritten to neutral 'the user'/'User:'), and softened the blanket anti-gratitude rule (upstream banned any expression of thanks outright; rewritten to warn against empty praise standing in for substance) -- substantive content (verify-before-implementing, clarify-all-items-first, YAGNI grep-before-building check) unchanged."
     },
     {
       "name": "improve-codebase-architecture",
