@@ -17,6 +17,12 @@
       "license": "MIT",
       "license_verified": "2026-08-22",
       "license_file_hash": "a37e0e9697144819e1d965176ac4ae5bc3fa02d11e7812036bbcadf6dafe2400"
+    },
+    "humanlayer": {
+      "repo": "https://github.com/humanlayer/humanlayer",
+      "license": "Apache-2.0",
+      "license_verified": "2026-09-29",
+      "license_file_hash": "a22be4045580cf9fd55278e4a42f015aaaa828a859cef7ea19733d25da11755e"
     }
   },
   "skills": [
@@ -81,6 +87,119 @@
       "last_synced": "2026-08-22",
       "local_modifications": true,
       "notes": "Name unchanged from upstream. Post-adopt edit: de-personalized voice (upstream addressed a named human partner directly; rewritten to neutral 'the user'/'User:'), and softened the blanket anti-gratitude rule (upstream banned any expression of thanks outright; rewritten to warn against empty praise standing in for substance) -- substantive content (verify-before-implementing, clarify-all-items-first, YAGNI grep-before-building check) unchanged."
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/engineering/improve-codebase-architecture",
+      "pinned_sha": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "One edit: the Skill-tool call to \"grilling\" is repointed to \"wtf:grilling\" so it resolves to this plugin's copy."
+    },
+    {
+      "name": "codebase-design",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/engineering/codebase-design",
+      "pinned_sha": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+      "last_synced": "2026-09-29",
+      "local_modifications": false
+    },
+    {
+      "name": "tdd",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/engineering/tdd",
+      "pinned_sha": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+      "last_synced": "2026-09-29",
+      "local_modifications": false
+    },
+    {
+      "name": "domain-modeling",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/engineering/domain-modeling",
+      "pinned_sha": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+      "last_synced": "2026-09-29",
+      "local_modifications": false
+    },
+    {
+      "name": "research_codebase",
+      "source": "humanlayer",
+      "upstream_path": ".claude/commands/research_codebase_nt.md",
+      "local_path": "plugins/wtf/commands/research_codebase.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file command, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Upstream thoughts/ paths mapped to docs/research, docs/plans, docs/tickets; thoughts-locator/thoughts-analyzer and the thoughts sync step replaced with reading docs/ and DECISIONS.md."
+    },
+    {
+      "name": "create_plan",
+      "source": "humanlayer",
+      "upstream_path": ".claude/commands/create_plan_generic.md",
+      "local_path": "plugins/wtf/commands/create_plan.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file command, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Upstream thoughts/ paths mapped to docs/research, docs/plans, docs/tickets; thoughts-locator/thoughts-analyzer and the thoughts sync step replaced with reading docs/ and DECISIONS.md."
+    },
+    {
+      "name": "iterate_plan",
+      "source": "humanlayer",
+      "upstream_path": ".claude/commands/iterate_plan_nt.md",
+      "local_path": "plugins/wtf/commands/iterate_plan.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file command, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Upstream thoughts/ paths mapped to docs/research, docs/plans, docs/tickets; thoughts-locator/thoughts-analyzer and the thoughts sync step replaced with reading docs/ and DECISIONS.md."
+    },
+    {
+      "name": "implement_plan",
+      "source": "humanlayer",
+      "upstream_path": ".claude/commands/implement_plan.md",
+      "local_path": "plugins/wtf/commands/implement_plan.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file command, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Upstream thoughts/ paths mapped to docs/research, docs/plans, docs/tickets; thoughts-locator/thoughts-analyzer and the thoughts sync step replaced with reading docs/ and DECISIONS.md."
+    },
+    {
+      "name": "validate_plan",
+      "source": "humanlayer",
+      "upstream_path": ".claude/commands/validate_plan.md",
+      "local_path": "plugins/wtf/commands/validate_plan.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file command, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Content identical to upstream."
+    },
+    {
+      "name": "codebase-locator",
+      "source": "humanlayer",
+      "upstream_path": ".claude/agents/codebase-locator.md",
+      "local_path": "plugins/wtf/agents/codebase-locator.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file agent, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Content identical to upstream."
+    },
+    {
+      "name": "codebase-analyzer",
+      "source": "humanlayer",
+      "upstream_path": ".claude/agents/codebase-analyzer.md",
+      "local_path": "plugins/wtf/agents/codebase-analyzer.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file agent, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Content identical to upstream."
+    },
+    {
+      "name": "codebase-pattern-finder",
+      "source": "humanlayer",
+      "upstream_path": ".claude/agents/codebase-pattern-finder.md",
+      "local_path": "plugins/wtf/agents/codebase-pattern-finder.md",
+      "pinned_sha": "99abe673498cf8bdcd5f989aebe9406a27185b3b",
+      "last_synced": "2026-09-29",
+      "local_modifications": true,
+      "notes": "Single-file agent, not a skill dir: local_modifications is true so vendor-verify (which diffs plugins/wtf/skills/<name>) skips it. Content identical to upstream."
     }
   ]
 }

@@ -103,3 +103,70 @@ Derived from "skills/productivity/grilling" in https://github.com/mattpocock/ski
   Source:  https://github.com/mattpocock/skills
   License: MIT
 
+
+-------------------------------------------------------------------------------
+skills/improve-codebase-architecture
+-------------------------------------------------------------------------------
+Derived from "skills/engineering/improve-codebase-architecture" in https://github.com/mattpocock/skills (pinned at d81f3a183412e71a5b1e84ca21bc1a35eea03a60).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT
+
+Modifications by The Flywheel: the Skill-tool call to "grilling" is repointed
+to "wtf:grilling" so it resolves to this plugin's copy.
+
+-------------------------------------------------------------------------------
+skills/codebase-design
+-------------------------------------------------------------------------------
+Derived from "skills/engineering/codebase-design" in https://github.com/mattpocock/skills (pinned at d81f3a183412e71a5b1e84ca21bc1a35eea03a60).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT
+
+-------------------------------------------------------------------------------
+skills/tdd
+-------------------------------------------------------------------------------
+Derived from "skills/engineering/tdd" in https://github.com/mattpocock/skills (pinned at d81f3a183412e71a5b1e84ca21bc1a35eea03a60).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT
+
+-------------------------------------------------------------------------------
+skills/domain-modeling
+-------------------------------------------------------------------------------
+Derived from "skills/engineering/domain-modeling" in https://github.com/mattpocock/skills (pinned at d81f3a183412e71a5b1e84ca21bc1a35eea03a60).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT
+
+-------------------------------------------------------------------------------
+commands/{research_codebase,create_plan,iterate_plan,implement_plan,validate_plan}.md
+agents/{codebase-locator,codebase-analyzer,codebase-pattern-finder}.md
+-------------------------------------------------------------------------------
+Derived from the Research-Plan-Implement workflow in the .claude/ directory of
+https://github.com/humanlayer/humanlayer (pinned at 99abe673498cf8bdcd5f989aebe9406a27185b3b).
+Upstream files: commands/research_codebase_nt.md, create_plan_generic.md,
+iterate_plan_nt.md, implement_plan.md, validate_plan.md, and
+agents/codebase-locator.md, codebase-analyzer.md, codebase-pattern-finder.md.
+  Source:  https://github.com/humanlayer/humanlayer
+  License: Apache License, Version 2.0 (full text: LICENSES/Apache-2.0.txt)
+
+  Apache Software License 2.0
+
+  Copyright (c) 2024, humanlayer Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+Modifications by The Flywheel: upstream's thoughts/ directory paths are mapped
+to docs/research, docs/plans and docs/tickets; the thoughts-locator and
+thoughts-analyzer agents and the thoughts sync step are replaced by reading
+docs/ and DECISIONS.md directly. The upstream research_codebase_nt,
+create_plan_generic and iterate_plan_nt commands are renamed to
+research_codebase, create_plan and iterate_plan. validate_plan and the three
+agents are unmodified.

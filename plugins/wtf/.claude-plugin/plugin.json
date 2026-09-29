@@ -1,8 +1,8 @@
 {
   "name": "wtf",
   "displayName": "Flywheel Skills",
-  "version": "0.23.3",
-  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, og-meta-check, moodboard, website-build, longterm, pangram, ultrahumanizer, riff, diagnosing-bugs, grilling, skill-writing, verification, receiving-code-review, knowledgepanel.",
+  "version": "0.24.0",
+  "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm, visual-qa, premortem, end, idiocy-check, release-gate, content-gate, og-meta-check, moodboard, website-build, longterm, pangram, ultrahumanizer, riff, diagnosing-bugs, grilling, skill-writing, verification, receiving-code-review, knowledgepanel, mission, improve-codebase-architecture, codebase-design, tdd, domain-modeling; RPI commands (research_codebase, create_plan, iterate_plan, implement_plan, validate_plan) and codebase-locator/analyzer/pattern-finder agents.",
   "author": {
     "name": "The Flywheel",
     "url": "https://github.com/We-The-Flywheel"
@@ -69,6 +69,13 @@
     "knowledge-panel",
     "entity-seo",
     "kgmid",
-    "knowledge-graph"
+    "knowledge-graph",
+    "mission",
+    "multi-agent",
+    "validation-contract",
+    "tdd",
+    "architecture",
+    "domain-modeling",
+    "research-plan-implement"
   ]
 }
