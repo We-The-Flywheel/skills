@@ -31,11 +31,19 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:longterm`
 - `wtf:pangram`
 - `wtf:ultrahumanizer`
-- `wtf:diagnosing-bugs`
+- `wtf:diagnose`
 - `wtf:grilling`
-- `wtf:skill-writing`
-- `wtf:verification`
-- `wtf:receiving-code-review`
+- `wtf:skill-test`
+- `wtf:verify-claim`
+- `wtf:review-feedback`
+- `wtf:axi`
+- `wtf:debug`
+- `wtf:memory-consolidate`
+- `wtf:sop`
+- `wtf:lavish`
+- `wtf:screamingfrog-check`
+- `wtf:video-analyze`
+- `wtf:video-use`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -51,7 +59,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multi-llm`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-website-build`, `wtf-longterm`, `wtf-pangram`, `wtf-ultrahumanizer`, `wtf-diagnosing-bugs`, `wtf-grilling`, `wtf-skill-writing`, `wtf-verification`, `wtf-receiving-code-review`, `wtf-knowledgepanel`) so they never clash
+(`wtf-humanizer`, `wtf-multi-llm`, `wtf-visual-qa`, `wtf-premortem`, `wtf-end`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-website-build`, `wtf-longterm`, `wtf-pangram`, `wtf-ultrahumanizer`, `wtf-diagnose`, `wtf-grilling`, `wtf-skill-test`, `wtf-verify-claim`, `wtf-review-feedback`, `wtf-knowledgepanel`, `wtf-axi`, `wtf-debug`, `wtf-memory-consolidate`, `wtf-sop`, `wtf-lavish`, `wtf-screamingfrog-check`, `wtf-video-analyze`, `wtf-video-use`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
@@ -78,16 +86,24 @@ flat under `plugins/wtf/skills/` — the categories below are organizational, no
 | Decisions | **longterm** | When several approaches are on the table, picks and proceeds with the one that's correct for the long term — scoring each on root-cause correctness, maintainability, robustness, reversibility, and total cost over time, accepting more effort now to avoid compounding debt. Guards against over-engineering and stops to confirm on auth/schema/billing/infra/security choices. | None |
 | QA | **pangram** | Scores text for AI-generated content via the Pangram Labs API — returns overall AI fraction (0–100%), prediction label, and per-sentence highlights, with a cost estimate per call. Standalone QA tool, not a publishing gate step: the score reflects how text was produced, and editing AI-origin text does not move it. | `PANGRAM_API_KEY` in your environment |
 | Writing | **ultrahumanizer** | Human-in-the-loop loop to a passing Pangram verdict: scores the draft, maps flagged ~380-word windows back to passages, reduces them to content bullets, and coaches the *human* to rewrite those passages in their own words — then re-scores until pass or honest stall. The agent never regenerates flagged prose itself (empirically, agent rewrites don't move Pangram). Builds on `wtf:humanizer` + `wtf:pangram`. | `PANGRAM_API_KEY` in your environment |
-| Debugging | **diagnosing-bugs** | Discipline for hard bugs and performance regressions: redact-first artifact capture, phase-gated diagnosis loop, and an optional human-in-the-loop script (`scripts/hitl-loop.template.sh`) for iterating with a human in the loop. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
+| Debugging | **diagnose** | Discipline for hard bugs and performance regressions: redact-first artifact capture, phase-gated diagnosis loop, and an optional human-in-the-loop script (`scripts/hitl-loop.template.sh`) for iterating with a human in the loop. Adopted (renamed from upstream `diagnosing-bugs`) from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
 | Decisions | **grilling** | Interviews the user relentlessly about a plan, decision, or idea until reaching shared understanding — maps the decision as a tree, works the frontier in numbered rounds with recommended answers, and won't move on until every branch is settled. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
-| Writing | **skill-writing** | TDD applied to process documentation: write pressure scenarios, watch an agent fail without the skill (RED), write the skill (GREEN), close loopholes (REFACTOR). Covers SKILL.md structure, discovery optimization, flowchart usage, and wording micro-tests against a no-guidance control before running full pressure scenarios. Use when authoring or editing a skill and testing whether its guidance actually holds under pressure — not a general writing-for-agents reference. Adopted (renamed from upstream `writing-skills`) from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
-| QA | **verification** | Discipline for claiming work is done: run the actual verification commands and read their output before saying "fixed", "passing", or "complete" — evidence before assertions, always. A lightweight per-claim reflex; pairs with `wtf:release-gate`'s full evidence-gate ceremony on larger diffs. Adopted (renamed from upstream `verification-before-completion`) from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
-| Workflow | **receiving-code-review** | Discipline for handling code review feedback: verify before implementing, ask before assuming, push back with technical reasoning instead of performative agreement, and grep-check YAGNI before building "proper" versions of unused features. Adopted from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
+| Writing | **skill-test** | TDD applied to process documentation: write pressure scenarios, watch an agent fail without the skill (RED), write the skill (GREEN), close loopholes (REFACTOR). Covers SKILL.md structure, discovery optimization, flowchart usage, and wording micro-tests against a no-guidance control before running full pressure scenarios. Use when authoring or editing a skill and testing whether its guidance actually holds under pressure — not a general writing-for-agents reference. Adopted (renamed from upstream `writing-skills`, then again locally) from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
+| QA | **verify-claim** | Discipline for claiming work is done: run the actual verification commands and read their output before saying "fixed", "passing", or "complete" — evidence before assertions, always. A lightweight per-claim reflex; pairs with `wtf:release-gate`'s full evidence-gate ceremony on larger diffs. Adopted (renamed from upstream `verification-before-completion`, then again locally) from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
+| Workflow | **review-feedback** | Discipline for handling code review feedback: verify before implementing, ask before assuming, push back with technical reasoning instead of performative agreement, and grep-check YAGNI before building "proper" versions of unused features. Adopted (renamed from upstream `receiving-code-review`) from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
 | Workflow | **mission** | Multi-agent build mode modeled on Factory AI's Missions (Luke Alvoeiro, "The Multi-Agent Architecture That Actually Ships"): the orchestrator plans with you and writes a validation contract of countable assertions before any code, fresh-context workers build one feature at a time, and separate scrutiny (lint, types, tests, code review) and user-testing (drives the real app) validators check each milestone. Unsatisfied assertions become follow-up features; every role transition leaves a structured handoff in `.mission/`. Replaces the former `autopilot` skill, which was merged into it. | None |
 | Engineering | **improve-codebase-architecture** | Finds deepening opportunities in a codebase (shallow modules, leaky seams) and walks you through one with `wtf:grilling`, keeping the domain model current as decisions land. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
 | Engineering | **codebase-design** | Shared vocabulary for designing deep modules: module, interface, depth, seam, adapter, leverage, locality, plus the deletion test and a design-it-twice pattern. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
 | Engineering | **tdd** | Test-driven development with red-green-refactor and integration tests, including guidance on what to mock. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
 | Engineering | **domain-modeling** | Builds and sharpens a project's domain model: GLOSSARY.md terms and ADRs. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
+| Engineering | **axi** | Agent eXperience Interface: ergonomic standards for building CLI tools that agents use via shell execution — token-efficient output (TOON), minimal default schemas, structured errors, ambient context via session hooks, and a fast `--version` path. Use when building, modifying, or reviewing any agent-facing CLI. | None |
+| Debugging | **debug** | Four-phase debugging framework — root cause investigation, pattern analysis, hypothesis testing, implementation — with an Iron Law against fixing symptoms before understanding the cause. Use on any bug, test failure, or unexpected behavior before proposing a fix. | None |
+| Ops | **memory-consolidate** | Reviews Claude Code's per-project memory files, verifies code-specific claims still hold (file paths, function names, config flags), removes stale entries, merges duplicates, and drafts new skill candidates from repeated patterns. | None |
+| Content | **sop** | Creates, edits, or reviews Standard Operating Procedures with one consistent structure (phases, verification, rollback) across projects. | None |
+| Productivity | **lavish** | Turns a plan, comparison, diagram, table, diff, or report into a rich, annotatable HTML artifact opened in the browser via the `lavish-axi` CLI, so a human can mark it up and send feedback back to the agent. | Node.js (`npx`) |
+| QA | **screamingfrog-check** | Headless Screaming Frog crawl for SEO and technical issues, extended with the checks SF's default exports miss (structured data, OG/Twitter tags, robots/sitemap health, accessibility, performance) and a prioritized fix plan. | Screaming Frog SEO Spider CLI |
+| Media | **video-analyze** | Analyzes video files without loading binary data into context: metadata (ffprobe), transcription (mlx-whisper), scene detection (PySceneDetect), and visual description of key frames (Ollama/LLaVA). | ffmpeg, ollama; `setup.sh` for the rest |
+| Media | **video-use** | Thin pointer to the upstream [browser-use/video-use](https://github.com/browser-use/video-use) skill for conversational video editing: transcribe, cut, color grade, overlay animations, burn subtitles. | Clones the upstream repo on first use |
 
 **Commands and agents (Research, Plan, Implement).** The plugin also ships HumanLayer's RPI workflow as slash commands: `/wtf:research_codebase` documents the code as it is into `docs/research/`, `/wtf:create_plan` writes a phased plan to `docs/plans/`, `/wtf:iterate_plan` revises it, `/wtf:implement_plan` executes it phase by phase, and `/wtf:validate_plan` checks the result against the plan's success criteria. They use three read-only subagents: `codebase-locator`, `codebase-analyzer` and `codebase-pattern-finder`. Adopted from [humanlayer/humanlayer](https://github.com/humanlayer/humanlayer) (Apache-2.0). Plugin install only: `scripts/install.sh` copies skills, not commands or agents.
 

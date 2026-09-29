@@ -39,21 +39,21 @@ Derived from "skills/productivity/writing-for-agents" in https://github.com/matt
   Source:  https://github.com/mattpocock/skills
   License: MIT
 
-Retired: superseded by skills/skill-writing (see below), which covers the same
+Retired: superseded by skills/skill-test (see below), which covers the same
 creating/editing-a-skill trigger. Files kept in place (not deleted) to preserve
 this MIT attribution; relocated from plugins/wtf/skills/writing-for-agents to
 plugins/wtf/skills/_archive/writing-for-agents so it is no longer discovered
 as an independently invocable skill.
 
 -------------------------------------------------------------------------------
-skills/skill-writing
+skills/skill-test
 -------------------------------------------------------------------------------
 Derived from "skills/writing-skills" in https://github.com/obra/superpowers (pinned at b36e0829c6d0140e93cfef2ca599b1b07d4a7797).
   Source:  https://github.com/obra/superpowers
   License: MIT
 
 Modifications by The Flywheel: renamed from upstream "writing-skills" to
-"skill-writing"; deleted anthropic-best-practices.md (Anthropic's own
+"skill-writing", then again locally to "skill-test"; deleted anthropic-best-practices.md (Anthropic's own
 documentation redistributed under this repo's MIT license, which does not
 cover Anthropic's content, so it could not be vendored) and removed the
 SKILL.md reference to it; de-namespaced "superpowers:test-driven-development"
@@ -64,25 +64,26 @@ writing-for-agents (testing whether a skill's guidance works, not general
 document authoring).
 
 -------------------------------------------------------------------------------
-skills/verification
+skills/verify-claim
 -------------------------------------------------------------------------------
 Derived from "skills/verification-before-completion" in https://github.com/obra/superpowers (pinned at b36e0829c6d0140e93cfef2ca599b1b07d4a7797).
   Source:  https://github.com/obra/superpowers
   License: MIT
 
 Modifications by The Flywheel: renamed from upstream
-"verification-before-completion" to "verification"; appended a line to the
+"verification-before-completion" to "verification", then again locally to "verify-claim"; appended a line to the
 description distinguishing this skill (a lightweight per-claim reflex) from
 wtf:release-gate's full evidence-gate ceremony on larger diffs.
 
 -------------------------------------------------------------------------------
-skills/receiving-code-review
+skills/review-feedback
 -------------------------------------------------------------------------------
 Derived from "skills/receiving-code-review" in https://github.com/obra/superpowers (pinned at b36e0829c6d0140e93cfef2ca599b1b07d4a7797).
   Source:  https://github.com/obra/superpowers
   License: MIT
 
-Modifications by The Flywheel: de-personalized the voice (upstream addressed
+Modifications by The Flywheel: renamed from upstream "receiving-code-review" to
+"review-feedback"; de-personalized the voice (upstream addressed
 a named human partner directly; rewritten to neutral "the user" / "User:")
 and softened the blanket anti-gratitude rule (upstream banned any expression
 of thanks outright; rewritten to warn against empty praise standing in for
@@ -90,11 +91,14 @@ substance). Substantive content (verify-before-implementing, clarify-all-items-
 first, the YAGNI grep-before-building check) unchanged.
 
 -------------------------------------------------------------------------------
-skills/diagnosing-bugs
+skills/diagnose
 -------------------------------------------------------------------------------
 Derived from "skills/engineering/diagnosing-bugs" in https://github.com/mattpocock/skills (pinned at 5b15a47f2d7150f545fbcacbfe381787fc0230dc).
   Source:  https://github.com/mattpocock/skills
   License: MIT
+
+Modifications by The Flywheel: renamed from upstream "diagnosing-bugs" to
+"diagnose".
 
 -------------------------------------------------------------------------------
 skills/grilling
