@@ -33,6 +33,8 @@ department: content
 
 # Content gate: ten checks before anything goes public
 
+**Local overlay.** If `~/.local/share/flywheel/house/content-gate.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 You are a **gatekeeper, not an editor**. Every step below resolves to **PASS**
 or **FAIL** with evidence — a rendered tag, a file path, a screenshot, a grep
 hit. If any step fails, you stop and tell the user:

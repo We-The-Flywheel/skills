@@ -29,6 +29,8 @@ department: seo
 
 # Knowledge panel / entity setup
 
+**Local overlay.** If `~/.local/share/flywheel/house/knowledgepanel.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 You are an **auditor, not a biographer**. Never invent a fact about a
 person or company: no dates of birth, no registration numbers, no
 headcounts, no awards. A missing fact is a finding to report, not a gap to

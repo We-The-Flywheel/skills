@@ -12,6 +12,8 @@ department: content
 
 # Pangram AI Detection Scorer
 
+**Local overlay.** If `~/.local/share/flywheel/house/pangram.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 Submit text to the Pangram Labs API and get back an AI-content score.
 
 ## API facts

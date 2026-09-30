@@ -6,6 +6,8 @@ department: ops
 
 # Memory Consolidation
 
+**Local overlay.** If `~/.local/share/flywheel/house/memory-consolidate.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 Review all memory files across projects, verify code-specific claims still hold, remove stale entries, merge duplicates. Keeps memory healthy so future sessions get accurate context.
 
 ## When to Use
