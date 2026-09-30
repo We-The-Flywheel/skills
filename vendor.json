@@ -41,9 +41,9 @@
       "upstream_path": "skills/productivity/writing-for-agents",
       "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       "last_synced": "2026-08-22",
-      "local_modifications": false,
+      "local_modifications": true,
       "archived": true,
-      "notes": "Retired 2026-08-22: superseded by obra-superpowers 'skill-writing' (see that skill's notes), which covers the same creating/editing-a-skill trigger without competing. No longer independently invocable -- files relocated to plugins/wtf/skills/_archive/writing-for-agents/ (not plugins/wtf/skills/writing-for-agents/) to preserve the MIT-attributed vendored content per NOTICE. 'vendor-sync.sh pull writing-for-agents' will fail with 'does not exist locally' against the old path -- expected, do not re-adopt at the old location."
+      "notes": "Retired 2026-08-22: superseded by obra-superpowers 'skill-writing' (see that skill's notes), which covers the same creating/editing-a-skill trigger without competing. No longer independently invocable -- files relocated to plugins/wtf/skills/_archive/writing-for-agents/ (not plugins/wtf/skills/writing-for-agents/) to preserve the MIT-attributed vendored content per NOTICE. 'vendor-sync.sh pull writing-for-agents' will fail with 'does not exist locally' against the old path -- expected, do not re-adopt at the old location. Local modifications: 'department' frontmatter (#4) and the _archive relocation, which vendor-verify reports as drift on every file."
     },
     {
       "name": "diagnose",
@@ -61,7 +61,8 @@
       "upstream_path": "skills/productivity/grilling",
       "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       "last_synced": "2026-08-22",
-      "local_modifications": false
+      "local_modifications": true,
+      "notes": "Local modification: 'department: engineering' frontmatter added 2026-08-22 (#4, public-wide department/uses backfill)."
     },
     {
       "name": "skill-test",
