@@ -3,7 +3,7 @@ name: end
 description: |
   Wrap up a coding session cleanly: shut down local dev servers, remove temp/backup
   files, commit and push outstanding work, and refresh project docs (PROJECT_MAP.md +
-  CLAUDE.md). Use when the user says "end", "/end", "wrap up", "end the session",
+  AGENTS.md or CLAUDE.md). Use when the user says "end", "/end", "wrap up", "end the session",
   "finish up", "we're done for today", or wants a safe shutdown that saves work,
   frees ports, and leaves the repo and working tree in a clean, documented state.
   Accepts optional args: manual (interactive prompts), skip-map (don't touch docs),
@@ -40,7 +40,7 @@ $ARGUMENTS
 **Last commit:** $(git log -1 --format="%h %s (%ar)" 2>/dev/null || echo "none")
 
 - `manual` - Use interactive prompts for commits (old behavior)
-- `skip-map` - Don't update PROJECT_MAP.md or CLAUDE.md (also skips handoff/decisions/learnings)
+- `skip-map` - Don't update PROJECT_MAP.md or AGENTS.md/CLAUDE.md (also skips handoff/decisions/learnings)
 - `skip-cleanup` - Skip temp file cleanup AND local server shutdown
 - `keep-servers` - Run cleanup but leave local dev servers running
 - `force` - Exit immediately without processing (shows summary only)
@@ -49,7 +49,7 @@ $ARGUMENTS
 - Shut down local dev servers this session started (silent)
 - Auto-remove .DS_Store (macOS) and .bak files (silent)
 - Distill the conversation → `.session-handoff.md`, `DECISIONS.md`, and codified learnings
-- Generate/update PROJECT_MAP.md + essential CLAUDE.md context
+- Generate/update PROJECT_MAP.md + essential AGENTS.md (or CLAUDE.md) context
 - Auto-commit everything via the commit skill (docs included), auto-push
 
 **Step order matters:** all file-writing steps (4–8) run BEFORE the commit (Step 9) so handoff, decisions, learnings, and project-map updates ride along in the same commit instead of leaving a dirty tree behind.
@@ -176,6 +176,9 @@ Re-read the conversation from the beginning and extract value that didn't make i
 - Don't save memories for things already in CLAUDE.md, code, or git history
 - Don't save memories for ephemeral task context
 - If nothing worth capturing, skip silently — don't force it
+- **Name the root cause, not the symptom.** For anything that took multiple attempts, ask what single upstream fix (a question asked earlier, a different check, a different verification method) would have prevented the whole chain — and save *that*, as a concrete rule ("grep the literal hostname, not just client construction"), never a sentiment ("be more careful").
+- **Proved vs. suggested.** Before writing a lesson, ask whether this session *proved* it (the same failure recurred, the root cause was confirmed against real evidence, or a fix was verified) or only *suggested* it (happened once, plausible, unconfirmed). Proved → save as a firm rule. Suggested → either hold it out of memory and name it in the session summary as a watch-item pending a second occurrence, or save it with the uncertainty stated in the entry ("seen once, not yet confirmed as a pattern"). Never write a single-occurrence guess as an unqualified rule.
+- **Update in place.** Read the memory index before writing. If an existing entry already covers the topic, append a dated addendum to that file in its existing structure instead of creating a near-duplicate.
 
 **Write `.session-handoff.md` in the project root:**
 
@@ -221,7 +224,7 @@ Re-read the conversation from the beginning and extract value that didn't make i
 
 Skip if session was trivial, or `force`/`skip-map` provided.
 
-Promote the **durable** decisions from the ephemeral `## Decisions made` staging buffer (Step 4) into a committed, append-only `DECISIONS.md` at the repo root. This is the immutable "why" tier: `.session-handoff.md` is gone next session, `PROJECT_MAP.md` is a regenerated snapshot, `CHANGELOG.md` records *what* shipped — `DECISIONS.md` is the only durable record of *why we chose X over Y*, and what a future session reads instead of re-litigating a settled choice.
+Promote the **durable** decisions from the ephemeral `## Decisions made` staging buffer (Step 4) into a committed, append-only `DECISIONS.md` at the repo root. If a hook records decisions automatically (for example an `## Decisions made (auto-captured)` block that a PreCompact/SessionEnd hook writes into `.session-handoff.md`, possibly from earlier sessions that never ran `/end`), read that block too, and keep it when Step 4 rewrites the file. This is the immutable "why" tier: `.session-handoff.md` is gone next session, `PROJECT_MAP.md` is a regenerated snapshot, `CHANGELOG.md` records *what* shipped — `DECISIONS.md` is the only durable record of *why we chose X over Y*, and what a future session reads instead of re-litigating a settled choice.
 
 Runs **before** the learnings step (Step 6) and PROJECT_MAP (Step 7) so Architecture Highlights can derive from a freshly-written log, and **before** the commit (Step 9) so the file ships in this session's commit.
 
@@ -262,7 +265,7 @@ grep -in "DECISIONS\.md\|per-file ADR\|decision log" DECISIONS.md 2>/dev/null
 
 Skip if session was trivial, or `force`/`skip-map` provided.
 
-Codify the session's learnings. If you have a `/learnings`-style skill, invoke it; otherwise do the same work inline. This closes the knowledge loop — patterns, gotchas, and reusable workflows discovered this session get written into the right file (project `CLAUDE.md`, `PROJECT_MAP.md`, or a rules file) so they compound across sessions rather than evaporating. The process: identify what was learned, categorize by scope, write it down with a dedup check against existing entries (so you update rather than duplicate), and report what was captured and where.
+Codify the session's learnings. If you have a `/learnings`-style skill, invoke it; otherwise do the same work inline. This closes the knowledge loop — patterns, gotchas, and reusable workflows discovered this session get written into the right file (project `AGENTS.md`/`CLAUDE.md`, `PROJECT_MAP.md`, or a rules file) so they compound across sessions rather than evaporating. The process: identify what was learned, categorize by scope, write it down with a dedup check against existing entries (so you update rather than duplicate), and report what was captured and where.
 
 **After learnings are codified, check memory health** (skip if the project has no memory store). Memories accumulate forever unless pruned. The trigger is a *judgment*, not a raw count:
 
@@ -291,11 +294,11 @@ Apply this judgment (treat `never` as "long overdue"):
 
 If borderline (high count but consolidated 4–6 days ago, little churn), prefer the note over auto-running. This pairs with the learnings dedup gate: that prevents new duplicates at write time, this prunes accumulated decay at session end.
 
-### 7. Generate PROJECT_MAP.md + CLAUDE.md Context
+### 7. Generate PROJECT_MAP.md + AGENTS.md Context
 
 Skip if `skip-map` argument provided.
 
-Generates/updates TWO files: **PROJECT_MAP.md** (comprehensive, 200 lines max) and **CLAUDE.md** (essential ~20-line context, token-efficient).
+Generates/updates TWO files: **PROJECT_MAP.md** (comprehensive, 200 lines max) and the project instruction file (essential ~20-line context, token-efficient): `AGENTS.md` if the repo has one, otherwise `CLAUDE.md`.
 
 #### 7a. Gather Context
 
@@ -308,7 +311,7 @@ git diff --name-status HEAD~5..HEAD 2>/dev/null
 head -50 package.json pyproject.toml requirements.txt 2>/dev/null
 head -30 Cargo.toml go.mod composer.json 2>/dev/null
 # Existing documentation
-head -100 CLAUDE.md README.md 2>/dev/null
+head -100 AGENTS.md CLAUDE.md README.md 2>/dev/null
 cat PROJECT_MAP.md 2>/dev/null
 ```
 
@@ -368,11 +371,11 @@ Structure:
 
 **Fallback if generation fails:** basic template — project name, timestamp, tech stack, directory listing, note that full generation failed.
 
-#### 7c. Update CLAUDE.md with Essential Context
+#### 7c. Update AGENTS.md (or CLAUDE.md) with Essential Context
 
 Critical for token efficiency — new sessions get essential info immediately.
 
-If `CLAUDE.md` exists: extract essentials from PROJECT_MAP.md (1-sentence purpose, top 3-5 directories, top 3-5 files, 1-3 quick-start commands). If a `## Project Map` section exists, replace its content (Edit tool, between the heading and the next `##`); otherwise add the section after `## Tech Stack` (or near the top). Keep to 20 lines max. Show: "✅ Updated/Added Project Map section in CLAUDE.md".
+If `AGENTS.md` (or, failing that, `CLAUDE.md`) exists: extract essentials from PROJECT_MAP.md (1-sentence purpose, top 3-5 directories, top 3-5 files, 1-3 quick-start commands). If a `## Project Map` section exists, replace its content (Edit tool, between the heading and the next `##`); otherwise add the section after `## Tech Stack` (or near the top). Keep to 20 lines max. Show: "✅ Updated/Added Project Map section in AGENTS.md" (name the file actually edited).
 
 Format:
 
@@ -395,7 +398,7 @@ Format:
 **Full Details:** See [PROJECT_MAP.md](PROJECT_MAP.md).
 ```
 
-If `CLAUDE.md` doesn't exist: note "No CLAUDE.md found - PROJECT_MAP.md created as standalone" and skip.
+If neither exists: note "No AGENTS.md or CLAUDE.md found - PROJECT_MAP.md created as standalone" and skip.
 
 ### 8. Session Metrics (Structured Log)
 
@@ -435,7 +438,7 @@ Skip this step if: `manual` mode (interactive prompt instead), IS_GIT = "no", IS
 
 1. Announce: "Uncommitted changes detected - committing..."
 2. Commit the changes:
-   - If you have a commit skill installed (e.g. `/go-live`, `/commit-push`), invoke it — it analyzes changes, updates a `CHANGELOG.md` if present, and writes the message. Prefer a commit-only mode (no server deploy / cache purge) if the skill offers one.
+   - If you have a commit skill installed (e.g. `/go-live`, `/commit-push`), invoke it — it analyzes changes, updates a `CHANGELOG.md` if present, and writes the message. Prefer a commit-only mode (no server deploy / cache purge) if the skill offers one, e.g. `/go-live --ship-only`.
    - Otherwise, stage everything and create a single well-described commit (`git add -A && git commit`) whose message summarizes the actual diff. Update the `CHANGELOG.md` yourself if the project keeps one.
 3. Monitor for success/failure.
 
