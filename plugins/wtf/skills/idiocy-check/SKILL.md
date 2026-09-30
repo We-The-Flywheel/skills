@@ -74,3 +74,9 @@ If there are Tier 1 items: lead with those, flag them as urgent.
 - A grant reviewer who sees $0 budget and no attachments rejects immediately. That is an idiocy check catch.
 - A LinkedIn caption with "our the" in the second line is an idiocy check catch.
 - "The prose could be more concise" is NOT an idiocy check catch.
+
+## Input handling
+
+- A file path: read it. A URL: fetch it and review the rendered text. Nothing given: review the last artifact or draft in the conversation.
+- Long inputs (over ~4k words): review front-to-back, but weight the opening, headings, numbers, names, and closing. Those are where the receiver forms their verdict.
+- If the repo has a `VOICE.md` or an `IDIOCY_CHECK.md` (house-specific dealbreakers), load the nearest one first and treat its rules as Tier 1.

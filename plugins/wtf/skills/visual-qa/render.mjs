@@ -96,7 +96,11 @@ function renderCard(layout, sample, viewport, outDir) {
   } else {
     html += `<div class="missing">No screenshot · capture may have failed (HTTP 404 etc.)</div>`;
   }
-  html += `<div class="card-footer"><span class="card-hint">Click image for per-page custom note</span></div>`;
+  const videoRel = relPath.replace(/\.png$/, '.webm');
+  const videoLink = fs.existsSync(path.join(outDir, videoRel))
+    ? ` <a class="card-video" href="${escapeHtml(videoRel)}" target="_blank" rel="noopener">▶ Scroll video</a>`
+    : '';
+  html += `<div class="card-footer"><span class="card-hint">Click image for per-page custom note</span>${videoLink}</div>`;
   html += `</div>`;
   return html;
 }
@@ -224,6 +228,7 @@ function renderHTML(config, outDir, meta) {
   .missing { padding: 24px; color: var(--muted); text-align: center; font-style: italic; font-size: 12px; }
   .card-footer { padding: 6px 10px; border-top: 1px solid var(--border); }
   .card-hint { color: var(--muted); font-size: 10px; }
+  .card-video { float: right; color: var(--accent); font-size: 10px; text-decoration: none; }
   .sample-card.has-selection .card-hint { color: var(--accent); }
 
   /* Action chips (used in template CTA + modal) */

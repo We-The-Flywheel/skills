@@ -1,7 +1,7 @@
 ---
 name: debug
 description: >-
-  Four-phase debugging framework (root cause, pattern analysis, hypothesis testing, implementation). Use on any bug, test failure, or unexpected behavior before proposing a fix.
+  Debugging framework for hard bugs and performance regressions. Use when the user says "debug this" or "diagnose", or reports something broken, throwing, failing, or slow: any bug, test failure, or unexpected behavior, before proposing a fix. Builds a red-capable feedback loop, then root cause, pattern analysis, ranked hypotheses, and a regression test.
 department: engineering
 ---
 
@@ -22,6 +22,14 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 ```
 
 If you haven't completed Phase 1, you cannot propose fixes.
+
+When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
+
+## Redact
+
+This skill has you show commands, outputs and captured artifacts. **Redact every secret first**: write `<REDACTED>` in its place. Build loops against env vars, so the credential stays in the environment rather than in what you show. Captured artifacts carry auth headers: quote only the lines that carry the signal.
+
+If the redacted output is not enough to diagnose the bug, say so and ask the user.
 
 ## When to Use
 
@@ -59,11 +67,42 @@ You MUST complete each phase before proceeding to the next.
    - Read stack traces completely
    - Note line numbers, file paths, error codes
 
-2. **Reproduce Consistently**
-   - Can you trigger it reliably?
-   - What are the exact steps?
-   - Does it happen every time?
+2. **Build a Feedback Loop, Then Reproduce Consistently**
+
+   **This is the core of the skill.** If you have a **tight** pass/fail signal for the bug (one that goes red on _this_ bug), you will find the cause; bisection, hypothesis-testing, and instrumentation all just consume it. If you don't have one, no amount of staring at code will save you. Spend disproportionate effort here. Be aggressive. Be creative. Refuse to give up.
+
+   Ways to construct one, in roughly this order:
+   1. **Failing test** at whatever seam reaches the bug: unit, integration, e2e.
+   2. **Curl / HTTP script** against a running dev server.
+   3. **CLI invocation** with a fixture input, diffing stdout against a known-good snapshot.
+   4. **Headless browser script** (Playwright / Puppeteer) that drives the UI and asserts on DOM/console/network.
+   5. **Replay a captured trace.** Save a real network request / payload / event log to disk; replay it through the code path in isolation.
+   6. **Throwaway harness.** Spin up a minimal subset of the system (one service, mocked deps) that exercises the bug code path with a single function call.
+   7. **Property / fuzz loop.** If the bug is "sometimes wrong output", run 1000 random inputs and look for the failure mode.
+   8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so you can `git bisect run` it.
+   9. **Differential loop.** Run the same input through old-version vs new-version (or two configs) and diff outputs.
+   10. **HITL bash script.** Last resort. If a human must click, drive _them_ with `scripts/hitl-loop.template.sh` so the loop is still structured. Captured output feeds back to you.
+
+   **Tighten the loop** once you have one. Can it be faster (cache setup, skip unrelated init, narrow the scope)? Sharper (assert on the specific symptom, not "didn't crash")? More deterministic (pin time, seed RNG, isolate filesystem, freeze network)? A 30-second flaky loop is barely better than no loop; a 2-second deterministic one is a debugging superpower.
+
+   **Non-deterministic bugs:** the goal is a **higher reproduction rate**, not a clean repro. Loop the trigger 100x, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not, so keep raising the rate.
+
+   **If you genuinely cannot build a loop,** stop and say so. List what you tried. Ask the user for: (a) access to whatever environment reproduces it, (b) a redacted captured artifact (HAR file, log dump, core dump, screen recording with timestamps), or (c) permission to add temporary production instrumentation. Do NOT proceed to hypothesise without a loop.
+
+   **Done when** you can name **one command** (a script path, a test invocation, a curl) that you have **already run at least once** (show the invocation and its output, redacted), and that is:
+   - **Red-capable**: it drives the actual bug code path and asserts the **user's exact symptom**, so it can go red on this bug and green once fixed. Not "runs without erroring".
+   - **Deterministic**: same verdict every run (flaky bugs: a pinned, high reproduction rate).
+   - **Fast**: seconds, not minutes.
+   - **Agent-runnable**: you can run it unattended; a human in the loop only via `scripts/hitl-loop.template.sh`.
+
+   If you catch yourself reading code to build a theory before this command exists, **stop**: jumping straight to a hypothesis is the failure this step prevents.
+
+   **Then reproduce consistently:**
+   - Run the loop and watch it go red. Does it produce the failure the **user** described, not a different failure nearby? Wrong bug = wrong fix.
+   - What are the exact steps? Does it happen every time?
+   - Capture the exact symptom (error message, wrong output, slow timing) so later phases can verify the fix addresses it.
    - If not reproducible → gather more data, don't guess
+   - **Minimise:** once it's red, shrink the repro to the smallest scenario that still goes red. Cut inputs, callers, config, data, and steps one at a time, re-running the loop after each cut. Done when every remaining element is load-bearing: removing any one makes the loop go green. A minimal repro shrinks the hypothesis space and becomes the clean regression test in Phase 4.
 
 3. **Check Recent Changes**
    - What changed that could cause this?
@@ -156,15 +195,20 @@ You MUST complete each phase before proceeding to the next.
 
 **Scientific method:**
 
-1. **Form Single Hypothesis**
-   - State clearly: "I think X is the root cause because Y"
-   - Write it down
-   - Be specific, not vague
+1. **Form Hypotheses**
+   - Generate **3-5 ranked hypotheses** before testing any of them; a single hypothesis anchors on the first plausible idea
+   - State each clearly: "I think X is the root cause because Y"
+   - Make each **falsifiable** by stating its prediction: "If X is the cause, then changing Y will make the bug disappear / changing Z will make it worse." If you cannot state the prediction, it is a vibe: discard or sharpen it
+   - Write it down. Be specific, not vague
+   - **Show the ranked list to the user before testing.** They often have domain knowledge that re-ranks instantly ("we just deployed a change to #3"). Don't block on it; proceed with your ranking if the user is AFK
 
 2. **Test Minimally**
    - Make the SMALLEST possible change to test hypothesis
    - One variable at a time
    - Don't fix multiple things at once
+   - Each probe must map to a specific prediction. Prefer a debugger/REPL (one breakpoint beats ten logs), then targeted logs at the boundaries that distinguish hypotheses. Never "log everything and grep"
+   - **Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]`, so cleanup is a single grep
+   - **Performance regressions:** logs are usually wrong. Establish a baseline measurement first (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second
 
 3. **Verify Before Continuing**
    - Did it work? Yes → Phase 4
@@ -182,10 +226,11 @@ You MUST complete each phase before proceeding to the next.
 **Fix the root cause, not the symptom:**
 
 1. **Create Failing Test Case**
-   - Simplest possible reproduction
+   - Simplest possible reproduction (the minimised repro from Phase 1)
    - Automated test if possible
    - One-off test script if no framework
-   - MUST have before fixing
+   - MUST have before fixing, but only if there is a **correct seam**: one where the test exercises the real bug pattern as it occurs at the call site. A test at a too-shallow seam (single-caller test when the bug needs multiple callers) gives false confidence
+   - **If no correct seam exists, that itself is the finding.** Note it: the architecture is preventing the bug from being locked down
    - **REQUIRED SUB-SKILL:** Use wtf:tdd for writing proper failing tests
 
 2. **Implement Single Fix**
@@ -197,7 +242,7 @@ You MUST complete each phase before proceeding to the next.
 3. **Verify Fix**
    - Test passes now?
    - No other tests broken?
-   - Issue actually resolved?
+   - Issue actually resolved? Re-run the Phase 1 feedback loop against the original (un-minimised) scenario
 
 4. **If Fix Doesn't Work**
    - STOP
@@ -222,6 +267,15 @@ You MUST complete each phase before proceeding to the next.
 
    This is NOT a failed hypothesis - this is a wrong architecture.
 
+### Cleanup
+
+Required before declaring done:
+- [ ] Original repro no longer reproduces (re-run the Phase 1 loop)
+- [ ] Regression test passes (or absence of seam is documented)
+- [ ] All `[DEBUG-...]` instrumentation removed (`grep` the prefix)
+- [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
+- [ ] The hypothesis that turned out correct is stated in the commit / PR message, so the next debugger learns
+
 ## Red Flags - STOP and Follow Process
 
 If you catch yourself thinking:
@@ -234,6 +288,7 @@ If you catch yourself thinking:
 - "Pattern says X but I'll adapt it differently"
 - "Here are the main problems: [lists fixes without investigation]"
 - Proposing solutions before tracing data flow
+- Reading code to build a theory before a red-capable loop exists
 - **"One more fix attempt" (when already tried 2+)**
 - **Each fix reveals new problem in different place**
 
@@ -269,10 +324,10 @@ If you catch yourself thinking:
 
 | Phase | Key Activities | Success Criteria |
 |-------|---------------|------------------|
-| **1. Root Cause** | Read errors, reproduce, check changes, gather evidence | Understand WHAT and WHY |
+| **1. Root Cause** | Read errors, build red-capable loop, reproduce + minimise, check changes, gather evidence | Understand WHAT and WHY |
 | **2. Pattern** | Find working examples, compare | Identify differences |
-| **3. Hypothesis** | Form theory, test minimally | Confirmed or new hypothesis |
-| **4. Implementation** | Create test, fix, verify | Bug resolved, tests pass |
+| **3. Hypothesis** | Rank 3-5 falsifiable theories, test minimally | Confirmed or new hypothesis |
+| **4. Implementation** | Create test, fix, verify, clean up | Bug resolved, tests pass |
 
 ## When Process Reveals "No Root Cause"
 

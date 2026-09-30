@@ -60,6 +60,16 @@ the live URL. What ships is what counts. Find where the schema is
 generated before editing: page-inline, a shared schema builder module, or
 a layout template prop are all common.
 
+**Shared schema libraries** used by many sites carry a higher blast radius
+than a per-site schema file. If a field you need (`founder`, `logo` as an
+`ImageObject`, `disambiguatingDescription`, etc.) is not supported by the
+shared builder, say so and get confirmation before editing a library other
+sites depend on.
+
+**Pillar-page image check.** For any site with pillar or hub pages, confirm
+each has a real, non-generic image, not one shared placeholder across
+several pillars.
+
 **Corroboration loop check.** Fetch each `sameAs` target and grep for the
 Entity Home URL. Two hosts always bot-block automated requests and must be
 reported `MANUAL`, never `FAIL`:
