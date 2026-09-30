@@ -2,7 +2,7 @@
 name: end
 description: |
   Wrap up a coding session cleanly: shut down local dev servers, remove temp/backup
-  files, commit and push outstanding work, and refresh project docs (PROJECT_MAP.md +
+  files, commit and push outstanding work, merge a feature branch into main, and refresh project docs (PROJECT_MAP.md +
   AGENTS.md or CLAUDE.md). Use when the user says "end", "/end", "wrap up", "end the session",
   "finish up", "we're done for today", or wants a safe shutdown that saves work,
   frees ports, and leaves the repo and working tree in a clean, documented state.
@@ -484,6 +484,28 @@ Options:
 Choose: [1/2/3]
 ```
 
+### 10b. Land the Feature Branch into Main
+
+Skip if: IS_GIT = "no", IS_FEATURE_BRANCH = "no" (detect it as in Step 12), the push in Step 10 failed or was skipped, or the branch has no commits ahead of main (`git rev-list --count origin/$MAIN_BRANCH..HEAD` is 0). In `manual` mode ask "Merge [branch] into [main]?" first.
+
+Work done on a branch this session should not be left stranded there. Bring it into main:
+
+1. **Guard first.** Don't merge if the branch carries a hold (e.g. a PR labelled `hold:human`), if it holds another session's or person's unfinished work rather than this session's, or if the project documents its own merge gate (a PR review tool, required reviews). In those cases open the PR, run the gate if there is one, and report the PR URL instead of merging.
+2. **GitHub remote with `gh`:** reuse the open PR or create one, then squash-merge it:
+   ```bash
+   gh pr view --json url,state 2>/dev/null || gh pr create --fill --base "$MAIN_BRANCH"
+   gh pr merge --squash --delete-branch
+   ```
+3. **No `gh` / not GitHub:** merge locally, fast-forward main first:
+   ```bash
+   git fetch origin
+   git checkout "$MAIN_BRANCH" && git pull --ff-only
+   git merge --no-ff "$CURRENT_BRANCH" && git push origin "$MAIN_BRANCH"
+   ```
+   In a worktree where main is checked out elsewhere, `git checkout` fails: use the PR path, or merge in the main checkout.
+4. **Conflicts or a failing check:** stop. Don't resolve by force, don't `--force` push. Abort the local merge (`git merge --abort`), leave the branch pushed, and report the conflict or the failed check with the PR URL.
+5. After a successful merge, switch the working copy to main and pull, so the summary reflects main.
+
 ### 11. CHANGELOG.md Audit
 
 Skip if not a git repo, or if the commit skill ran in Step 9 (it updates `CHANGELOG.md` automatically).
@@ -527,10 +549,13 @@ Repository Status:
   Last commit: a1b2c3d Fix authentication bug
   Status:      Working tree clean
 
-[If IS_FEATURE_BRANCH = "yes":]
+[If Step 10b merged:]
+🔀 Merged [branch-name] into [main] ([PR URL or merge commit])
+
+[If still on a feature branch (Step 10b skipped, held, or failed):]
 🌿 FEATURE BRANCH SESSION — ending on branch: [branch-name]
-[⚠️ note unpushed commits and/or uncommitted changes if any]
-To resume: git checkout [branch-name] → continue → git push → open a PR (gh pr create)
+[⚠️ note why it wasn't merged: hold, merge gate, conflict, failed check; plus unpushed commits and/or uncommitted changes if any]
+[PR URL if one is open]
 
 [If warnings exist:]
 ⚠️  Warnings:
@@ -577,6 +602,7 @@ You can now /exit if all work is done and there is nothing more to clarify.
 - Step 3: still auto-remove .DS_Store/.bak, but announce counts; ask before shutting down any dev server
 - Step 9: ask "Commit these changes?" instead of auto-committing
 - Step 10: ask "Push commits?" instead of auto-pushing
+- Step 10b: ask "Merge [branch] into [main]?" instead of auto-merging
 - Step 7: ask "Update PROJECT_MAP.md?" instead of auto-generating
 
 All other steps work the same as default mode.
