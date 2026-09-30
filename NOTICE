@@ -98,7 +98,10 @@ Derived from "skills/engineering/diagnosing-bugs" in https://github.com/mattpoco
   License: MIT
 
 Modifications by The Flywheel: renamed from upstream "diagnosing-bugs" to
-"diagnose".
+"diagnose". On 2026-09-30 its content was merged into skills/debug (which
+now carries this attribution for the merged sections and
+scripts/hitl-loop.template.sh); the original files are kept at
+skills/_archive/diagnose.
 
 -------------------------------------------------------------------------------
 skills/grilling

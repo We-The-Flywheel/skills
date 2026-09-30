@@ -12,6 +12,8 @@ department: seo
 
 # /screamingfrog-check — Site Crawl & Technical Audit
 
+**Local overlay.** If `~/.local/share/flywheel/house/screamingfrog-check.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 Full-site crawl using Screaming Frog headless CLI. Produces a prioritized issue report with fix plan.
 
 ## User-invocable

@@ -1,12 +1,8 @@
 ---
 name: pangram
 version: 1.0.0
-description: |
-  Score text for AI-generated content using the Pangram Labs API. Submits text
-  (or file content) to Pangram's detection endpoint and returns: overall AI
-  fraction (0–100%), prediction label, and any sentence-level highlights.
-  Use before publishing content to verify it passes the AI-detection bar.
-  Requires a PANGRAM_API_KEY environment variable.
+description: >-
+  Score text or a file for AI-generated content via the Pangram Labs API: overall AI fraction, label, sentence-level highlights. Use when a detector score is the deliverable. Not a publishing gate. Requires PANGRAM_API_KEY.
 allowed-tools:
   - Bash
   - Read
@@ -15,6 +11,8 @@ department: content
 ---
 
 # Pangram AI Detection Scorer
+
+**Local overlay.** If `~/.local/share/flywheel/house/pangram.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
 
 Submit text to the Pangram Labs API and get back an AI-content score.
 
@@ -113,6 +111,12 @@ Verdict: Borderline. Run the humanizer skill on the flagged sections, then re-sc
 
 ## Notes
 
+- **Longer texts take 1–3 minutes to score** — a 2-minute Bash timeout with a 2 s poll loop can
+  expire before `STAGE_SUCCESS`; use a generous timeout (300000 ms) or submit, wait ~60 s, then check
+- **Result JSON contains raw control characters** (the echoed input text) — parse with
+  `json.loads(raw, strict=False)` in Python; plain `json.load()` throws `Invalid control character`
+- The `windows` array (per ~380-word window: `label`, `ai_assistance_score`, `confidence`,
+  `start_index`/`end_index`) is how you map a verdict back to specific passages
 - Minimum scoreable text is ~50 words; shorter inputs return `STAGE_FAILED`
 - The API key is read from the `PANGRAM_API_KEY` environment variable
 - For batch scoring of multiple files, call the skill per file and aggregate

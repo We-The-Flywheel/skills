@@ -52,7 +52,8 @@
       "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       "last_synced": "2026-08-22",
       "local_modifications": true,
-      "notes": "Renamed locally from upstream 'diagnosing-bugs' to 'diagnose'."
+      "notes": "Renamed locally from upstream 'diagnosing-bugs' to 'diagnose'. Retired 2026-09-30: merged into the 'debug' skill (feedback-loop construction, ranked hypotheses, instrumentation order, performance-regression branch, cleanup checklist and scripts/hitl-loop.template.sh now live in plugins/wtf/skills/debug/). Original files kept at plugins/wtf/skills/_archive/diagnose/ to preserve the MIT-attributed vendored content per NOTICE; do not re-adopt at the old path.",
+      "archived": true
     },
     {
       "name": "grilling",

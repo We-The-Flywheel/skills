@@ -33,6 +33,8 @@ department: content
 
 # Content gate: ten checks before anything goes public
 
+**Local overlay.** If `~/.local/share/flywheel/house/content-gate.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 You are a **gatekeeper, not an editor**. Every step below resolves to **PASS**
 or **FAIL** with evidence — a rendered tag, a file path, a screenshot, a grep
 hit. If any step fails, you stop and tell the user:
@@ -140,6 +142,12 @@ If `wtf:humanizer` is installed, use it — it also re-applies the `VOICE.md`
 lexicon on top of the generic pass. Otherwise do a manual pass against those
 patterns.
 
+**No AI detectors in this gate.** Do not score gate content with an AI
+detector (Pangram, GPTZero, Copyleaks, a local classifier) or treat such a
+score as pass/fail. They measure origin, not quality, and the score is not
+actionable: editing AI-origin text does not move it. Judge this step by
+reading against the humanizer's patterns and the property's `VOICE.md`.
+
 **PASS:** de-AI pass completed *after* the last substantive edit (re-run it if
 Step 2 fixes changed the text).
 
@@ -224,10 +232,14 @@ Schema claims must match visible page content.
 - **Author byline** — a real, named person (not "Staff" / "Editorial Team" /
   "AI"), linking to a bio page with `Person` JSON-LD and `sameAs`.
 - **Author bio snippet** with topic-relevant credentials. Only **factually
-  true** experience — never invent credentials.
+  true** experience — never invent credentials. Make it a **concrete,
+  specific credential** (a number, a named role, a tenure, a result), not
+  generic enthusiasm ("is passionate about marketing").
 - **Visible published + updated dates.**
 - **≥2 external citations** to authoritative sources on factual content — zero
-  outbound links is a strong AI-content signal.
+  outbound links is a strong AI-content signal. Link the **primary source**
+  (original study, dataset, official doc, vendor spec), not a secondary post
+  that cites it.
 - **Experience markers** where true ("I tested", "we measured").
 - **Editorial transparency** — about/contact reachable from the page.
 
@@ -266,17 +278,22 @@ answer is frequently the **only** impression the page makes.
 | # | Check | Pass criterion |
 |---|---|---|
 | 9.1 | **Freshness** (top citation factor) | Visible `Updated: YYYY-MM-DD` + `dateModified` reflecting a real change — never a build-stamp |
-| 9.2 | **Structured formatting** | Descriptive H2/H3 every ~200–300 words, lists, comparison tables, a TL;DR near the top. No wall-of-text |
+| 9.2 | **Structured formatting** | Descriptive H2/H3 every ~200–300 words, lists, comparison tables, a TL;DR near the top. No wall-of-text. Use lists/tables wherever the content is enumerable (steps, options, criteria, pros/cons, specs): those are the chunks AI engines lift cleanly |
 | 9.3 | **Clear, direct language** | Core claims stated plainly; no hedging preamble before the answer |
 | 9.4 | **Self-contained direct answer above the fold** — *the headline check* | The page's core question answered in the first screen (~600px): **2–4 declarative sentences that name the entity and state the answer, quotable verbatim by an AI engine with zero surrounding context**. Don't bury the lede; don't make the answer depend on text below it |
 | 9.5 | **Titles & meta for clicks** | Specific, benefit-led, curiosity-closing — not exact-match keyword repetition |
 | 9.6 | **Friction-free first 30 s** | No interstitials, pop-ups, content-blocking cookie walls, or layout-shifting modals |
 | 9.7 | **Internal links** | ≥2 contextual internal links placed to extend the session |
 | 9.8 | **Source-category fit** | The page reads as the *type* of source AI engines cite for this query class — an authoritative editorial answer, not a thin landing page |
+| 9.9 | **Intent-format match** (ADVISORY) | The page's *format* matches the dominant intent of the live SERP for its primary keyword: a commercial query wants a comparison/product/tool page, not an editorial guide, and vice versa. Intent mismatch, not thin content, is the most common reason a technically-perfect page never ranks. Flag and confirm, don't block |
+| 9.10 | **Question-shaped subheadings + answer-first chunks** | Primary body subheadings (H2/H3) are phrased as the questions a reader actually asks ("How long does X take?") rather than noun-phrase labels ("Timeline"), and the first 1–2 sentences under each directly answer it before any elaboration. Pair with a list or table when the answer is enumerable. Not every subhead must be a question, but the primary informational sections should be |
 
 **Verify 9.4 properly:** render the page at ~1280×800 **without scrolling**
 (screenshot it) and read the visible block in isolation. If it can't be quoted
 verbatim as the answer — zero-click test — it fails.
+
+**Verify 9.10:** list the page's H2/H3s and check that the primary sections
+read as questions and the first sentence under each answers it.
 
 For pure tool/calculator pages: 9.4–9.6 still apply; 9.1–9.3 and 9.8 are
 relaxed.

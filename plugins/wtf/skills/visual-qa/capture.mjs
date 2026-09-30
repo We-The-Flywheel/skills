@@ -2,7 +2,7 @@
 // visual-qa: capture full-page screenshots at desktop/tablet/mobile.
 //
 // Usage:
-//   node capture.mjs --config <urls.json> --out <dir> [--env local|production] [--only <layout-id>] [--locales en,de] [--force]
+//   node capture.mjs --config <urls.json> --out <dir> [--env local|production] [--only <layout-id>] [--locales en,de] [--force] [--video]
 //
 // Default --env is `local` (the whole point: catch issues before they hit prod).
 
@@ -33,10 +33,12 @@ function parseArgs(argv) {
     else if (a === '--only') args.only = argv[++i];
     else if (a === '--locales') args.localesFilter = argv[++i].split(',').map(s => s.trim()).filter(Boolean);
     else if (a === '--env') args.env = argv[++i];
+    else if (a === '--viewports') args.viewports = argv[++i].split(',').map(s => s.trim()).filter(Boolean);
     else if (a === '--force') args.force = true;
+    else if (a === '--video') args.video = true;
   }
   if (!args.config || !args.out) {
-    console.error('Usage: capture.mjs --config <urls.json> --out <dir> [--env local|production] [--only <id>] [--locales en,de] [--force]');
+    console.error('Usage: capture.mjs --config <urls.json> --out <dir> [--env local|production] [--only <id>] [--locales en,de] [--force] [--video]');
     process.exit(2);
   }
   return args;
@@ -71,8 +73,9 @@ function expandLayout(layout, config, baseUrl, localesFilter) {
   return out;
 }
 
-async function autoScroll(page) {
-  await page.evaluate(async () => {
+// intervalMs 80 for screenshots; --video slows it so the recording is watchable.
+async function autoScroll(page, intervalMs = 80) {
+  await page.evaluate(async (intervalMs) => {
     await new Promise((resolve) => {
       let total = 0;
       const step = 400;
@@ -84,13 +87,13 @@ async function autoScroll(page) {
           window.scrollTo(0, 0);
           setTimeout(resolve, 200);
         }
-      }, 80);
+      }, intervalMs);
     });
-  });
+  }, intervalMs);
 }
 
-async function captureOne(browser, sample, viewport, outFile) {
-  const context = await browser.newContext({
+function contextOptions(viewport) {
+  return {
     viewport: { width: viewport.width, height: viewport.height },
     deviceScaleFactor: viewport.deviceScaleFactor,
     isMobile: !!viewport.isMobile,
@@ -98,7 +101,11 @@ async function captureOne(browser, sample, viewport, outFile) {
     userAgent: viewport.isMobile
       ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
       : undefined
-  });
+  };
+}
+
+async function captureOne(browser, sample, viewport, outFile) {
+  const context = await browser.newContext(contextOptions(viewport));
   const page = await context.newPage();
   try {
     const resp = await page.goto(sample.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
@@ -125,6 +132,29 @@ async function captureOne(browser, sample, viewport, outFile) {
   }
 }
 
+// Separate fresh context so the video shows a cold load, and the fullPage
+// screenshot's viewport resize never ends up in the recording.
+async function recordScroll(browser, sample, viewport, videoFile) {
+  fs.mkdirSync(path.dirname(videoFile), { recursive: true });
+  const context = await browser.newContext({
+    ...contextOptions(viewport),
+    recordVideo: { dir: path.dirname(videoFile), size: { width: viewport.width, height: viewport.height } }
+  });
+  const page = await context.newPage();
+  try {
+    await page.goto(sample.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    try { await page.waitForLoadState('networkidle', { timeout: 15000 }); } catch {}
+    await autoScroll(page, 250);
+    await page.waitForTimeout(500);
+  } catch {}
+  await context.close();
+  // The video file is only complete after the context closes; saveAs() moves it off its temp name.
+  try {
+    await page.video().saveAs(videoFile);
+    await page.video().delete();
+  } catch {}
+}
+
 function isFresh(outFile, configMtime) {
   try {
     const st = fs.statSync(outFile);
@@ -148,6 +178,11 @@ async function reachable(url) {
 
 async function main() {
   const args = parseArgs(process.argv);
+  // Optional viewport filter (e.g. --viewports desktop,mobile) so a large URL
+  // set can stay under a screenshot budget without dropping pages.
+  const viewports = args.viewports
+    ? VIEWPORTS.filter((v) => args.viewports.includes(v.id))
+    : VIEWPORTS;
   const configPath = path.resolve(args.config);
   const outDir = path.resolve(args.out);
 
@@ -179,6 +214,10 @@ async function main() {
   }
 
   fs.mkdirSync(outDir, { recursive: true });
+  // Keep captures out of git even when the repo doesn't ignore the out dir
+  // (an auto-committer or `git add -A` would otherwise sweep the PNGs into a commit).
+  const gitignore = path.join(outDir, '.gitignore');
+  if (!fs.existsSync(gitignore)) fs.writeFileSync(gitignore, '*\n');
 
   // Persist resolved environment + base URL for the renderer.
   fs.writeFileSync(
@@ -194,14 +233,16 @@ async function main() {
     const samples = expandLayout(layout, config, baseUrl, args.localesFilter);
     for (const sample of samples) {
       const sampleSlug = slug(sample.path);
-      for (const vp of VIEWPORTS) {
+      for (const vp of viewports) {
         const outFile = path.join(outDir, layout.id, sample.locale, sampleSlug, `${vp.id}.png`);
-        if (!args.force && isFresh(outFile, configMtime)) {
+        const videoFile = args.video ? outFile.replace(/\.png$/, '.webm') : null;
+        if (!args.force && isFresh(outFile, configMtime) && (!videoFile || isFresh(videoFile, configMtime))) {
           skipped++;
           continue;
         }
         process.stdout.write(`[${layout.id}/${sample.locale}] ${vp.id.padEnd(7)} ${sample.url}\n`);
         const result = await captureOne(browser, sample, vp, outFile);
+        if (result.ok && videoFile) await recordScroll(browser, sample, vp, videoFile);
         if (result.ok) captured++;
         else { failed++; failures.push({ url: sample.url, viewport: vp.id, error: result.error }); }
       }

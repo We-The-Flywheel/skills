@@ -39,6 +39,7 @@ Example:
 - `--only <layout-id>` — capture just one layout
 - `--locales en,de` — filter to a subset of locales declared in config
 - `--force` — re-capture even if PNGs are fresh (default: skip if PNG mtime > urls.json mtime)
+- `--video` — also record each page load plus a slow scroll-through as `<viewport>.webm` next to the PNG; the gallery card gets a "▶ Scroll video" link. Roughly doubles capture time. Shows what a still can't: lazy-load pop-in, layout shift, sticky headers, scroll animations
 
 ## Config: `.visual-qa/urls.json`
 
@@ -95,6 +96,10 @@ isn't installed, so you'll know.
    node <skill-dir>/scaffold.mjs <project-path> --force
    ```
 
+2. **Ask the output question** (AskUserQuestion, one question) unless the user already said screenshots-only or asked for video:
+   - "Screenshots only (Recommended)": the default gallery.
+   - "Screenshots + scroll video": adds `--video` to Step 2. Suggest it after motion/scroll/lazy-load changes or when the result is going to someone as a demo.
+
 ### Step 2: Capture
 
 ```bash
@@ -102,6 +107,7 @@ node <skill-dir>/capture.mjs \
   --config <project-path>/.visual-qa/urls.json \
   --out <project-path>/.visual-qa/out \
   --env local           # or --env production
+  # add --video if chosen in Step 1
 ```
 
 If `--env local` and the dev server isn't reachable, capture exits non-zero with a hint to start the dev server (or pass `--env production`).
@@ -113,7 +119,7 @@ The script:
   - `autoScroll` to trigger lazy-load
   - Wait for `document.fonts.ready`
   - `screenshot({ fullPage: true })`
-- Writes to `out/<layout-id>/<url-slug>/<viewport>.png`
+- Writes to `out/<layout-id>/<locale>/<url-slug>/<viewport>.png` (plus `<viewport>.webm` with `--video`)
 - Skips files already fresh relative to `urls.json` mtime unless `--force`
 
 ### Step 3: Render
@@ -136,6 +142,49 @@ Print to user:
 - Total PNGs written / skipped
 - Path to `gallery.html`
 - `open <gallery.html>` invitation
+
+### Step 5: Rubric checks (optional)
+
+`tier_a.py` and `tier_b.py` are the first two tiers of a rubric that measures
+the rendered layout tree instead of asking a human to eyeball it. Not wired into
+Steps 1-4 above; run them by hand after capture when you want a pass/fail on
+specific bugs rather than just a gallery to scan. Tier C (`calibrate.py`) is
+measurement-only, see below.
+
+**Tier A — static checks, no browser** (favicon resolves, per-route meta
+uniqueness, `og:image` dimensions match the real file, no placeholder
+strings, `alt` text present, designed-404 boilerplate):
+```bash
+python3 <skill-dir>/tier_a.py --project <project-path> --env production
+# or against a build dir instead of live URLs:
+#   --dir <project-path>/dist --base https://example.com
+```
+Reads `<project-path>/.visual-qa/urls.json` for the route list. `--limit N`
+caps routes, `--json <path>` writes machine-readable output. Exits non-zero
+on any finding; prints route, check id, severity (P0-P3), what was measured
+and what was expected.
+
+**Tier B — in-page geometry** (row/baseline alignment, repeated-component
+padding, spacing-scale conformance, nav/footer parity, text clipping, box
+overlap, horizontal scroll, tap target size):
+```bash
+python3 <skill-dir>/tier_b.py --project <project-path> --env production --viewports desktop,mobile
+```
+Same `urls.json`, `--limit`, `--json` flags as Tier A. `spacing-scale-conformance`
+is skipped (not a failure) when the project has no `tokens.json` to read the
+scale from.
+
+**Tier C — density calibration, no thresholds.** `calibrate.py` measures
+above-fold fill and the largest empty rectangle in the fold, but takes a raw
+URL list (`python3 calibrate.py <urls.json>`), not `--project`, and its own
+help output errors on `--help` (reads `sys.argv[1]` as the file path with no
+flag parsing). It has no shipped pass/fail thresholds. Treat its output as
+data to eyeball, not a gate.
+
+**Known checker limits:** `designed-404` can't distinguish a designed 404 from
+a framework default when the 404 body is client-rendered, so Tier A only checks
+the status code for that. `section-height-variance` (Tier C) measures DOM
+nesting depth, not visual rhythm, and is not usable across sites yet.
 
 ## Tradeoffs / known limits
 

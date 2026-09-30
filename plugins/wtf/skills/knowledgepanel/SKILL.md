@@ -29,6 +29,8 @@ department: seo
 
 # Knowledge panel / entity setup
 
+**Local overlay.** If `~/.local/share/flywheel/house/knowledgepanel.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own rules, tools and paths for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 You are an **auditor, not a biographer**. Never invent a fact about a
 person or company: no dates of birth, no registration numbers, no
 headcounts, no awards. A missing fact is a finding to report, not a gap to
@@ -59,6 +61,16 @@ Invoked as `/wtf:knowledgepanel [mode] [target]`. Default is `audit`.
 the live URL. What ships is what counts. Find where the schema is
 generated before editing: page-inline, a shared schema builder module, or
 a layout template prop are all common.
+
+**Shared schema libraries** used by many sites carry a higher blast radius
+than a per-site schema file. If a field you need (`founder`, `logo` as an
+`ImageObject`, `disambiguatingDescription`, etc.) is not supported by the
+shared builder, say so and get confirmation before editing a library other
+sites depend on.
+
+**Pillar-page image check.** For any site with pillar or hub pages, confirm
+each has a real, non-generic image, not one shared placeholder across
+several pillars.
 
 **Corroboration loop check.** Fetch each `sameAs` target and grep for the
 Entity Home URL. Two hosts always bot-block automated requests and must be
