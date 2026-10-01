@@ -1,13 +1,11 @@
 ---
 name: website-build
 description: |
-  Reference-first website build using a four-pillars framework — Audience →
-  Structure → Copy → Design — collecting and documenting inputs before building
-  anything. Use when the user says "build a website", "new site build", "start a
-  website project", "website template", "scope a site", or is kicking off a
-  marketing, brand, or portfolio site from scratch. Produces a populated brief
-  (the four pillars) and hands the Design pillar to the moodboard process. NOT
-  for single-page tweaks or existing-site edits.
+  Scope a new marketing, brand, or portfolio website through Audience, Structure,
+  Copy and Design before building. Produces a reference brief, then hands off to
+  riff and moodboard for approved design. For editorial publication scaffolding,
+  prefer the installed site-scaffold capability when available. Not for existing
+  site tweaks or single-page edits.
 allowed-tools:
   - Read
   - Write
@@ -21,7 +19,7 @@ allowed-tools:
 uses:
   - skill: moodboard
     relation: delegates
-    why: Design pillar hands off to moodboard
+    why: Approved design direction is locked through moodboard
   - skill: humanizer
     relation: requires
     why: drafted copy must be de-AI'd
@@ -86,8 +84,14 @@ whatever design-system or citation gate you enforce at code time.
 
 ## Build approach (after the brief is filled)
 
-- **POC, not comps.** Build 3–5 real working homepage directions in code, deploy
-  to a preview URL, pick one. The chosen POC becomes the production site — no
-  design-tool-to-build translation step.
-- **Hand-offs:** Design → `wtf:moodboard` · de-AI copy → `wtf:humanizer` ·
-  public-page gate → `wtf:content-gate` (each used if installed).
+- For editorial publications needing domain onboarding, repository/template setup,
+  taxonomy and charter, route to the installed `site-scaffold` capability when
+  available. Keep this brief as input. That scaffold is specialized; marketing,
+  brand and portfolio briefs still belong here.
+- For an unproven product claim, use an installed disposable POC workflow first.
+  Record its finding; discard its code. A POC is not a production-site shortcut.
+- For approved new design, use `wtf:riff` for distinct rendered directions, pick
+  one, then use `wtf:moodboard` to lock it. Build through the installed production
+  UI workflow using the project's design system and review gates.
+- Copy uses `wtf:humanizer`; public pages use `wtf:content-gate` when installed.
+  A brief, scaffold or preview does not authorize launch or deployment.
