@@ -28,9 +28,6 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:knowledgepanel`
 - `wtf:moodboard`
 - `wtf:website-build`
-- `wtf:longterm`
-- `wtf:pangram`
-- `wtf:ultrahumanizer`
 - `wtf:grilling`
 - `wtf:skill-test`
 - `wtf:verify-claim`
@@ -58,7 +55,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multi-llm`, `wtf-visual-qa`, `wtf-premortem`, `wtf-wrapup`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-website-build`, `wtf-longterm`, `wtf-pangram`, `wtf-ultrahumanizer`, `wtf-grilling`, `wtf-skill-test`, `wtf-verify-claim`, `wtf-review-feedback`, `wtf-knowledgepanel`, `wtf-axi`, `wtf-debug`, `wtf-memory-consolidate`, `wtf-sop`, `wtf-lavish`, `wtf-screamingfrog-check`, `wtf-video-analyze`, `wtf-video-use`) so they never clash
+(`wtf-humanizer`, `wtf-multi-llm`, `wtf-visual-qa`, `wtf-premortem`, `wtf-wrapup`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-website-build`, `wtf-grilling`, `wtf-skill-test`, `wtf-verify-claim`, `wtf-review-feedback`, `wtf-knowledgepanel`, `wtf-axi`, `wtf-debug`, `wtf-memory-consolidate`, `wtf-sop`, `wtf-lavish`, `wtf-screamingfrog-check`, `wtf-video-analyze`, `wtf-video-use`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 
@@ -82,9 +79,6 @@ flat under `plugins/wtf/skills/` — the categories below are organizational, no
 | Design | **moodboard** | Turns visual references (and anti-references) into locked design decisions — background, type category, accent approach, nav scale, interaction patterns, anti-patterns — each traceable to a finding. Includes an in-context type explorer (renders the real wordmark in 8–12 fonts on the actual brand background, one scroll). Produces documented decisions, not pages. | None |
 | Design | **riff** | Divergent design ideation for the *start* of design work: generates 3–5 deliberately far-apart, fully-rendered directions (forced family diversity, at least one wildcard, real copy — never wireframes) as standalone HTML files in one tabbed compare artifact with viewport toggles, then a pick-and-lock step that writes the winning thesis, exact fonts, colour strategy and anti-decisions to `LOCKED-DIRECTION.md` for `wtf:moodboard` to convert into tokens. Deliberately ignores any existing design system — divergence under enforcement just yields four shades of the same idea. | None |
 | Design | **website-build** | Reference-first site build on a four-pillars framework (Audience → Structure → Copy → Design): clarity-paragraph gate, audience filter, four-visitor-jobs structure with an accountability map for every cut, voice spec, and a Design pillar handed to `wtf:moodboard`. Produces a populated brief; blanks are the to-do list. Pairs with `wtf:humanizer` and `wtf:content-gate` when installed. | None |
-| Decisions | **longterm** | When several approaches are on the table, picks and proceeds with the one that's correct for the long term — scoring each on root-cause correctness, maintainability, robustness, reversibility, and total cost over time, accepting more effort now to avoid compounding debt. Guards against over-engineering and stops to confirm on auth/schema/billing/infra/security choices. | None |
-| QA | **pangram** | Scores text for AI-generated content via the Pangram Labs API — returns overall AI fraction (0–100%), prediction label, and per-sentence highlights, with a cost estimate per call. Standalone QA tool, not a publishing gate step: the score reflects how text was produced, and editing AI-origin text does not move it. | `PANGRAM_API_KEY` in your environment |
-| Writing | **ultrahumanizer** | Human-in-the-loop loop to a passing Pangram verdict: scores the draft, maps flagged ~380-word windows back to passages, reduces them to content bullets, and coaches the *human* to rewrite those passages in their own words — then re-scores until pass or honest stall. The agent never regenerates flagged prose itself (empirically, agent rewrites don't move Pangram). Builds on `wtf:humanizer` + `wtf:pangram`. | `PANGRAM_API_KEY` in your environment |
 | Decisions | **grilling** | Interviews the user relentlessly about a plan, decision, or idea until reaching shared understanding — maps the decision as a tree, works the frontier in numbered rounds with recommended answers, and won't move on until every branch is settled. Adopted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). | None |
 | Writing | **skill-test** | TDD applied to process documentation: write pressure scenarios, watch an agent fail without the skill (RED), write the skill (GREEN), close loopholes (REFACTOR). Covers SKILL.md structure, discovery optimization, flowchart usage, and wording micro-tests against a no-guidance control before running full pressure scenarios. Use when authoring or editing a skill and testing whether its guidance actually holds under pressure — not a general writing-for-agents reference. Adopted (renamed from upstream `writing-skills`, then again locally) from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
 | QA | **verify-claim** | Discipline for claiming work is done: run the actual verification commands and read their output before saying "fixed", "passing", or "complete" — evidence before assertions, always. A lightweight per-claim reflex; pairs with `wtf:release-gate`'s full evidence-gate ceremony on larger diffs. Adopted (renamed from upstream `verification-before-completion`, then again locally) from [obra/superpowers](https://github.com/obra/superpowers) (MIT). | None |
