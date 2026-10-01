@@ -20,7 +20,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:multi-llm`
 - `wtf:visual-qa`
 - `wtf:premortem`
-- `wtf:end`
+- `wtf:wrapup`
 - `wtf:idiocy-check`
 - `wtf:release-gate`
 - `wtf:content-gate`
@@ -136,7 +136,7 @@ multi-llm        plan mode,        visual-qa         content-gate     (what fail
   (blog posts, landing pages, SEO articles), `wtf:content-gate` must also be green —
   it's the content counterpart to the release gate (meta tags, FAQ + structured data,
   E-E-A-T, analytics, zero-click/AI-citation readiness). Then commit/push/deploy and
-  close the session with `wtf:end`.
+  close the session with `wtf:wrapup`.
 - **REFLECT** — when the gate or review caught something late, encode it: add a line to
   your `VERIFY_RUBRIC.md` so the gate catches it automatically next time.
 
