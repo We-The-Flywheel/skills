@@ -9,9 +9,19 @@ set -euo pipefail
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/plugins/wtf/skills"
 DEST_ROOT="$HOME/.claude/skills"
 
-SKILLS=(humanizer mission multi-llm visual-qa premortem wrapup idiocy-check release-gate content-gate og-meta-check moodboard website-build riff diagnose grilling skill-test verify-claim review-feedback knowledgepanel improve-codebase-architecture codebase-design tdd domain-modeling axi debug memory-consolidate sop lavish screamingfrog-check video-analyze video-use)
+SKILLS=(humanizer mission multi-llm visual-qa premortem wrapup idiocy-check release-gate content-gate og-meta-check moodboard website-build riff grilling skill-test verify-claim review-feedback knowledgepanel improve-codebase-architecture codebase-design tdd domain-modeling axi debug memory-consolidate sop lavish screamingfrog-check video-analyze video-use)
+
+# Skills moved to archive/: remove copies left by earlier installs.
+RETIRED=(pangram ultrahumanizer longterm)
 
 mkdir -p "$DEST_ROOT"
+
+for skill in "${RETIRED[@]}"; do
+  if [ -d "$DEST_ROOT/wtf-$skill" ]; then
+    rm -rf "${DEST_ROOT:?}/wtf-$skill"
+    echo "✗  removed retired skill: wtf-$skill"
+  fi
+done
 
 for skill in "${SKILLS[@]}"; do
   src="$SRC_DIR/$skill"
