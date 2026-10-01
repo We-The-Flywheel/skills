@@ -96,7 +96,7 @@ MEMORY CONSOLIDATION REPORT
 ```
 
 **Then stamp a last-run marker** in each consolidated project's memory dir so other tools
-(e.g. `/end`'s memory-health check) can judge whether a consolidation is *due* rather than
+(e.g. `/wrapup`'s memory-health check) can judge whether a consolidation is *due* rather than
 guessing from file count alone:
 
 ```bash
