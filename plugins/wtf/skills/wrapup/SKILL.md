@@ -21,6 +21,8 @@ department: ops
 
 End-of-session cleanup and verification with intelligent automation. Ensures work is properly saved and documented before exiting.
 
+**Local overlay.** If `~/.local/share/flywheel/house/wrapup.md` exists, read it before starting and apply it on top of this skill: it holds an organisation's own closure checks, tools and documentation rules for this workflow. Where the two conflict, the overlay wins. No overlay, no change.
+
 > **Note:** This skill orchestrates a few optional helpers (a commit-workflow skill
 > such as `/go-live` or `/commit-push`, a learnings step, a memory-consolidation step,
 > a session-handoff/recall file). "The commit skill" below means whichever of those is
