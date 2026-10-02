@@ -2,6 +2,11 @@
 
 Reusable [Claude Code](https://code.claude.com) skills maintained by The Flywheel.
 
+This repository is the public distribution mirror of the shared skill pack.
+Maintainers develop and review changes in the private shared workspace, then
+publish a checked file snapshot here. Installation URLs and skill names stay the
+same. Public contributions are welcome through pull requests.
+
 Distributed as a Claude Code **plugin marketplace** so you can install everything
 with two commands — no manual file copying.
 
