@@ -25,7 +25,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:multi-llm`
 - `wtf:visual-qa`
 - `wtf:premortem`
-- `wtf:wrapup`
+- `wtf:wrapup` (alias: `wtf:end`)
 - `wtf:idiocy-check`
 - `wtf:release-gate`
 - `wtf:content-gate`
