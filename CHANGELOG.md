@@ -6,6 +6,11 @@
 ### Fixed
 - The public leak check now handles Git worktree metadata while continuing to scan repository content.
 
+## 0.32.0 - 2026-10-04
+
+- Add `end` as an alias for `wrapup`, so `/end` (or `wtf:end`) closes a session
+  the same way.
+
 ## 0.31.0 - 2026-10-01
 
 - Let organisations add private closure, drift and documentation checks to
