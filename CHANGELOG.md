@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.33.0 - 2026-10-05
 
 - Link content-gate's warning-only internal-link coverage check to the internal-linking workflow, preserve all existing PASS/FAIL checks, and report unavailable proposal workflows accurately.
 

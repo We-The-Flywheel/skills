@@ -1,7 +1,7 @@
 {
   "name": "wtf",
   "displayName": "Flywheel Skills",
-  "version": "0.30.0",
+  "version": "0.33.0",
   "description": "Reusable Claude Code skills maintained by The Flywheel: humanizer, multi-llm, visual-qa, premortem, wrapup, idiocy-check, release-gate, content-gate, og-meta-check, moodboard, website-build, riff, grilling, skill-test, verify-claim, review-feedback, knowledgepanel, mission, improve-codebase-architecture, codebase-design, tdd, domain-modeling, axi, debug, memory-consolidate, sop, lavish, screamingfrog-check, video-analyze, video-use; RPI commands (research_codebase, create_plan, iterate_plan, implement_plan, validate_plan) and codebase-locator/analyzer/pattern-finder agents.",
   "author": {
     "name": "The Flywheel",

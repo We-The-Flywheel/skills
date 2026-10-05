@@ -19,9 +19,6 @@ allowed-tools:
   - WebFetch
   - AskUserQuestion
 uses:
-  - skill: internal-linking
-    relation: delegates
-    why: Step 9.11, route eligible pilot proposals through human review when the workflow is ready
   - skill: og-meta-check
     relation: delegates
     why: Step 5 of the gate is owned by that skill
@@ -384,8 +381,8 @@ CONTENT GATE — <page/URL>
  6 FAQ + JSON-LD        PASS/FAIL/EXEMPT
  7 Schema + E-E-A-T     PASS/FAIL  <schemas found; missing signals>
  8 Analytics            PASS/FAIL  <ID verified>
-9 AI-citation          PASS/FAIL  <failed sub-checks>
-— Internal-link coverage WARN/UNAVAILABLE  <indexable page counts, or missing crawl/workflow>
+ 9 AI-citation          PASS/FAIL  <failed sub-checks>
+ — Internal-link coverage WARN/UNAVAILABLE  <indexable page counts, or missing crawl/workflow>
 10 Preferred Sources    PASS/FAIL/EXEMPT  <script+div+fallback counts, or ineligible domain>
  — Artifacts committed  PASS/FAIL
 
