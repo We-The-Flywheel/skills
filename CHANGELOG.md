@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.33.0 - 2026-10-05
+
+- Link content-gate's warning-only internal-link coverage check to the internal-linking workflow, preserve existing PASS/FAIL checks, and report unavailable proposal workflows accurately.
+
 ## [2026-10-02] - Public distribution mirror
 ### Changed
 - Documented the shared development and reviewed publication workflow. Existing marketplace URLs, skill names, and package version remain unchanged.
