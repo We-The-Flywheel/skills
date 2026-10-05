@@ -1,5 +1,11 @@
 # Contributing a skill
 
+This is the public distribution mirror. Maintainers develop the shared package
+in the private shared workspace and publish reviewed file snapshots here. Open
+public contributions as pull requests here; maintainers reconcile accepted
+changes into the development source before the next release. Never copy private
+repository history or personal skills into this mirror.
+
 This is a **public** repo. The #1 rule: **nothing confidential ever lands here** —
 no internal hostnames, private paths, credentials, personal emails, or
 business-specific domains. An automated leak-check (`scripts/scrub-check.sh`, also

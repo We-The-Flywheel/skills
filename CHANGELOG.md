@@ -2,7 +2,23 @@
 
 ## 0.33.0 - 2026-10-05
 
-- Link content-gate's warning-only internal-link coverage check to the internal-linking workflow, preserve all existing PASS/FAIL checks, and report unavailable proposal workflows accurately.
+- Link content-gate's warning-only internal-link coverage check to the internal-linking workflow, preserve existing PASS/FAIL checks, and report unavailable proposal workflows accurately.
+
+## [2026-10-02] - Public distribution mirror
+### Changed
+- Documented the shared development and reviewed publication workflow. Existing marketplace URLs, skill names, and package version remain unchanged.
+### Fixed
+- The public leak check now handles Git worktree metadata while continuing to scan repository content.
+
+## 0.32.0 - 2026-10-04
+
+- Add `end` as an alias for `wrapup`, so `/end` (or `wtf:end`) closes a session
+  the same way.
+
+## 0.31.0 - 2026-10-01
+
+- Let organisations add private closure, drift and documentation checks to
+  `wrapup` through the existing house-overlay mechanism.
 
 ## 0.30.0 - 2026-10-01
 

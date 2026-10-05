@@ -39,6 +39,7 @@ JOINED="$(IFS='|'; echo "${PATTERNS[*]}")"
 
 HITS=$(grep -rEnI "$JOINED" . \
   --exclude-dir=.git \
+  --exclude=.git \
   --exclude-dir=node_modules \
   --exclude-dir=__pycache__ \
   --exclude='scrub-check.sh' || true)
