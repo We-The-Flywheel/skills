@@ -19,6 +19,9 @@ allowed-tools:
   - WebFetch
   - AskUserQuestion
 uses:
+  - skill: internal-linking
+    relation: delegates
+    why: Step 9.11, route eligible pilot proposals through human review when the workflow is ready
   - skill: og-meta-check
     relation: delegates
     why: Step 5 of the gate is owned by that skill
@@ -287,6 +290,7 @@ answer is frequently the **only** impression the page makes.
 | 9.8 | **Source-category fit** | The page reads as the *type* of source AI engines cite for this query class — an authoritative editorial answer, not a thin landing page |
 | 9.9 | **Intent-format match** (ADVISORY) | The page's *format* matches the dominant intent of the live SERP for its primary keyword: a commercial query wants a comparison/product/tool page, not an editorial guide, and vice versa. Intent mismatch, not thin content, is the most common reason a technically-perfect page never ranks. Flag and confirm, don't block |
 | 9.10 | **Question-shaped subheadings + answer-first chunks** | Primary body subheadings (H2/H3) are phrased as the questions a reader actually asks ("How long does X take?") rather than noun-phrase labels ("Timeline"), and the first 1–2 sentences under each directly answer it before any elaboration. Pair with a list or table when the answer is enumerable. Not every subhead must be a question, but the primary informational sections should be |
+| 9.11 | **Internal-link coverage (WARN only)** | If the Content Hub crawl exists, report pages below 5 distinct in-body inbound links and non-thin pages below 10 distinct in-body outgoing links. This pilot target never blocks publishing or changes another gate's PASS/FAIL status; do not add weak links to clear it. Use the `internal-linking` skill to route eligible proposals through human review and the Content Hub PR lane. If the workflow is unavailable, report that; do not claim a proposal was queued. |
 
 **Verify 9.4 properly:** render the page at ~1280×800 **without scrolling**
 (screenshot it) and read the visible block in isolation. If it can't be quoted
