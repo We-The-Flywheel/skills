@@ -2,7 +2,7 @@
 name: wrapup
 description: |
   Wrap up a coding session cleanly: shut down local dev servers, remove temp/backup
-  files, commit and push outstanding work, merge a feature branch into main, and refresh project docs (PROJECT_MAP.md +
+  files, commit and push session work, verify merge/deployment and branch/worktree cleanup, and refresh project docs (PROJECT_MAP.md +
   AGENTS.md or CLAUDE.md). Use when the user says "wrapup", "/wrapup", "wrap up", "end the session",
   "finish up", "we're done for today", or wants a safe shutdown that saves work,
   frees ports, and leaves the repo and working tree in a clean, documented state.
@@ -38,7 +38,7 @@ $ARGUMENTS
 
 **Branch:** $(git branch --show-current 2>/dev/null || echo "detached")
 **Status:** $(git status --short 2>/dev/null | head -15)
-**Unpushed:** $(git log --oneline @{upstream}..HEAD 2>/dev/null || echo "none")
+**Unpushed:** $(git log --oneline @{upstream}..HEAD 2>/dev/null || echo "UNKNOWN — inspect upstream and remote")
 **Last commit:** $(git log -1 --format="%h %s (%ar)" 2>/dev/null || echo "none")
 
 - `manual` - Use interactive prompts for commits (old behavior)
@@ -52,9 +52,10 @@ $ARGUMENTS
 - Auto-remove .DS_Store (macOS) and .bak files (silent)
 - Distill the conversation → `.session-handoff.md`, `DECISIONS.md`, and codified learnings
 - Generate/update PROJECT_MAP.md + essential AGENTS.md (or CLAUDE.md) context
-- Auto-commit everything via the commit skill (docs included), auto-push
+- Commit all authorized session work (docs included), push, land it in `origin/main` unless explicitly directed elsewhere, and verify the applicable deployment
+- Verify merged topic branches are absent locally and remotely, and remove completed temporary worktrees; preserve active or unrelated work
 
-**Step order matters:** all file-writing steps (4–8) run BEFORE the commit (Step 9) so handoff, decisions, learnings, and project-map updates ride along in the same commit instead of leaving a dirty tree behind.
+**Step order matters:** file-writing steps run before the final commit. After Steps 9–11, repeat the scoped commit/push/merge/deploy checks if closure produced more tracked changes. `skip-map`, `skip-cleanup`, and `keep-servers` do not skip delivery or branch/worktree verification. `force` is a summary-only exit, never verified completion.
 
 ## Workflow
 
@@ -69,43 +70,19 @@ IS_DETACHED=$(git symbolic-ref -q HEAD || echo "detached")
 
 **If `force` argument:** skip all processing, jump directly to the session summary (Step 12), exit immediately.
 
-**If merge in progress or detached HEAD:** warn the user, skip auto-commit operations, suggest completing the merge or creating a branch first.
+**Resolve delivery context before using it:** default to `REMOTE=origin` and `BASE_BRANCH=main`; use a different remote/branch only when the user or project explicitly directs it. Record the deployment target and documented workflow separately: a Git ref is not a deployment target. Verify the remote and base ref exist; absence is a blocker, not permission to guess. Record the current branch, session commits, PRs, and every temporary worktree created or used in this session, including detached and already-removed paths.
 
-### 2. Outstanding Work Gate
+**Shared checkout:** inspect Git status, staged paths, registered worktrees, and active sessions before changing Git state. Do not switch, pull, rebase, reset, stash, or remove a checkout used by another session. Do not create a worktree or clone just to wrap up. Use an existing safe checkout or report the exact blocked action.
 
-Before any cleanup or wrap-up, check for outstanding work. If found, **STOP** and inform the user — do not proceed to cleanup, commits, or summary. (Skipped in `force` mode.)
+**If merge in progress or detached HEAD:** preserve the work and diagnose ownership before changing state. Read-only delivery and cleanup audits still run; skipped writes remain incomplete.
 
-**Checks:**
+### 2. Reconcile Outstanding Work
 
-1. **Active tasks** — query TaskList for tasks with status `in_progress` or `todo`; list them if any
-2. **Uncommitted changes** — from pre-computed context (`git status --short`): unstaged modifications or untracked files that look intentional (not temp files)
-3. **Stashed changes** — `git stash list 2>/dev/null | head -5`
-4. **Open TODOs from this session** — `git diff HEAD 2>/dev/null | grep "^+" | grep -iE "TODO|FIXME|HACK|XXX" | head -10`
+Inspect active session tasks, `git status --short`, staged paths, `git stash list`, and unresolved TODOs introduced by this session. Use available task tooling, not an assumed tool name. Intentional uncommitted session changes are input to Step 9, not a reason to ask whether to continue.
 
-**If any outstanding work is found, display:**
+Finish authorized work and affected checks before shipping. Preserve other sessions' files, commits and stashes; do not stage them to manufacture a clean tree. Inspect the full diff to establish ownership. If a file or hunk has mixed ownership, isolate only the reviewed session change without reverting other edits. Ask only when ownership or a consequential unfinished decision cannot be resolved. Continue independent checks while that question is pending.
 
-```
-═══════════════════════════════════
-    OUTSTANDING WORK DETECTED
-═══════════════════════════════════
-
-⚠️  Cannot wrap up — the following work is still pending:
-
-[List whichever apply: 📋 Active tasks / 📝 Uncommitted changes / 📦 Stashed changes / 🔖 New TODOs in uncommitted code]
-
-─────────────────────────────────
-
-Options:
-  1. Go back and finish the work
-  2. Continue with /wrapup anyway (will auto-commit what's there)
-  3. Run /wrapup force (skip all processing, just show summary)
-
-Choose: [1/2/3]
-```
-
-**Handle user choice:** 1 = stop /wrapup entirely; 2 = proceed with the normal workflow (Step 3 onwards); 3 = jump to Step 12 (summary only).
-
-**If NO outstanding work found:** proceed silently to Step 3.
+A known failure, explicit pause, unresolved conflict, or missing authorization blocks the affected operation. Record its exact reason and next action; never turn a skipped operation into completion. Ordinary commit/push/merge/deploy steps already authorized by the task do not require another confirmation.
 
 ### 3. Cleanup
 
@@ -430,83 +407,51 @@ echo '{...}' >> .session-metrics.jsonl
 
 **Rules:** append-only — never overwrite or truncate; add `.session-metrics.jsonl` to `.gitignore` if not already there (local analytics, not committed); if no agents/escalations occurred, still log the basic metrics — absence is itself a data point.
 
-### 9. Auto-Commit (via the commit skill)
+### 9. Commit All Authorized Session Work
 
-Skip this step if: `manual` mode (interactive prompt instead), IS_GIT = "no", IS_MERGE = "yes", or IS_DETACHED = "detached".
+For Git repositories, inspect `git status --short`, the full session diff and `git diff --cached --name-only`. Complete affected checks and required changelog updates. Commit all intended session changes, including closure docs, using explicit paths or hunks; verify the staged list before every commit. A commit helper must obey the same scope. Preserve unrelated work and report it separately. Never use blanket `git add -A` in a shared checkout.
 
-**Check for uncommitted changes:** `git status --short`
+In `manual` mode ask before committing. For an owned failure, diagnose and fix within scope, then retry; do not ask a routine retry/skip/abort question. A declined, failed, or blocked commit is `INCOMPLETE`. If detached or mid-merge, resolve safely under Step 1 before writing; do not silently skip and call the session complete.
 
-**If uncommitted changes exist:**
+### 10. Push and Verify the Destination
 
-1. Announce: "Uncommitted changes detected - committing..."
-2. Commit the changes:
-   - If you have a commit skill installed (e.g. `/go-live`, `/commit-push`), invoke it — it analyzes changes, updates a `CHANGELOG.md` if present, and writes the message. Prefer a commit-only mode (no server deploy / cache purge) if the skill offers one, e.g. `/go-live --ship-only`.
-   - Otherwise, stage everything and create a single well-described commit (`git add -A && git commit`) whose message summarizes the actual diff. Update the `CHANGELOG.md` yourself if the project keeps one.
-3. Monitor for success/failure.
+Do not infer push success from an empty `git log @{upstream}..HEAD`: a missing upstream or failed command is `UNKNOWN`. Fetch the selected remote and inspect the explicit destination refs. For a new topic branch, push explicitly and set tracking (`git push -u "$REMOTE" "$CURRENT_BRANCH"`). Direct-to-base work follows the project's PR policy. In `manual` mode ask before pushing.
 
-**Mixed commits are fine:** the working tree may contain changes from prior sessions, manual edits, or pre-existing WIP. Do **not** try to separate "session work" from "pre-existing work", and do **not** stash, revert, or skip files you didn't touch this session. Commit everything as a single coherent set — write a message describing the actual diff. If the diff spans clearly unrelated concerns, split into multiple commits; otherwise one mixed commit is correct.
+Read back the remote branch SHA with `git ls-remote --heads "$REMOTE" "refs/heads/$CURRENT_BRANCH"` and compare it to the intended local commit. Investigate mismatches; a successful command alone is not proof. If a push helper already landed the PR and removed the branch, verify the merge and base instead; do not recreate the merged branch. Fix safe failures within scope; never force-push, or rebase/pull a shared active checkout to bypass a rejection.
 
-**If the commit step fails:**
+### 10b. Land Session Work in the Base Branch
 
-```
-❌ Commit workflow failed: [error message]
+The destination is `$REMOTE/$BASE_BRANCH`, normally `origin/main`, unless explicitly directed otherwise. For each session topic branch that still needs landing:
 
-Options:
-1. Fix manually (session stays open)
-2. Skip commit (continue with other cleanup)
-3. Abort /wrapup command
+1. Identify the PR by repository and branch. Inspect state, base, exact head, required checks and explicit holds. Run the project's review/merge gate and resolve real findings within scope. An advisory review is not a new approval requirement; required checks, conflicts, ownership boundaries and explicit pauses still apply.
+2. When authorized and checks pass, merge the exact reviewed head. With GitHub, use the project's merge method and `gh pr merge <PR> --match-head-commit <reviewed-sha>` (add `--squash` when that is the project convention). Record the pre-merge head and resulting merge SHA. Read the PR state back even if the CLI reports a local checkout error: the server merge may have succeeded. `--delete-branch` is only an attempt; Step 10d verifies cleanup.
+3. Without a PR service, use the documented local merge workflow only in an idle, clean checkout. Update the base with a fast-forward, merge the reviewed topic, push the base, and read it back. Never switch another session's checkout.
+4. Fetch and verify the merge/result commit is contained in the selected remote base. For squash/rebase merges, use the PR's recorded head and merge metadata; topic-commit ancestry alone is insufficient. An open PR or a pushed topic branch is not a landed result.
 
-Choose: [1/2/3]
-```
+Already on base, no new commits, or merged earlier in the session? Verify the existing result and continue through deployment and cleanup. These conditions do not skip closure checks. Follow-up changes after a merge use a new branch and PR, never the merged branch. In `manual` mode ask before merging.
 
-**Manual mode:** ask "Commit these changes?" (Y/n); if yes, run the commit step (commit skill if installed, else plain git); if no, warn that changes persist uncommitted.
+### 10c. Deploy and Verify What Is Running
 
-### 10. Auto-Push
+Use the project's documented deployment/release path and the session's authorization. Deploy the landed revision to every applicable target, including package/plugin installations or configuration consumers when this is not an application. Honor explicit `local only`, `do not deploy`, or alternate-target instructions; report them as user-directed skips. If the path, target, or necessary authorization is missing, report a blocker rather than inventing one.
 
-Skip if: `manual` mode (ask "Push commits?" instead), IS_GIT = "no", or the commit step failed and user chose to skip. (A commit skill often pushes already — this step catches commits it left behind.)
+Record the intended revision or artifact, command result, and live readback for each target. Verify the deployed SHA/version or artifact contents and the affected behavior using appropriate runtime, HTTP or browser checks. A green health endpoint, a merged PR, or a successful deploy command alone does not prove the new revision is live. CI deployment must finish successfully and be checked at its target. Report a restart/reload still needed to activate an installed plugin.
 
-```bash
-UNPUSHED=$(git log --oneline @{upstream}..HEAD 2>/dev/null)
-```
+Use `N/A` only when there is no applicable deployable artifact, with a reason (for example, internal documentation only). A repository without a known deploy path is not automatically `N/A`. A failed or stale deployment remains `INCOMPLETE` and does not prevent safe cleanup of independently verified merged work.
 
-If unpushed commits exist: announce "Pushing commits to remote..." and `git push 2>&1`.
+### 10d. Verify Merged Branch and Worktree Cleanup
 
-**If push fails:**
+Run even when no merge happened during wrap-up, the current checkout is on base, or `skip-cleanup` was passed. That flag skips temp/server cleanup only.
 
-```
-❌ Push failed: [error details]
+**Inventory the repository, not just the current branch.** Refresh remote refs, list local/remote topic branches and `git worktree list --porcelain`, and inspect merged PRs plus branches merged directly into the selected base. Include every branch naming scheme (`feature/`, `fix/`, `chore/`, `release/`, bot branches, and unprefixed names). Protect the default/base branch and other documented long-lived branches. Limit mutations to this repository and authorized related checkouts, not a fleet-wide sweep.
 
-Common causes: network issue · remote has changes (try: git pull --rebase) · permission issue (check SSH keys)
+For each candidate, record the branch, current local and remote tip, merged PR/result, associated worktree paths, and ownership/activity:
 
-Options:
-1. Retry push
-2. Skip push (commits stay local)
-3. Abort /wrapup
+- **Prove all current work is landed.** Direct merge ancestry can establish this. For a squash/rebase merge, verify the PR is merged into the intended base and its recorded head matches the candidate tip; verify the merge result is in the base. Check local and remote tips separately. New commits after the merge, an open PR reusing the branch name, or ambiguous evidence means keep it and report why. `git branch --merged` alone misses squash merges; a `[gone]` upstream or an old merged PR alone proves nothing about today's tip.
+- **Remove completed temporary worktrees first.** Account for every worktree created during the session, including detached worktrees, plus inactive worktrees attached to verified merged branches. Inspect tracked, untracked and ignored files for unique local data, and confirm no other session/process is using the path. Move this session out to an existing safe checkout before removal. Use `git worktree remove <path>` only after wanted work/data is committed, pushed, or preserved through an authorized archival path. Never force-remove a dirty/active worktree or use `rm -rf` to bypass Git. Preserve the primary/shared checkout and intentional persistent checkouts.
+- **Delete the verified topic branch locally and remotely.** Require exclusive branch ownership through deletion; if another writer may move the ref, retain it until coordination or an authorized atomic expected-tip deletion is available. Recheck tips and ownership immediately before deletion. Use `git push "$REMOTE" --delete <branch>` if the remote branch remains, then `git branch -d <branch>`. After a squash merge, `-D` is allowed only when the exact current local tip was independently proven merged and no worktree/session holds it. Never blanket-delete branches from a list of names or delete an active session's branch.
+- **Read back every deletion.** `git ls-remote --heads "$REMOTE" "refs/heads/<branch>"` must succeed with no matching ref; `git show-ref --verify --quiet "refs/heads/<branch>"` must return the missing-ref status. Confirm each removed worktree is absent from both `git worktree list --porcelain` and the filesystem. If registrations are stale, inspect a prune dry run before pruning; pruning registrations is not directory removal. Distinguish network/command errors from absence.
 
-Choose: [1/2/3]
-```
-
-### 10b. Land the Feature Branch into Main
-
-Skip if: IS_GIT = "no", IS_FEATURE_BRANCH = "no" (detect it as in Step 12), the push in Step 10 failed or was skipped, or the branch has no commits ahead of main (`git rev-list --count origin/$MAIN_BRANCH..HEAD` is 0). In `manual` mode ask "Merge [branch] into [main]?" first.
-
-Work done on a branch this session should not be left stranded there. Bring it into main:
-
-1. **Guard first.** Don't merge if the branch carries a hold (e.g. a PR labelled `hold:human`), if it holds another session's or person's unfinished work rather than this session's, or if the project documents its own merge gate (a PR review tool, required reviews). In those cases open the PR, run the gate if there is one, and report the PR URL instead of merging.
-2. **GitHub remote with `gh`:** reuse the open PR or create one, then squash-merge it:
-   ```bash
-   gh pr view --json url,state 2>/dev/null || gh pr create --fill --base "$MAIN_BRANCH"
-   gh pr merge --squash --delete-branch
-   ```
-3. **No `gh` / not GitHub:** merge locally, fast-forward main first:
-   ```bash
-   git fetch origin
-   git checkout "$MAIN_BRANCH" && git pull --ff-only
-   git merge --no-ff "$CURRENT_BRANCH" && git push origin "$MAIN_BRANCH"
-   ```
-   In a worktree where main is checked out elsewhere, `git checkout` fails: use the PR path, or merge in the main checkout.
-4. **Conflicts or a failing check:** stop. Don't resolve by force, don't `--force` push. Abort the local merge (`git merge --abort`), leave the branch pushed, and report the conflict or the failed check with the PR URL.
-5. After a successful merge, switch the working copy to main and pull, so the summary reflects main.
+Keep an explicit list of retained branches/worktrees with owner, reason and next action. A blocked session-owned worktree or merged-branch deletion keeps closure `INCOMPLETE`; an unrelated active or documented persistent checkout is a reported exclusion, not something to destroy. Do not claim cleanup from `gh pr merge --delete-branch`, auto-delete settings, a clean current checkout, or removal of only the worktree.
 
 ### 11. CHANGELOG.md Audit
 
@@ -519,66 +464,33 @@ head -20 CHANGELOG.md 2>/dev/null
 
 If `CHANGELOG.md` doesn't exist or looks stale: show informational note "ℹ️  CHANGELOG.md may need updating for recent changes" — informational only, don't block or prompt.
 
-### 12. Session Summary
+### 12. Verify Closure and Report
 
-Detect branch context first:
+Rerun status, staged-path and remote checks after the last file write. Commit/push/land any new intended tracked changes and redeploy if they affect the shipped artifact. Keep local ignored handoff files and unrelated work explicit. Recheck the recorded branch/worktree removals.
 
-```bash
-CURRENT_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "detached")
-MAIN_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
-IS_FEATURE_BRANCH=$([ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ] && [ "$CURRENT_BRANCH" != "detached" ] && echo yes || echo no)
+Report each field, per repository and deployment target when multiple are involved:
+
+```text
+Session: COMPLETE | INCOMPLETE | USER-DIRECTED SKIP
+Destination: origin/main (or explicit override)
+Committed: PASS | INCOMPLETE — session commit(s), remaining owned paths
+Pushed/landed: PASS | INCOMPLETE — remote base SHA, PR/merge evidence
+Deployed: PASS | INCOMPLETE | N/A | USER-DIRECTED SKIP — target, revision, live check/reason
+Branches: PASS | INCOMPLETE | N/A — local and remote absence checks; retained refs and reasons
+Worktrees: PASS | INCOMPLETE | N/A — removed paths, registration + filesystem checks; retained paths and reasons
+Other work preserved: owners/paths, or none
+Documentation/cleanup: operations actually completed
+Remaining actions: exact blockers and next steps, or none
 ```
 
-Display a final summary of what actually executed:
-
-```
-═══════════════════════════════════
-       SESSION COMPLETE
-═══════════════════════════════════
-
-[Conditional lines — only for operations that ran:]
-✅ Stopped 2 local server(s) (port 1313, 5100)
-✅ Cleaned 3 .DS_Store files
-✅ Handoff written (.session-handoff.md); 1 decision logged to DECISIONS.md
-✅ PROJECT_MAP.md + CLAUDE.md updated
-✅ Changes committed
-✅ Pushed to remote: origin/main
-
-─────────────────────────────────
-
-Repository Status:
-  Branch:      main
-  Last commit: a1b2c3d Fix authentication bug
-  Status:      Working tree clean
-
-[If Step 10b merged:]
-🔀 Merged [branch-name] into [main] ([PR URL or merge commit])
-
-[If still on a feature branch (Step 10b skipped, held, or failed):]
-🌿 FEATURE BRANCH SESSION — ending on branch: [branch-name]
-[⚠️ note why it wasn't merged: hold, merge gate, conflict, failed check; plus unpushed commits and/or uncommitted changes if any]
-[PR URL if one is open]
-
-[If warnings exist:]
-⚠️  Warnings:
-  - CHANGELOG.md may be stale
-  - 2 stashed changes pending
-
-─────────────────────────────────
-
-[1-2 sentence accomplishment summary of session work]
-
-You can now /exit if all work is done and there is nothing more to clarify.
-```
-
-**Adapt dynamically:** show ✅ only for operations that succeeded, ❌ for failures, omit skipped operations. Note "(manual mode)" if applicable. In `force` mode show only branch, last commit, and working-tree status.
+`INCOMPLETE` takes precedence over `USER-DIRECTED SKIP` whenever an independent required check fails or remains unresolved. `COMPLETE` requires every applicable delivery and cleanup check to pass. `N/A` requires evidence that the step does not apply, not missing evidence. Never say the whole checkout is clean if unrelated changes remain. Any user-directed skip must be visible; do not silently turn it into PASS. The user can exit with unresolved work, but closure remains incomplete. In `force` mode show current Git state and `USER-DIRECTED SKIP — delivery and cleanup not verified`, without claiming completion.
 
 ## Error Handling
 
 - **Not a git repo**: skip all git operations; still do cleanup and PROJECT_MAP.md
-- **Merge in progress**: warn, skip auto-commit, suggest `git merge --continue`
-- **Detached HEAD**: warn, skip auto-commit, suggest `git checkout -b <branch-name>`
-- **Commit or push fails**: show error, offer retry/skip/abort, wait for user choice
+- **Merge in progress**: apply Step 1 ownership checks; report the affected delivery as incomplete until resolved
+- **Detached HEAD**: apply Step 1 ownership checks; preserve commits and report any unresolved delivery
+- **Commit, push, merge, deploy or cleanup fails**: fix within scope; otherwise report the exact blocker and mark closure incomplete
 - **PROJECT_MAP.md generation fails**: use basic fallback template
 - **CLAUDE.md update fails**: warn; PROJECT_MAP.md still created
 - **CHANGELOG.md missing**: informational note only (non-blocking)
@@ -588,13 +500,13 @@ You can now /exit if all work is done and there is nothing more to clarify.
 
 ## Safety Rules
 
-- **NEVER auto-delete files without confirmation** (exceptions: .DS_Store on macOS, .bak files)
+- **File deletion follows task authorization** — temp-file confirmation rules are in Step 3; verified merged-branch and completed-worktree cleanup follows Step 10d
 - **Server shutdown is local-only** — auto-kill only servers THIS session started; confirm for anything else; never touch databases, system services, IDEs, the Claude Code process, or remote/production services
 - **NEVER force-commit** — always analyze the diff and write a message that describes it (commit skill or plain git)
 - **NEVER push if remote has commits we don't have** — check first
-- **OK to commit pre-existing uncommitted work** — commit it rather than leaving the tree dirty
-- **NEVER block exit** — all warnings are informational
-- **Always show what will be deleted** before deleting (except the two silent-delete exceptions)
+- **Preserve unrelated and active work** — commit all authorized session work, not every file in a shared checkout
+- **Never prevent the user from exiting** — report incomplete delivery or cleanup honestly; exit is not completion
+- **Always identify deletion targets** before deleting (except the two silent-delete exceptions); verify absence afterward
 - **Always preserve manual edits** in PROJECT_MAP.md "Notes"; never restructure a user-customized PROJECT_MAP.md — only update specific sections
 - **Always verify git state** before auto-operations (merge, detached HEAD, etc.)
 
@@ -604,7 +516,8 @@ You can now /exit if all work is done and there is nothing more to clarify.
 - Step 3: still auto-remove .DS_Store/.bak, but announce counts; ask before shutting down any dev server
 - Step 9: ask "Commit these changes?" instead of auto-committing
 - Step 10: ask "Push commits?" instead of auto-pushing
-- Step 10b: ask "Merge [branch] into [main]?" instead of auto-merging
+- Step 10b: ask "Merge [branch] into [base]?" instead of auto-merging
+- Steps 10c–10d: ask before deployment and branch/worktree removal; run read-only verification regardless
 - Step 7: ask "Update PROJECT_MAP.md?" instead of auto-generating
 
 All other steps work the same as default mode.

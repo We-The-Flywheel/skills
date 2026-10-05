@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.34.0 - 2026-10-05
+
+- Require wrapup to verify commits, the selected remote base, and deployment before reporting completion.
+- Verify local and remote deletion of merged topic branches and completed temporary worktrees, including squash merges and earlier session merges. Preserve active work and report blocked cleanup.
+- Scope commits to authorized session changes in shared checkouts. The end alias inherits these checks.
+
 ## 0.33.0 - 2026-10-05
 
 - Link content-gate's warning-only internal-link coverage check to the internal-linking workflow, preserve existing PASS/FAIL checks, and report unavailable proposal workflows accurately.
