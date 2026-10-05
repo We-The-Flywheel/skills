@@ -3,6 +3,7 @@
 ## 0.33.0 - 2026-10-05
 
 - Link content-gate's warning-only internal-link coverage check to the internal-linking workflow, preserve existing PASS/FAIL checks, and report unavailable proposal workflows accurately.
+- Clarify that eligible pilot links are approved autonomously and still pass through the normal build and pull-request lane.
 
 ## [2026-10-02] - Public distribution mirror
 ### Changed
