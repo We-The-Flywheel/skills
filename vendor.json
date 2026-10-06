@@ -62,7 +62,16 @@
       "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       "last_synced": "2026-08-22",
       "local_modifications": true,
-      "notes": "Local modification: 'department: engineering' frontmatter added 2026-08-22 (#4, public-wide department/uses backfill)."
+      "notes": "Local modifications: 'department: engineering' frontmatter added 2026-08-22 (#4, public-wide department/uses backfill). 2026-10-06: absorbed the internal 'questions' skill (description triggers, two-mode preamble, and appended sections 'Asking with a picker', 'Open questions mode', 'Recording answers'). Upstream body text is kept verbatim between the preamble and the appended sections; body matched upstream 2237a047bd95abfd1427df94f65165c39e24d3c1 on 2026-10-06."
+    },
+    {
+      "name": "grill-me",
+      "source": "mattpocock-skills",
+      "upstream_path": "skills/productivity/grill-me",
+      "pinned_sha": "2237a047bd95abfd1427df94f65165c39e24d3c1",
+      "last_synced": "2026-10-06",
+      "local_modifications": true,
+      "notes": "Upstream is a one-line wrapper that calls grilling. Rewritten in the house alias form (see 'end'); 'department' frontmatter added and disable-model-invocation dropped so 'grill me' phrasing triggers it."
     },
     {
       "name": "skill-test",

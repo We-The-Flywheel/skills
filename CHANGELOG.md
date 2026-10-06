@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.35.0 - 2026-10-06
+
+- grilling gains an open-questions mode: it collects the questions and decisions already waiting on the user (thread, session handoff, design docs) and asks them. It replaces the separate internal `questions` skill.
+- grilling asks choice-shaped questions through an interactive picker (Claude Code's `AskUserQuestion`) when one exists, in batches of 4, and records the answers.
+- Add `grill-me` as an alias for grilling, matching the upstream name in mattpocock/skills.
+
 ## 0.34.0 - 2026-10-05
 
 - Require wrapup to verify commits, the selected remote base, and deployment before reporting completion.

@@ -112,6 +112,14 @@ Derived from "skills/productivity/grilling" in https://github.com/mattpocock/ski
 
 
 -------------------------------------------------------------------------------
+skills/grill-me
+-------------------------------------------------------------------------------
+Derived from "skills/productivity/grill-me" in https://github.com/mattpocock/skills (pinned at 2237a047bd95abfd1427df94f65165c39e24d3c1).
+  Source:  https://github.com/mattpocock/skills
+  License: MIT
+
+
+-------------------------------------------------------------------------------
 skills/improve-codebase-architecture
 -------------------------------------------------------------------------------
 Derived from "skills/engineering/improve-codebase-architecture" in https://github.com/mattpocock/skills (pinned at d81f3a183412e71a5b1e84ca21bc1a35eea03a60).
