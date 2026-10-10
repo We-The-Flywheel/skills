@@ -33,7 +33,7 @@ three output modes, the prompt-injection line, the "when not to act"
 exemptions, and patterns 2, 3, 4, 5, 7, 10, 11, 17, 30 and 31.
 
 -------------------------------------------------------------------------------
-skills/_archive/writing-for-agents  (retired 2026-08-22, no longer an installable skill)
+archive/skills/writing-for-agents  (retired 2026-08-22, no longer an installable skill)
 -------------------------------------------------------------------------------
 Derived from "skills/productivity/writing-for-agents" in https://github.com/mattpocock/skills (pinned at 5b15a47f2d7150f545fbcacbfe381787fc0230dc).
   Source:  https://github.com/mattpocock/skills
@@ -42,7 +42,7 @@ Derived from "skills/productivity/writing-for-agents" in https://github.com/matt
 Retired: superseded by skills/skill-test (see below), which covers the same
 creating/editing-a-skill trigger. Files kept in place (not deleted) to preserve
 this MIT attribution; relocated from plugins/wtf/skills/writing-for-agents to
-plugins/wtf/skills/_archive/writing-for-agents so it is no longer discovered
+archive/skills/writing-for-agents so it is no longer discovered
 as an independently invocable skill.
 
 -------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ Modifications by The Flywheel: renamed from upstream "diagnosing-bugs" to
 "diagnose". On 2026-09-30 its content was merged into skills/debug (which
 now carries this attribution for the merged sections and
 scripts/hitl-loop.template.sh); the original files are kept at
-skills/_archive/diagnose.
+archive/skills/diagnose.
 
 -------------------------------------------------------------------------------
 skills/grilling

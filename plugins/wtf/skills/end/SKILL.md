@@ -1,13 +1,16 @@
 ---
 name: end
 description: |
-  Alias for wrapup. Use when the user says "end", "/end", "end the skill" or
-  "end it here" meaning: close out the coding session. Runs the wrapup skill
-  with the same arguments.
+  Explicit shortcut for wrapup. Use only when the user invokes /end or selects this alias.
+disable-model-invocation: true
 department: ops
+uses:
+  - skill: wrapup
+    relation: delegates
 ---
 
-This is an alias. Invoke the `wrapup` skill (`wtf:wrapup`, or `wtf-wrapup` on a
-clone install) through the Skill tool, passing along any arguments given here
-unchanged (`manual`, `skip-map`, `skip-cleanup`, `keep-servers`, `force`). Then
-follow that skill. Do not run any steps from this file.
+Follow the `wrapup` skill with the user's arguments unchanged (`manual`, `skip-map`,
+`skip-cleanup`, `keep-servers`, `force`). If the harness has a Skill tool, invoke
+`wtf:wrapup` (`wtf-wrapup` on a clone install). Otherwise read the sibling
+`../wrapup/SKILL.md` (`../wtf-wrapup/SKILL.md` on a clone install) and follow it.
+The session-closing workflow lives only there.
