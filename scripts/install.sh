@@ -2,7 +2,8 @@
 # Clone-based install (alternative to the plugin marketplace).
 # Copies each skill into ~/.claude/skills/ with a `wtf-` prefix so they never
 # clash with same-named skills you may already have. Skips anything already
-# installed. The plugin marketplace is the recommended path — see README.md.
+# installed, except aliases refreshed with a backup. The plugin marketplace is
+# the recommended path — see README.md.
 
 set -euo pipefail
 
@@ -12,7 +13,7 @@ DEST_ROOT="$HOME/.claude/skills"
 SKILLS=(humanizer mission multi-llm visual-qa premortem wrapup end idiocy-check release-gate content-gate og-meta-check moodboard website-build riff grilling grill-me skill-test verify-claim review-feedback knowledgepanel improve-codebase-architecture codebase-design tdd domain-modeling axi debug memory-consolidate sop lavish screamingfrog-check video-analyze video-use)
 
 # Skills moved to archive/: archive copies left by earlier installs.
-RETIRED=(pangram ultrahumanizer longterm)
+RETIRED=(pangram ultrahumanizer longterm diagnose writing-for-agents skill-writing)
 
 mkdir -p "$DEST_ROOT"
 
@@ -34,8 +35,25 @@ for skill in "${SKILLS[@]}"; do
     continue
   fi
   if [ -e "$dest" ]; then
-    echo "↷  skip (already installed): wtf-$skill"
-    continue
+    case "$skill" in
+      grill-me|end)
+        # Aliases contain no workflow. Preserve the old copy, then point at the
+        # canonical skill with the current invocation policy.
+        if cmp -s <(awk -v n="wtf-$skill" '/^name:/ { print "name: " n; next } { print }' "$src/SKILL.md") "$dest/SKILL.md" &&
+           cmp -s "$src/agents/openai.yaml" "$dest/agents/openai.yaml"; then
+          echo "↷  skip (alias current): wtf-$skill"
+          continue
+        fi
+        archive_root="$HOME/.claude/skills-disabled"
+        mkdir -p "$archive_root"
+        mv "$dest" "$archive_root/wtf-$skill-$(date +%s)-$$"
+        echo "↻  archived previous alias: wtf-$skill"
+        ;;
+      *)
+        echo "↷  skip (already installed): wtf-$skill"
+        continue
+        ;;
+    esac
   fi
 
   cp -R "$src" "$dest"

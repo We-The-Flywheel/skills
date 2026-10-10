@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.35.1 - 2026-10-10
+
+- Make `grill-me` and `end` explicit shortcuts, leaving automatic selection to `grilling` and `wrapup`. Both aliases work in harnesses without a Skill tool; clone installs refresh old aliases with a backup.
+- Move retired `diagnose` and `writing-for-agents` sources outside plugin discovery while preserving attribution. The clone installer archives their legacy copies and the former `skill-writing` name.
+
 ## 0.35.0 - 2026-10-06
 
 - grilling gains an open-questions mode: it collects the questions and decisions already waiting on the user (thread, session handoff, design docs) and asks them. It replaces the separate internal `questions` skill.

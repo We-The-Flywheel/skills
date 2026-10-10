@@ -1,9 +1,14 @@
 ---
 name: grill-me
-description: Alias for grilling. A relentless interview to sharpen a plan or design. Use when the user says "grill me" or "/grill-me".
+description: Explicit shortcut for grilling. Use only when the user invokes /grill-me or selects this alias.
+disable-model-invocation: true
 department: engineering
+uses:
+  - skill: grilling
+    relation: delegates
 ---
 
-This is an alias. Invoke the `grilling` skill (`wtf:grilling`, or `wtf-grilling` on a clone
-install) through the Skill tool, passing along any arguments given here unchanged. Then follow
-that skill. Do not run any steps from this file.
+Follow the `grilling` skill with the user's arguments unchanged. If the harness has a
+Skill tool, invoke `wtf:grilling` (`wtf-grilling` on a clone install). Otherwise read
+the sibling `../grilling/SKILL.md` (`../wtf-grilling/SKILL.md` on a clone install)
+and follow it. The interview and open-questions workflow live only there.

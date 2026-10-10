@@ -43,7 +43,7 @@
       "last_synced": "2026-08-22",
       "local_modifications": true,
       "archived": true,
-      "notes": "Retired 2026-08-22: superseded by obra-superpowers 'skill-writing' (see that skill's notes), which covers the same creating/editing-a-skill trigger without competing. No longer independently invocable -- files relocated to plugins/wtf/skills/_archive/writing-for-agents/ (not plugins/wtf/skills/writing-for-agents/) to preserve the MIT-attributed vendored content per NOTICE. 'vendor-sync.sh pull writing-for-agents' will fail with 'does not exist locally' against the old path -- expected, do not re-adopt at the old location. Local modifications: 'department' frontmatter (#4) and the _archive relocation, which vendor-verify reports as drift on every file."
+      "notes": "Retired 2026-08-22: superseded by obra-superpowers 'skill-writing' (see that skill's notes), which covers the same creating/editing-a-skill trigger without competing. No longer independently invocable -- files relocated to archive/skills/writing-for-agents/ (not plugins/wtf/skills/writing-for-agents/) to preserve the MIT-attributed vendored content per NOTICE. 'vendor-sync.sh pull writing-for-agents' will fail with 'does not exist locally' against the old path -- expected, do not re-adopt at the old location. Local modifications: 'department' frontmatter (#4) and the _archive relocation, which vendor-verify reports as drift on every file."
     },
     {
       "name": "diagnose",
@@ -52,7 +52,7 @@
       "pinned_sha": "5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       "last_synced": "2026-08-22",
       "local_modifications": true,
-      "notes": "Renamed locally from upstream 'diagnosing-bugs' to 'diagnose'. Retired 2026-09-30: merged into the 'debug' skill (feedback-loop construction, ranked hypotheses, instrumentation order, performance-regression branch, cleanup checklist and scripts/hitl-loop.template.sh now live in plugins/wtf/skills/debug/). Original files kept at plugins/wtf/skills/_archive/diagnose/ to preserve the MIT-attributed vendored content per NOTICE; do not re-adopt at the old path.",
+      "notes": "Renamed locally from upstream 'diagnosing-bugs' to 'diagnose'. Retired 2026-09-30: merged into the 'debug' skill (feedback-loop construction, ranked hypotheses, instrumentation order, performance-regression branch, cleanup checklist and scripts/hitl-loop.template.sh now live in plugins/wtf/skills/debug/). Original files kept at archive/skills/diagnose/ to preserve the MIT-attributed vendored content per NOTICE; do not re-adopt at the old path.",
       "archived": true
     },
     {
@@ -71,7 +71,7 @@
       "pinned_sha": "2237a047bd95abfd1427df94f65165c39e24d3c1",
       "last_synced": "2026-10-06",
       "local_modifications": true,
-      "notes": "Upstream is a one-line wrapper that calls grilling. Rewritten in the house alias form (see 'end'); 'department' frontmatter added and disable-model-invocation dropped so 'grill me' phrasing triggers it."
+      "notes": "Upstream is a one-line wrapper that calls grilling. Rewritten in the house alias form (see 'end'); 'department' frontmatter added and disable-model-invocation dropped so 'grill me' phrasing triggers it. 2026-10-10: explicit-only alias in Claude and Codex to avoid competing with grilling; added file-reading fallback for harnesses without a Skill tool."
     },
     {
       "name": "skill-test",
@@ -80,7 +80,7 @@
       "pinned_sha": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
       "last_synced": "2026-08-22",
       "local_modifications": true,
-      "notes": "Renamed locally from upstream 'writing-skills' to 'skill-test' (previously renamed to 'skill-writing'; supersedes the retired mattpocock writing-for-agents skill; see plugins/wtf/skills/_archive/writing-for-agents/). Post-adopt edits: deleted anthropic-best-practices.md (Anthropic's own docs redistributed under Jesse Vincent's MIT license -- not covered by that license, so it can't be vendored) and its SKILL.md reference; de-namespaced 4 'superpowers:test-driven-development'/'superpowers:systematic-debugging' cross-refs (upstream skills we did not adopt) into self-contained explanations or wtf: namespace examples; rewrote description to differentiate from the retired writing-for-agents (testing whether skill guidance works, not general document authoring)."
+      "notes": "Renamed locally from upstream 'writing-skills' to 'skill-test' (previously renamed to 'skill-writing'; supersedes the retired mattpocock writing-for-agents skill; see archive/skills/writing-for-agents/). Post-adopt edits: deleted anthropic-best-practices.md (Anthropic's own docs redistributed under Jesse Vincent's MIT license -- not covered by that license, so it can't be vendored) and its SKILL.md reference; de-namespaced 4 'superpowers:test-driven-development'/'superpowers:systematic-debugging' cross-refs (upstream skills we did not adopt) into self-contained explanations or wtf: namespace examples; rewrote description to differentiate from the retired writing-for-agents (testing whether skill guidance works, not general document authoring)."
     },
     {
       "name": "verify-claim",

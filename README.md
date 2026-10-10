@@ -48,6 +48,9 @@ That's it. The skills are now available, namespaced under `wtf:`:
 
 To update later: `/plugin marketplace update flywheel`.
 
+`grill-me` and `end` are explicit shortcuts. Automatic skill selection uses
+`grilling` and `wrapup`, so aliases do not compete with their canonical skills.
+
 ## Install (alternative — clone + script)
 
 If you'd rather not use the marketplace (older Claude Code, or you just prefer
@@ -63,6 +66,8 @@ cd skills
 (`wtf-humanizer`, `wtf-multi-llm`, `wtf-visual-qa`, `wtf-premortem`, `wtf-wrapup`, `wtf-idiocy-check`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-website-build`, `wtf-grilling`, `wtf-skill-test`, `wtf-verify-claim`, `wtf-review-feedback`, `wtf-knowledgepanel`, `wtf-axi`, `wtf-debug`, `wtf-memory-consolidate`, `wtf-sop`, `wtf-lavish`, `wtf-screamingfrog-check`, `wtf-video-analyze`, `wtf-video-use`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
+Existing aliases are refreshed with a backup under `~/.claude/skills-disabled`;
+other installed skills are left as they are.
 
 ## The skills
 
