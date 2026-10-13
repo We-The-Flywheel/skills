@@ -1,15 +1,7 @@
 ---
 name: premortem
-description: |
-  Run a pre-mortem on a plan or decision before committing to it. Imagine it's
-  months in the future and the plan has already failed, then work backward to find
-  exactly why. Use when the user says "premortem", "premortem this", "pre-mortem",
-  "stress-test this plan", "how could this fail", "red-team this decision", "what am
-  I missing", or is about to commit to something costly — a launch, hire, pricing
-  change, partnership, fundraise, rebrand, big purchase, or career/personal move.
-  Spawns one investigator per failure mode in parallel, then synthesizes the findings
-  into the most likely failure, the most dangerous one, the biggest hidden assumption,
-  a revised plan, and a pre-commit checklist.
+description: >-
+  Pre-mortem a plan or decision: assume it already failed, investigate each failure mode in parallel, and return the likeliest and most dangerous failures, hidden assumptions and a revised plan. Use for premortem, stress-test this plan, how could this fail, red-team this decision.
 allowed-tools:
   - Read
   - Grep

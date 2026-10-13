@@ -1,12 +1,7 @@
 ---
 name: og-meta-check
-description: |
-  Check that a page emits the full Open Graph + Twitter Card meta-tag set —
-  the tags that control link-preview cards on iMessage, Slack, WhatsApp, X,
-  and LinkedIn. Use when the user says "check og tags", "check meta tags",
-  "social preview check", "twitter card check", "check open graph", or wants
-  a standalone pass/fail on a page's share-preview tags without running a
-  full content gate. Emits a PASS/FAIL verdict with the missing-tag list.
+description: >-
+  Check that a page emits the full Open Graph and Twitter Card tag set for link previews and return PASS/FAIL with the missing tags. Use for check og tags, check meta tags, social preview check, twitter card check.
 allowed-tools:
   - Read
   - Grep

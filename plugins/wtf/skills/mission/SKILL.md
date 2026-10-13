@@ -1,17 +1,7 @@
 ---
 name: mission
-description: |
-  Multi-agent build mode for long, low-supervision work. An orchestrator plans
-  with the human, writes a validation contract (countable assertions that
-  define done) before any code, and splits the work into milestones and
-  features. Fresh-context workers build one feature at a time; separate
-  validators (scrutiny: lint, types, tests, code review; user-testing: drive
-  the real app like a QA engineer) check each milestone against the contract.
-  Unsatisfied assertions become follow-up features. Every role transition
-  leaves a structured handoff on disk. Use when the user says "mission",
-  "mission mode", "run this autonomously", "run to completion", "multi-day
-  build", "autopilot", or wants a large feature built end to end with the
-  human only at the start and the end. Replaces the former autopilot skill.
+description: >-
+  Multi-agent build mode for long, low-supervision work: an orchestrator writes a validation contract, fresh workers build one feature at a time, and separate validators check each milestone. Use for mission, run this autonomously, run to completion, autopilot, or a large feature built end to end.
 allowed-tools:
   - Read
   - Write

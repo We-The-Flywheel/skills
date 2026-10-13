@@ -3,14 +3,10 @@ name: humanizer
 version: 3.0.0
 description: |
   Rewrite AI-sounding text so it reads like the writer, without changing what it
-  says. Use when editing or reviewing prose for AI tells. This is a craft tool for
-  readability and voice, not an AI-detector-evasion tool. Patterns are ranked by
-  strength: staging (not-X-but-Y, one-line closers, staged openers, arguing with
-  no one), rhythm by rule (forced triads, dashes, repeated openings, uniform
-  sentence length), inflation (AI vocabulary, inflated significance, borrowed
-  authority, sales language), formatting by rule (decorative bold, title case,
-  emojis), and drafting leftovers (chatbot residue, knowledge-cutoff disclaimers).
-  Loads the nearest VOICE.md as the target voice when one exists.
+  says. Use when editing or reviewing prose for AI tells: staged contrasts and
+  closers, forced triads, dashes, inflated significance, decorative formatting,
+  chatbot residue. A craft tool for readability and voice, not AI-detector
+  evasion. Loads the nearest VOICE.md as the target voice when one exists.
 allowed-tools:
   - Read
   - Write
@@ -100,11 +96,8 @@ Removing tells is half the job. Sterile, voiceless writing is just as obvious as
 - **Let some mess in.** Perfect structure feels algorithmic. Tangents, asides, and half-formed thoughts are human.
 - **Be specific about feelings.** Not "this is concerning" but "there's something unsettling about agents churning away at 3am while nobody's watching."
 
-**Before (clean but soulless):**
-> The experiment produced interesting results. The agents generated 3 million lines of code. Some developers were impressed while others were skeptical. The implications remain unclear.
 
-**After (has a pulse):**
-> I genuinely don't know how to feel about this one. 3 million lines of code, generated while the humans presumably slept. Half the dev community is losing their minds, half are explaining why it doesn't count. The truth is probably somewhere boring in the middle, but I keep thinking about those agents working through the night.
+Worked before/after pair for this: `references/voice-example.md` (read it when you need a model of "clean but soulless" versus "has a pulse").
 
 ---
 
@@ -122,29 +115,12 @@ Removing tells is half the job. Sterile, voiceless writing is just as obvious as
 
 Strongest and most frequent tells in current model prose. Act on one sighting.
 
+
 ### 1. Not X but Y (negative parallelism)
 
 **Watch for:** not X but Y; not just / not only / not merely X, but Y; it's not X, it's Y; the reversed form X rather than Y; the same contrast split across sentences ("This does not mean X. It means Y."); a clipped negative tail ("..., no guessing"). The formula appears in every language; treat the equivalent construction the same way.
 
 **Problem:** The negative half names something no one claimed, so the positive half sounds larger. It adds weight without adding a claim. State the point directly. Keep a contrast only when the negative half corrects a belief the reader actually holds, or when both halves carry information.
-
-**Before:**
-> It's not just about the beat riding under the vocals; it's part of the aggression and atmosphere. It's not merely a song, it's a statement.
-
-**After:**
-> The heavy beat adds to the aggressive tone.
-
-**Before (split across sentences):**
-> This does not mean every choice is equal. It means there is no external system that confirms which choice is right.
-
-**After:**
-> No external system confirms which choice is right, although the choices still have different consequences.
-
-**Before (clipped tail):**
-> The options come from the selected item, no guessing.
-
-**After:**
-> The options come from the selected item without forcing the user to guess.
 
 ---
 
@@ -154,26 +130,6 @@ Strongest and most frequent tells in current model prose. Act on one sighting.
 
 **Problem:** The line asks the reader to pause on a claim instead of adding to it. One short sentence can carry emphasis when it carries a new fact. Cut a closer that repeats. Merge a row of fragments into a sentence with a specific claim.
 
-**Before:**
-> Then AlphaEvolve arrived. It had no preference for symmetry. No aesthetic prior. No nostalgia for human taste. The old rules were gone.
-
-**After:**
-> AlphaEvolve changed the search because it did not favor symmetry or human-looking designs. That made some of the older assumptions less useful.
-
-**Before (repeated closer):**
-> Caching cuts repeat work.
->
-> That is the real win.
->
-> Retries hide brief outages.
->
-> That is the real win.
-
-**After:**
-> Caching cuts repeat work.
->
-> Retries hide brief outages.
-
 ---
 
 ### 3. Sayings that sound deep
@@ -181,18 +137,6 @@ Strongest and most frequent tells in current model prose. Act on one sighting.
 **Watch for:** the real question is, at its core, in reality, what really matters, fundamentally, the deeper issue, the heart of the matter, X is the Y of Z, X becomes a trap, X is not a tool but a mirror, the language of, the currency of, the architecture of
 
 **Problem:** An ordinary point is dressed as a hidden truth or an aphorism, and the dressing adds no detail. Replace the saying with the specific claim.
-
-**Before:**
-> The real question is whether teams can adapt. At its core, what really matters is organizational readiness.
-
-**After:**
-> The question is whether teams can adapt. That mostly depends on whether the organization is ready to change its habits.
-
-**Before (aphorism):**
-> Symmetry is the language of trust. Efficiency becomes a trap when teams forget the human layer.
-
-**After:**
-> Symmetric layouts often feel more predictable to users. Teams can over-optimize workflows and miss how people actually use them.
 
 ---
 
@@ -202,24 +146,6 @@ Strongest and most frequent tells in current model prose. Act on one sighting.
 
 **Problem:** The writer announces the point, sets a scene, or stages a moment of candor instead of making the point. Remove the run-up, not just its tone. "Honestly" or "look" inside a casual sentence is ordinary; the tell is the standalone opener before a routine claim.
 
-**Before:**
-> Let's dive into how caching works in Next.js. Here's what you need to know.
-
-**After:**
-> Next.js caches data at multiple layers, including request memoization, the data cache, and the router cache.
-
-**Before (staged candor):**
-> Is it worth the price? Honestly? It depends on how often you'll use it.
-
-**After:**
-> Whether it's worth the price depends on how often you'll use it.
-
-**Before (context-setting):**
-> In today's fast-paced world, staying competitive requires more than just hard work. When it comes to content creation, it's worth noting that AI tools have transformed the landscape.
-
-**After:**
-> Content teams that used to spend two weeks on a campaign brief now spend two days. That's the actual change.
-
 ---
 
 ### 5. Arguing with no one
@@ -228,17 +154,7 @@ Strongest and most frequent tells in current model prose. Act on one sighting.
 
 **Problem:** The text answers an objection or rejects an option that appears nowhere else, usually a leftover from an earlier draft. Remove the defense; if it holds a real claim, state the claim. Keep an objection the text attributes or answers in full, and keep an option a reader would actually weigh. Several unrelated rejections in a row are a stronger sign than one.
 
-**Before:**
-> This isn't mainly about prompt length, and I'm not arguing that documentation doesn't matter. You could categorize the problem another way, but the issue is whether the agent can use the instruction when it acts.
-
-**After:**
-> The issue is whether the agent can use the instruction when it acts.
-
-**Before (fake alternative):**
-> Session tokens are rotated every 24 hours. A tempting approach would be to rotate them by restarting the auth service on a cron job, but that would drop every active session. Rotation happens in place, and clients refresh transparently.
-
-**After:**
-> Session tokens are rotated every 24 hours, in place, and clients refresh transparently.
+Before/after examples for patterns 1-5: read `references/staging-examples.md` when a draft shows any of these and you need a model rewrite.
 
 ---
 
@@ -246,33 +162,16 @@ Strongest and most frequent tells in current model prose. Act on one sighting.
 
 A person may do any one of these on purpose, so the weaker ones need company.
 
+
 ### 6. Forced triads (rule of three)
 
 **Problem:** Ideas arrive in threes to sound complete, whether the meaning has three parts or not. The tell can be one sentence ("innovation, inspiration, and insights"), three parallel examples, or three short facts followed by a lesson. Check that each item adds a distinct idea. Merge examples, develop the strongest one, or vary the structure when they do not. Keep three real items when the meaning needs three. **Watch the fact guardrail here: this is the pattern that drops content most often.**
-
-**Before:**
-> The event features keynote sessions, panel discussions, and networking opportunities. Attendees can expect innovation, inspiration, and industry insights.
-
-**After:**
-> The event includes talks and panels. There's also time for informal networking between sessions.
-
-**Before (paragraph scale):**
-> A career can look promising and fail. A relationship can feel important and end. A skill can take years and remain useless. These decisions rarely explain themselves.
-
-**After:**
-> A career can look promising and fail. So can a relationship that felt important and ended, or a skill that took years and remained useless. These decisions rarely explain themselves.
 
 ---
 
 ### 7. Repeated sentence openings (*weak alone*)
 
 **Problem:** Several sentences in a row start with the same subject, often *she* or *he*, because repetition is handled by rule instead of by ear. Merge the sentences, change the subject, or begin with the action. Do not ban the repeated word; a remaining sentence may still start with "She." Writers also repeat an opening on purpose for rhythm, as in "She came. She saw. She conquered."
-
-**Before:**
-> She noted the door. She noted the lock on it. She filed both away.
-
-**After:**
-> She noted the door and its lock, then filed both away.
 
 ---
 
@@ -282,12 +181,6 @@ A person may do any one of these on purpose, so the weaker ones need company.
 
 **Problem:** A dash lets the writer skip choosing how two clauses relate, so a model reaches for it everywhere. Many editors and journalists also use dashes, so **one dash is *weak alone***; a text full of them is not. The hard rule above still applies to the output, because the house style bans them.
 
-**Before:**
-> The new policy — announced without warning — affects thousands of workers. The changes -- long overdue according to critics -- will take effect immediately.
-
-**After:**
-> The new policy, announced without warning, affects thousands of workers. The changes, long overdue according to critics, will take effect immediately.
-
 ---
 
 ### 9. Stacked qualifiers and excessive hedging (*weak alone*)
@@ -296,49 +189,23 @@ A person may do any one of these on purpose, so the weaker ones need company.
 
 **Problem:** Repeated editing adds one qualifier after another until every claim sounds uncertain, usually to repair an earlier overstatement rather than to report real doubt. Keep a qualifier only when the source supports it and the meaning needs it. Keep scope statements, legal and safety notices, and real corrections. Ordinary hedges such as *perhaps* or *tends to* are human habits and not tells. **Fact guardrail: removing a hedge can strengthen a claim beyond what the source supports.**
 
-**Before:**
-> It could potentially possibly be argued that the policy might have some effect on outcomes.
-
-**After:**
-> The policy may affect outcomes.
-
 ---
 
 ### 10. Hyphenated pairs everywhere (*weak alone*)
 
-**Watch for:** third-party, cross-functional, client-facing, data-driven, decision-making, well-known, high-quality, real-time, long-term, end-to-end
-
-**Problem:** These pairs are hyphenated in every position. Keep the hyphen before a noun when grammar needs it, as in `a high-quality report`, and drop it after the noun, as in `the report is high quality`.
-
-**Before:**
-> The team is cross-functional, the report is high-quality, and the methodology is data-driven.
-
-**After:**
-> The team is cross functional, the report is high quality, and the methodology is data driven.
+**Watch for:** third-party, data-driven, high-quality and similar pairs hyphenated in every position. Details: `references/rhythm-examples.md`.
 
 ---
 
 ### 11. Passive voice and missing subjects (*weak alone*)
 
-**Problem:** The text hides who acts or drops the subject. Use active voice when it makes the actor and action clearer.
-
-**Before:**
-> No configuration file needed. The results are preserved automatically.
-
-**After:**
-> You do not need a configuration file. The system preserves the results automatically.
+**Problem:** The text hides who acts or drops the subject. Prefer active voice when it clarifies. Details: `references/rhythm-examples.md`.
 
 ---
 
 ### 12. Elegant variation (synonym cycling) (*weak alone*)
 
-**Problem:** Repetition-penalty behavior causes excessive synonym substitution for the same referent.
-
-**Before:**
-> The protagonist faces many challenges. The main character must overcome obstacles. The central figure eventually triumphs. The hero returns home.
-
-**After:**
-> The protagonist faces many challenges but eventually triumphs and returns home.
+**Problem:** Synonym cycling for the same referent. Use one name. Details: `references/rhythm-examples.md`.
 
 ---
 
@@ -348,311 +215,51 @@ A person may do any one of these on purpose, so the weaker ones need company.
 
 **What to look for:** Every sentence in a paragraph landing in the 15–25 word range. No one-sentence paragraphs. No sentence that stops cold after 4 words.
 
-**Before (uniform):**
-> The platform provides a centralized solution for managing distributed teams across multiple time zones. Users can coordinate tasks, share resources, and maintain alignment through an integrated dashboard. The system supports real-time collaboration and includes built-in analytics for tracking team performance. Organizations have reported significant improvements in both efficiency and communication outcomes.
-
-**After (variable):**
-> The platform coordinates distributed teams. That's the pitch.
->
-> In practice it gives you a dashboard that pulls everyone's tasks and timezones into one view, with built-in analytics so you can see who's blocked without sending a Slack message. Whether that's worth the setup time depends on how scattered your team actually is.
-
 ---
 
 ### 14. Transition word overload
 
-**Watch for:** Furthermore, Moreover, Additionally, Consequently, Subsequently, Nevertheless, Nonetheless, Therefore, Thus, Hence, Accordingly, In contrast, On the other hand, It should be noted that, It is worth noting that
+**Watch for:** Furthermore, Moreover, Additionally, Nevertheless and similar words several per page. Density is the tell. Details: `references/rhythm-examples.md`.
 
-**Problem:** AI strings these together in rapid succession, three or four in a single page, creating a "term paper" cadence. The individual words aren't wrong; the density is the tell.
-
-**Before:**
-> Furthermore, the policy has had a significant impact. Moreover, stakeholders have raised concerns. Nevertheless, the administration remains committed. Subsequently, a review was commissioned.
-
-**After:**
-> The policy shifted outcomes in ways stakeholders didn't expect. The administration ordered a review, partly to address those concerns, partly to get ahead of the criticism.
+Before/after examples for patterns 6-14: read `references/rhythm-examples.md` when a draft shows any of these and you need a model rewrite.
 
 ---
 
 ## C. Inflation and borrowed authority
 
-The fact underneath is usually sound. Keep it and remove the dressing.
+The fact underneath is usually sound. Keep it and remove the dressing. When a draft shows any of these, read `references/inflation.md` for the full watch lists and before/after examples.
 
-### 15. Overused AI vocabulary
-
-**Core list:** Actually, additionally, align with, bolstered, crucial, deep dive, delve, emphasizing, enduring, enhance, fostering, garner, gate/gated/gating (figurative; keep technical uses), highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), meticulous/meticulously, pivotal, quietly, robust (figurative; keep technical uses), showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
-
-**Extended list (post-2024):** actionable, comprehensive, cutting-edge, ecosystem (abstract), empower/empowers, game-changer/game-changing, holistic, innovative/innovation (when generic), leverage (verb), multifaceted, navigate/navigating (abstract), nuanced (when empty), paradigm, seamless, synergy/synergies, transformative, unlock(s)
-
-**Problem:** Models use these words far more often than people do, especially in groups. Several in one paragraph is the clearest sign nobody chose the words. **This and a resolved `VOICE.md` §5 lexicon are the only vocabulary lists in play.** A formal word outside them is not a tell by itself, and this list ages faster than any structural pattern above.
-
-**Before:**
-> Additionally, a distinctive feature of Somali cuisine is the incorporation of camel meat. An enduring testament to Italian colonial influence is the widespread adoption of pasta in the local culinary landscape, showcasing how these dishes have integrated into the traditional diet.
-
-**After:**
-> Somali cuisine also includes camel meat, which is considered a delicacy. Pasta dishes, introduced during Italian colonization, remain common, especially in the south.
-
----
-
-### 16. Inflated significance, legacy, and broader trends
-
-**Watch for:** stands as a testament, a pivotal or crucial moment, plays a key role, marking or shaping the, underscores its importance, reflects a broader, enduring or lasting legacy, setting the stage for, evolving landscape, indelible mark, deeply rooted, focal point; the stock sections "Despite these challenges... continues to thrive", "Challenges and Legacy", "Future Outlook", "Awards and recognition"; the send-off "the future looks bright", "exciting times ahead", "a step in the right direction"
-
-**Problem:** An ordinary detail is said to mark a change, prove a legacy, or promise a future. The move appears at three scales: a phrase, a stock "challenges and outlook" section, and a send-off paragraph. Keep the fact, drop the significance. End on the last concrete fact; if the source states real plans, use those.
-
-**Before:**
-> The Statistical Institute of Catalonia was officially established in 1989, marking a pivotal moment in the evolution of regional statistics in Spain. This initiative was part of a broader movement across Spain to decentralize administrative functions and enhance regional governance.
-
-**After:**
-> The Statistical Institute of Catalonia was established in 1989, part of a wider decentralization of administrative functions in Spain.
-
-**Before (stock section):**
-> Despite its industrial prosperity, Korattur faces challenges typical of urban areas, including traffic congestion and water scarcity. Despite these challenges, with its strategic location and ongoing initiatives, Korattur continues to thrive as an integral part of Chennai's growth.
-
-**After:**
-> Korattur has recurring traffic congestion and water shortages. The municipal corporation began a stormwater drainage project in 2022.
-
-**Before (send-off):**
-> The future looks bright for the company. Exciting times lie ahead as they continue their journey toward excellence.
-
-**After:**
-> (Cut the paragraph. End on the last concrete fact, or state the real plan: "The company plans to open two more locations next year.")
-
----
-
-### 17. Vague connection or association
-
-**Watch for:** associated with, in association with, connected to, in connection with, linked to, tied to
-
-**Problem:** The text says two things are connected without saying how. "He was associated with the leadership of ExampleCorp" hides whether he was the CEO, a board member, or a consultant. Name the relationship the source gives. **If the source does not say, keep the vague wording rather than inventing a role.**
-
-**Before:**
-> He is associated with the Rajhans Orchestra, which he founded and conducts. The concerts were organised in connection with the celebrations of Pakistan's 50th anniversary.
-
-**After:**
-> He founded and conducts the Rajhans Orchestra. The concerts were part of the celebrations of Pakistan's 50th anniversary.
-
----
-
-### 18. Shallow -ing riders
-
-**Watch for:** highlighting, underscoring, emphasizing, ensuring, reflecting, symbolizing, contributing to, cultivating, fostering, encompassing, showcasing
-
-**Problem:** An -ing phrase is bolted onto a simple fact to make it sound deeper. Attaching it to a named source ("Roger Ebert highlighted the lasting influence") does not make it true. Keep the fact; keep the rider only when the source supports what it claims.
-
-**Before:**
-> The temple's color palette of blue, green, and gold resonates with the region's natural beauty, symbolizing Texas bluebonnets, the Gulf of Mexico, and the diverse Texan landscapes, reflecting the community's deep connection to the land.
-
-**After:**
-> The temple is painted blue, green, and gold, colors meant to evoke Texas bluebonnets and the Gulf of Mexico.
-
----
-
-### 19. Sales and promotional language
-
-**Watch for:** boasts, vibrant, rich (figurative), profound, enhancing, exemplifies, commitment to, natural beauty, nestled, in the heart of, groundbreaking (figurative), renowned, featuring, diverse array, breathtaking, must-visit, stunning
-
-**Problem:** The text reads like an advertisement, especially for places, culture, products, or organizations. State what the thing is.
-
-**Before:**
-> Nestled within the breathtaking region of Gonder in Ethiopia, Alamata Raya Kobo stands as a vibrant town with a rich cultural heritage and stunning natural beauty.
-
-**After:**
-> Alamata Raya Kobo is a town in the Gonder region of Ethiopia, known for its weekly market and 18th-century church.
-
----
-
-### 20. Borrowed authority and notability padding
-
-**Watch for:** experts argue, observers have cited, industry reports, some critics, several publications; cited, featured, or profiled in [a list of outlets], trade publications, independent coverage; active social media presence, over N followers
-
-**Problem:** A name or an unnamed authority stands in for what was said. Unnamed experts prop up a claim; a list of prestige outlets props up a person. When the source names the real source and what it said, use that. Otherwise cut the unsupported claim or the list. **Never invent a source.** A missing citation alone is not a tell; most writing is unsourced.
-
-**Before (unnamed authority):**
-> Due to its unique characteristics, the Haolai River is of interest to researchers and conservationists. Experts believe it plays a crucial role in the regional ecosystem.
-
-**After:**
-> Researchers and conservationists study the Haolai River for its unusual characteristics.
-
-**Before (prestige list):**
-> Her views have been cited in The New York Times, BBC, Financial Times, and The Hindu. She maintains an active social media presence with over 500,000 followers.
-
-**After:**
-> Her views have been cited in The New York Times and the BBC.
-
----
-
-### 21. Avoiding is, are, and has (copula avoidance)
-
-**Watch for:** serves as, stands as, functions as, operates as, marks, represents [a]; boasts, features, offers, maintains [a]; refers to
-
-**Problem:** Simple verbs are replaced with longer phrases. Use *is*, *are*, and *has*.
-
-**Before:**
-> Gallery 825 serves as LAAA's exhibition space for contemporary art. The gallery features four separate spaces and boasts over 3,000 square feet.
-
-**After:**
-> Gallery 825 is LAAA's exhibition space for contemporary art. The gallery has four rooms totaling 3,000 square feet.
-
----
-
-### 22. Abstract verb inflation
-
-**Watch for:** navigate (challenges/complexity/uncertainty), leverage (capabilities/opportunities/insights), drive (growth/change/innovation), enable (transformation/success), facilitate (progress/alignment), empower (teams/users), unlock (potential/value), harness (the power of)
-
-**Problem:** These action verbs make passive situations sound dynamic. They're vague by design: anything can "drive growth" or "enable transformation" without saying anything. The tell is pairing them with an abstract noun that has no concrete referent.
-
-**Before:**
-> By leveraging our robust platform, teams can navigate the complexities of modern workflows and unlock unprecedented value, empowering every stakeholder to drive meaningful transformation.
-
-**After:**
-> The platform automates handoffs between design and engineering, which cut our review cycle from 5 days to 1.
-
----
-
-### 23. False ranges
-
-**Problem:** "From X to Y" constructions where X and Y aren't on a meaningful scale.
-
-**Before:**
-> Our journey through the universe has taken us from the singularity of the Big Bang to the grand cosmic web, from the birth and death of stars to the enigmatic dance of dark matter.
-
-**After:**
-> The book covers the Big Bang, star formation, and current theories about dark matter.
-
----
-
-### 24. Filler phrases
-
-**Before → After:**
-- "In order to achieve this goal" → "To achieve this"
-- "Due to the fact that it was raining" → "Because it was raining"
-- "At this point in time" → "Now"
-- "In the event that you need help" → "If you need help"
-- "The system has the ability to process" → "The system can process"
-- "It is important to note that the data shows" → "The data shows"
+- **15. Overused AI vocabulary.** Delve, pivotal, crucial, robust, seamless, leverage, landscape, tapestry, testament, underscore, showcase and the rest of the core and extended lists, especially several in one paragraph. Replace with plain words. A resolved `VOICE.md` §5 lexicon extends the lists. A formal word outside them is not a tell.
+- **16. Inflated significance, legacy, and broader trends.** "Marking a pivotal moment", "stands as a testament", stock "Challenges and Legacy" sections, "the future looks bright". Keep the fact, drop the significance, end on the last concrete fact.
+- **17. Vague connection or association.** "Associated with", "linked to". Name the relationship the source gives; if it does not say, keep the vague wording rather than inventing a role.
+- **18. Shallow -ing riders.** "...highlighting", "...underscoring", "...fostering" bolted onto a simple fact. Keep the fact; keep the rider only when the source supports it.
+- **19. Sales and promotional language.** "Nestled", "breathtaking", "vibrant", "stunning". State what the thing is.
+- **20. Borrowed authority and notability padding.** "Experts argue", unnamed observers, lists of prestige outlets, follower counts. Use the real source or cut the claim. Never invent a source.
+- **21. Avoiding is, are, and has.** "Serves as", "boasts", "features". Use the simple verb.
+- **22. Abstract verb inflation.** Navigate, leverage, drive, enable, empower, unlock, harness plus an abstract noun. Say what actually happens.
+- **23. False ranges.** "From X to Y" where X and Y are not on a real scale. List the items.
+- **24. Filler phrases.** "In order to", "due to the fact that", "it is important to note that". Cut or shorten.
 
 ---
 
 ## D. Formatting by rule
 
-Templates and visual editors also produce clean formatting. The tell is decoration on every item.
+The tell is decoration on every item. When a draft shows any of these, read `references/formatting.md` for examples.
 
-### 25. Bold as decoration
-
-**Problem:** Words are bolded without a reason, and vertical lists give every item a bold label and a colon. Remove the bold. Turn a labeled list into prose when the labels carry no information of their own. **Fact guardrail: collapsing a labeled list into prose is a common way to lose an item.**
-
-**Before:**
-> It blends **OKRs (Objectives and Key Results)**, **KPIs (Key Performance Indicators)**, and visual strategy tools such as the **Business Model Canvas (BMC)** and **Balanced Scorecard (BSC)**.
-
-**After:**
-> It blends OKRs, KPIs, and visual strategy tools like the Business Model Canvas and Balanced Scorecard.
-
-**Before (labeled list):**
-> - **User Experience:** The user experience has been significantly improved with a new interface.
-> - **Performance:** Performance has been enhanced through optimized algorithms.
-> - **Security:** Security has been strengthened with end-to-end encryption.
-
-**After:**
-> The update improves the interface, speeds up load times through optimized algorithms, and adds end-to-end encryption.
-
----
-
-### 26. Decorative headings
-
-**Problem:** Headings capitalize every main word, and headings or list items carry emojis or arrows (→) as decoration. A horizontal rule sits between every section, or the document opens with a top-level heading that repeats its own title. Use sentence case, remove the decoration and the rules, and let the title stand once.
-
-**Before:**
-> ## Strategic Negotiations And Global Partnerships
-
-**After:**
-> ## Strategic negotiations and global partnerships
-
-**Before (emojis):**
-> 🚀 **Launch Phase:** The product launches in Q3
-> 💡 **Key Insight:** Users prefer simplicity
-> ✅ **Next Steps:** Schedule follow-up meeting
-
-**After:**
-> The product launches in Q3. User research showed a preference for simplicity. Next step: schedule a follow-up meeting.
-
----
-
-### 27. Curly quotation marks (*weak alone*)
-
-**Problem:** Curly quotes (“...”) appear where the writer or target format uses straight quotes ("..."). Most editors auto-curl, so this alone proves nothing.
-
-**Before:**
-> He said “the project is on track” but others disagreed.
-
-**After:**
-> He said "the project is on track" but others disagreed.
+- **25. Bold as decoration.** Bold on terms with no reason, or bold labels with colons on every list item. Remove the bold; turn a label-only list into prose. Fact guardrail: collapsing a list into prose is a common way to lose an item.
+- **26. Decorative headings.** Title Case headings, emojis or arrows as decoration, a rule between every section, a top-level heading repeating the title. Use sentence case and remove the decoration.
+- **27. Curly quotation marks** (*weak alone*). Curly quotes where straight quotes are used. Most editors auto-curl, so act only alongside other tells.
 
 ---
 
 ## E. Leftovers from the chat and the draft
 
-Remove these outright. Nothing here needs rewriting.
+Remove these outright. Nothing here needs rewriting. When a draft shows any of these, read `references/leftovers.md` for the watch lists and examples.
 
-### 28. Chatbot residue and sycophancy
-
-**Watch for:** I hope this helps, Of course!, Certainly!, Great question!, You're absolutely right, That's an excellent point, Would you like..., Want me to...?, Should I continue?, let me know, here is a...
-
-**Problem:** A chatbot's greeting, praise, offer, or closing remains in text that should stand on its own. It is the most certain tell in this list and the easiest to miss when it wraps real content. Remove the wrapper and keep the content.
-
-**Before:**
-> Great question! Here is an overview of the French Revolution. It began in 1789 when a financial crisis and food shortages led to widespread unrest. I hope this helps! Let me know if you'd like me to expand on any section.
-
-**After:**
-> The French Revolution began in 1789 when a financial crisis and food shortages led to widespread unrest.
-
----
-
-### 29. Knowledge-limit disclaimers and filled-in guesses
-
-**Watch for:** as of [date], up to my last training update, while specific details are limited, based on available information, not publicly available, not widely documented or disclosed, in the provided or available sources, maintains a low profile, keeps personal details private, likely [grew up, studied, began], it is believed that
-
-**Problem:** The text mentions where the model's knowledge ends, or admits it found no source and then fills the gap with a plausible guess. State what the source does not show, or remove the sentence. **Never present a guess as a fact.**
-
-**Before (cutoff disclaimer):**
-> While specific details about the company's founding are not extensively documented in readily available sources, it appears to have been established sometime in the 1990s.
-
-**After:**
-> The company's founding date is not documented in the available sources. (Or cut the sentence.)
-
-**Before (guess):**
-> Information about her early life is not publicly available, suggesting she maintains a low profile. She likely grew up in a middle-class household, which shaped her later interest in education reform.
-
-**After:**
-> Her early life is not documented in the available sources. (Or omit the section.)
-
----
-
-### 30. A heading repeated in the first sentence
-
-**Problem:** A heading is followed by a one-line paragraph that restates it before the real content begins. Remove the repeated sentence.
-
-**Before:**
-> ## Performance
->
-> Speed matters.
->
-> When users hit a slow page, they leave.
-
-**After:**
-> ## Performance
->
-> When users hit a slow page, they leave.
-
----
-
-### 31. Writing about the previous version
-
-**Problem:** Documentation and comments describe what the text replaced instead of the current behavior. Mention the previous version only in change logs, release notes, migration guides, and other documents about change.
-
-**Before:**
-> This function was added to replace the previous approach of iterating through all items, which caused O(n²) performance.
-
-**After:**
-> This function uses a hash map for O(1) lookups, avoiding the O(n²) cost of naive iteration.
+- **28. Chatbot residue and sycophancy.** "I hope this helps", "Great question!", "Let me know if...", offers and praise wrapped around content. Remove the wrapper, keep the content.
+- **29. Knowledge-limit disclaimers and filled-in guesses.** "As of [date]", "based on available information", "not publicly available", followed by a plausible guess. State what the source does not show or cut the sentence. Never present a guess as a fact.
+- **30. A heading repeated in the first sentence.** A one-line paragraph under a heading that restates it. Remove it.
+- **31. Writing about the previous version.** Docs and comments describing what the text replaced. Describe current behavior; mention the old version only in change logs, release notes, and migration guides.
 
 ---
 
@@ -681,61 +288,7 @@ Keep the details that carry the writer's voice unless they hurt the meaning:
 
 ## Full example
 
-**Before (AI-sounding):**
-> Great question! Here is an essay on this topic. I hope this helps!
->
-> AI-assisted coding serves as an enduring testament to the transformative potential of large language models, marking a pivotal moment in the evolution of software development. In today's rapidly evolving technological landscape, these groundbreaking tools—nestled at the intersection of research and practice—are reshaping how engineers ideate, iterate, and deliver, underscoring their vital role in modern workflows.
->
-> At its core, the value proposition is clear: streamlining processes, enhancing collaboration, and fostering alignment. It's not just about autocomplete; it's about unlocking creativity at scale, ensuring that organizations can remain agile while delivering seamless, intuitive, and powerful experiences to users. The tool serves as a catalyst. The assistant functions as a partner. The system stands as a foundation for innovation.
->
-> Industry observers have noted that adoption has accelerated from hobbyist experiments to enterprise-wide rollouts, from solo developers to cross-functional teams. The technology has been featured in The New York Times, Wired, and The Verge. Additionally, the ability to generate documentation, tests, and refactors showcases how AI can contribute to better outcomes, highlighting the intricate interplay between automation and human judgment.
->
-> - 💡 **Speed:** Code generation is significantly faster, reducing friction and empowering developers.
-> - 🚀 **Quality:** Output quality has been enhanced through improved training, contributing to higher standards.
-> - ✅ **Adoption:** Usage continues to grow, reflecting broader industry trends.
->
-> While specific details are limited based on available information, it could potentially be argued that these tools might have some positive effect. Despite challenges typical of emerging technologies—including hallucinations, bias, and accountability—the ecosystem continues to thrive. In order to fully realize this potential, teams must align with best practices.
->
-> In conclusion, the future looks bright. Exciting times lie ahead as we continue this journey toward excellence. Let me know if you’d like me to expand on any section!
-
-**Draft rewrite:**
-> AI coding assistants speed up some tasks. In a 2024 study by Google, developers using Codex completed simple functions 55% faster than a control group, but showed no improvement on debugging or architectural decisions.
->
-> The tools are good at boilerplate: config files, test scaffolding, repetitive refactors. They are bad at knowing when they are wrong. I have mass-accepted suggestions that compiled, passed lint, and still did the wrong thing because I stopped paying attention.
->
-> The productivity claims are hard to verify. GitHub says Copilot users "accept 30% of suggestions," but acceptance is not correctness, and correctness is not value.
->
-> None of this means the tools are useless. It means they are tools. They do not replace judgment, and they do not eliminate the need for tests.
-
-**What still sounds AI generated?**
-- The rhythm is still too tidy: clean contrasts, evenly paced paragraphs, every sentence in the 15–25 word band (§13).
-- "None of this means X. It means Y" is a §1 contrast split across sentences.
-- The closer leans slogan-y rather than sounding like a person talking (§2).
-- Fact guardrail: the Google study and the GitHub figure must be in the source. If they are not, cut them rather than keep a plausible-sounding number.
-
-**Final version:**
-> AI coding assistants can make you faster at the boring parts. Not everything. Definitely not architecture.
->
-> They're great at boilerplate: config files, test scaffolding, repetitive refactors. They're also great at sounding right while being wrong. I've accepted suggestions that compiled, passed lint, and still missed the point because I stopped paying attention.
->
-> People I talk to tend to land in two camps. Some use it like autocomplete for chores and review every line. Others disable it after it keeps suggesting patterns they don't want. Both feel reasonable.
->
-> The productivity metrics are slippery. GitHub can say Copilot users "accept 30% of suggestions," but acceptance isn't correctness, and correctness isn't value. If you don't have tests, you're basically guessing.
-
-**Changes made:**
-- §28 chatbot residue ("Great question!", "I hope this helps!", "Let me know if...")
-- §16 inflated significance ("testament", "pivotal moment", "evolving landscape", "vital role") and the §16 send-off ("the future looks bright")
-- §19 sales language ("groundbreaking", "nestled", "seamless, intuitive, and powerful")
-- §20 borrowed authority ("Industry observers", the outlet list)
-- §18 -ing riders ("underscoring", "highlighting", "reflecting", "contributing to")
-- §1 not-X-but-Y ("It's not just X; it's Y")
-- §6 triads and §12 synonym cycling ("catalyst/partner/foundation")
-- §23 false ranges ("from X to Y, from A to B")
-- §8 dashes, §26 emojis and decorative headings, §25 bold labels, §27 curly quotes
-- §21 copula avoidance ("serves as", "functions as", "stands as")
-- §29 knowledge-cutoff hedging, §9 stacked qualifiers
-- §24 filler ("In order to"), §3 pseudo-profound ("At its core")
-- §13 burstiness: rewrote for varied sentence length
+A complete worked pass (original, draft rewrite, what still sounds AI, final version, changes by pattern number) is in `references/full-example.md`. Read it when you need a model of the whole process, not for routine edits.
 
 ---
 

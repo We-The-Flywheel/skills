@@ -1,17 +1,7 @@
 ---
 name: riff
-description: |
-  Divergent design ideation — generate 3–5 deliberately far-apart, fully-rendered
-  design directions for a UI surface (hero, landing page, dashboard shell,
-  component) and present them in ONE side-by-side local compare artifact, ending
-  with a pick-and-lock step that hands the winner to wtf:moodboard. Use when the
-  user says "riff", "riff on this", "show me directions", "give me a few
-  options", "surprise me", "explore some designs", "what could this look like",
-  or is starting design work with no design system chosen yet. Deliberately
-  ignores any existing DESIGN.md / tokens.json — this is the gate-exempt
-  Diverge stage of the design lifecycle (design.tfw.bz#lifecycle). NOT for
-  on-brand work in a repo that already has a locked design system, reference
-  research (wtf:moodboard), or polish passes on an existing design.
+description: >-
+  Generate 3-5 far-apart, fully rendered design directions for one UI surface in one side-by-side compare artifact, then lock the winner via moodboard. Use for riff, show me directions, give me a few options, explore designs. Not for repos with a locked design system.
 user-invocable: true
 argument-hint: "[surface to riff on] [--n 3..5] [--include <aesthetic>]"
 allowed-tools:

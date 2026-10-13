@@ -1,15 +1,7 @@
 ---
 name: release-gate
-description: |
-  Evidence-based release gate for larger implementations. Runs three layers of
-  checks — deterministic gates (secrets, build, lint, tests, coverage),
-  rubric'd pass/fail dimension checks, and runtime evidence (run the app,
-  observe behavior) — and emits a verdict report card. Use before shipping a
-  large diff (roughly >300 changed lines or >5 files), when the user says
-  "release gate", "run the gate", "gate this", "is this ready to ship", or
-  "ship check". NOT a code review: code review reads the diff and gives
-  judgment; the release gate demands evidence and only emits PASS/FAIL
-  verdicts. Read-only — it never edits files.
+description: >-
+  Evidence gate for large diffs: deterministic checks (secrets, build, lint, tests), rubric PASS/FAIL dimensions and runtime evidence, as a read-only report card. Use for release gate, gate this, is this ready to ship, or before shipping over ~300 lines or 5 files.
 allowed-tools:
   - Read
   - Grep

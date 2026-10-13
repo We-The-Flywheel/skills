@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.36.0 - 2026-10-13
+
+- Shorter descriptions for 12 skills (riff, mission, content-gate, premortem, moodboard, release-gate, knowledgepanel, og-meta-check, multi-llm, idiocy-check, humanizer, wrapup). The skill listing loads into every session, so this cuts a fixed cost.
+- humanizer: SKILL.md drops from 46 KB to 22 KB. Before/after examples and the full text of the lower-tier patterns move verbatim into `references/`, and the body points to the file to read for each group.
+- wrapup: SKILL.md drops from 36 KB to 23 KB. Templates and conditional steps (handoff and decision templates, memory health, project-map formats, metrics, error handling, manual mode) move verbatim into `references/`. Steps that run every time stay inline.
+
 ## 0.35.1 - 2026-10-10
 
 - Make `grill-me` and `end` explicit shortcuts, leaving automatic selection to `grilling` and `wrapup`. Both aliases work in harnesses without a Skill tool; clone installs refresh old aliases with a backup.

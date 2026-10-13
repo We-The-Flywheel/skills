@@ -1,15 +1,7 @@
 ---
 name: knowledgepanel
-description: |
-  Audit and build Google Knowledge Panel / entity setup for a person or
-  brand — Entity Home, JSON-LD identity node, sameAs corroboration loop,
-  KGMID lookup, and entity-optimized copy. Use when the user says
-  "knowledge panel", "entity SEO", "entity home", "KGMID", "knowledge
-  graph", "why doesn't Google know who I am", "Google shows the wrong
-  person", "Google thinks I'm someone else", or is setting up the identity
-  layer for a brand or personal site. Emits a PASS/FAIL report card with
-  evidence. NOT a ranking or on-page SEO review — this is about the entity
-  the pages are about, not the pages.
+description: >-
+  Audit and build a person's or brand's Google Knowledge Panel entity setup: entity home, JSON-LD identity node, sameAs loop, KGMID lookup. PASS/FAIL card. Use for knowledge panel, entity SEO, entity home, KGMID, Google shows the wrong person.
 allowed-tools:
   - Read
   - Grep

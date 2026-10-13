@@ -1,15 +1,7 @@
 ---
 name: moodboard
-description: |
-  Reusable moodboard methodology for a website build — turn visual references
-  (and anti-references) into locked design decisions: background treatment,
-  type category, accent approach, navigation scale, interaction patterns, and a
-  list of anti-patterns to avoid. Includes an in-context type explorer (render
-  the real wordmark in 8–12 fonts on the actual brand background, all in one
-  scroll). Use when the user says "build a moodboard", "moodboard process", "do
-  design research", "collect references", "pick fonts", or "type explorer", or
-  is starting the design phase of a site build. NOT a code generator — it
-  produces documented design decisions, not pages.
+description: >-
+  Turn visual references and anti-references into locked design decisions (background, type, accent, nav scale, interactions, anti-patterns), with an in-context type explorer. Use for moodboard, collect references, pick fonts, type explorer, or the start of a site's design phase.
 allowed-tools:
   - Read
   - Write

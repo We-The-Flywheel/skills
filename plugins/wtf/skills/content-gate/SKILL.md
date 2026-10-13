@@ -1,16 +1,7 @@
 ---
 name: content-gate
-description: |
-  Ten-step pre-publish gate for web content — blog posts, landing pages, SEO
-  articles, product pages, anything destined for a public URL. Checks drafting
-  quality, fact-checking, de-AI-ing, hero/OG image, full OG/Twitter meta tags,
-  FAQ + FAQPage JSON-LD, schema + E-E-A-T signals, analytics coverage, and
-  AI-citation/zero-click readiness (self-contained answer above the fold),
-  and Google's Preferred Sources button in the post template.
-  Use before publishing any web content, when the user says "content gate",
-  "run the content gate", "is this ready to publish", or "can this page go
-  live". Emits a per-step PASS/FAIL report card; any FAIL blocks publish and
-  names exactly what is missing. NOT a style review — it gates on evidence.
+description: >-
+  Ten-step pre-publish gate for web content (drafting, fact-check, de-AI, OG image and meta, FAQ and JSON-LD, E-E-A-T, analytics, AI-citation readiness). Emits a PASS/FAIL card. Use for content gate, is this ready to publish, can this page go live.
 allowed-tools:
   - Read
   - Grep
