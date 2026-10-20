@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.36.1] - 2026-10-20
+
+- Rename the explicit `grill-me` shortcut to `grillme`; keep `grilling` as the automatic skill. Clone installs archive the previous alias.
+
 ## 0.36.0 - 2026-10-13
 
 - Shorter descriptions for 12 skills (riff, mission, content-gate, premortem, moodboard, release-gate, knowledgepanel, og-meta-check, multi-llm, idiocy-check, humanizer, wrapup). The skill listing loads into every session, so this cuts a fixed cost.

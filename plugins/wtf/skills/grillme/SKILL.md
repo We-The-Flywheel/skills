@@ -1,6 +1,6 @@
 ---
-name: grill-me
-description: Explicit shortcut for grilling. Use only when the user invokes /grill-me or selects this alias.
+name: grillme
+description: Explicit shortcut for grilling. Use only when the user invokes /grillme or selects this alias.
 disable-model-invocation: true
 department: engineering
 uses:

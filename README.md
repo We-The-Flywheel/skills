@@ -33,7 +33,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:knowledgepanel`
 - `wtf:moodboard`
 - `wtf:website-build`
-- `wtf:grilling` (alias: `wtf:grill-me`)
+- `wtf:grilling` (alias: `wtf:grillme`)
 - `wtf:skill-test`
 - `wtf:verify-claim`
 - `wtf:review-feedback`
@@ -48,7 +48,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 
 To update later: `/plugin marketplace update flywheel`.
 
-`grill-me` and `end` are explicit shortcuts. Automatic skill selection uses
+`grillme` and `end` are explicit shortcuts. Automatic skill selection uses
 `grilling` and `wrapup`, so aliases do not compete with their canonical skills.
 
 ## Install (alternative — clone + script)
