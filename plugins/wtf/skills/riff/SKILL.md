@@ -44,6 +44,8 @@ uses takes over from there.
    unconnected to live data · no backdrop-blur glassmorphism as decoration ·
    no `border-l-4` side-stripe callouts · no indigo-500/600 default CTA · no
    three-identical-cards feature row · no "AI-powered" in the copy.
+
+   **No generated look, even without a design system.** Before the first screen, read the DON'Ts in `~/.local/share/flywheel/tools/impeccable/SKILL.md` ("Template chrome", "Labels nobody needs", "Explaining instead of designing") and apply them. They also hold when the design system is deliberately skipped.
 2. **Forced diversity.** No two directions from the same aesthetic family
    (list below). If two of your candidate directions could be described with
    the same three adjectives, throw one out and pull from a different family.

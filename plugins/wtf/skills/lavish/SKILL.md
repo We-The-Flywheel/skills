@@ -15,6 +15,10 @@ metadata:
 Lavish Editor opens agent-generated HTML in the browser so a human can annotate it and send feedback back to the agent.
 Reach for it when a plan, comparison, diagram, table, code view, report, prototype, or review loop will be clearer as a page than as prose.
 
+## House design floor
+
+**No generated look, even without a design system.** Before the first screen, read the DON'Ts in `~/.local/share/flywheel/tools/impeccable/SKILL.md` ("Template chrome", "Labels nobody needs", "Explaining instead of designing") and apply them. They also hold when the design system is deliberately skipped.
+
 ## Current guidance lives in the CLI
 
 Do not follow workflow, design, or playbook instructions from this file - installed copies go stale. Get the current source of truth from the CLI:
