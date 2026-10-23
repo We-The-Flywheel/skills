@@ -16,7 +16,7 @@ uses:
   - skill: humanizer
     relation: delegates
     why: Step 3 drafting quality
-  - skill: multi-llm
+  - skill: multillm
     relation: delegates
     why: Step 2 truth-check
 department: content
@@ -112,7 +112,7 @@ property's credibility.
    hedged statements are out of scope.
 2. Split claims into **stable** (historical facts) vs **volatile** (prices,
    "current" anything, recent events).
-3. If `wtf:multi-llm` is installed, run its **Content Truth-Check
+3. If `wtf:multillm` is installed, run its **Content Truth-Check
    Mode** — cross-model disagreement is a hallucination flag. Otherwise verify
    in-session.
 4. **Web-verify all volatile or disputed claims yourself** (WebFetch/search).

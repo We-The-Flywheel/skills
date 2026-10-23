@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.36.2 — Restore multillm
+
+- Restore `wtf:multillm` as the canonical command. Keep `wtf:multi-llm` as an explicit-only compatibility shortcut; clone upgrades back up the old implementation.
+
 ## [0.36.1] - 2026-10-20
 
 - Rename the explicit `grill-me` shortcut to `grillme`; keep `grilling` as the automatic skill. Clone installs archive the previous alias.

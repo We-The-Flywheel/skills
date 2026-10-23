@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 QUESTION="${1:-}"
 
 if [ -z "$QUESTION" ]; then
-    echo "Error: No question provided. Usage: /wtf:multi-llm \"Your question here\"" >&2
+    echo "Error: No question provided. Usage: /wtf:multillm \"Your question here\"" >&2
     exit 1
 fi
 
