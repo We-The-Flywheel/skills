@@ -124,7 +124,7 @@ plain-language design doc, then into whatever design-system or citation gate you
 enforce at code time.
 
 > **Companion:** if you're scaffolding the whole build (not just the design
-> phase), `wtf:website-build` runs the four-pillars framework (Audience →
+> phase), `wtf:websitegrounding` runs the four-pillars framework (Audience →
 > Structure → Copy → Design) and calls this skill for the Design pillar. For
 > de-AI-ing the copy, `wtf:humanizer`; before publishing public pages,
 > `wtf:content-gate` (each used if installed).

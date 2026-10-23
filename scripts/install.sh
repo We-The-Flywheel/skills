@@ -10,7 +10,7 @@ set -euo pipefail
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/plugins/wtf/skills"
 DEST_ROOT="$HOME/.claude/skills"
 
-SKILLS=(humanizer mission multillm multi-llm visual-qa premortem wrapup end idiocy-check release-gate content-gate og-meta-check moodboard website-build riff grilling grillme skill-test verify-claim review-feedback knowledgepanel improve-codebase-architecture codebase-design tdd domain-modeling axi debug memory-consolidate sop lavish screamingfrog-check video-analyze video-use)
+SKILLS=(humanizer mission multillm multi-llm visual-qa premortem wrapup end idiocycheck idiocy-check release-gate content-gate og-meta-check moodboard websitegrounding website-build riff grilling grillme skill-test verify-claim review-feedback knowledgepanel architectureaudit improve-codebase-architecture codebase-design tdd domain-modeling axi debug memory-consolidate sop lavish screamingfrog-check video-analyze videoedit video-use)
 
 # Skills moved to archive/: archive copies left by earlier installs.
 RETIRED=(grill-me pangram ultrahumanizer longterm diagnose writing-for-agents skill-writing)
@@ -36,7 +36,7 @@ for skill in "${SKILLS[@]}"; do
   fi
   if [ -e "$dest" ]; then
     case "$skill" in
-      grillme|end|multi-llm)
+      grillme|end|multi-llm|video-use|improve-codebase-architecture|idiocy-check|website-build)
         # Aliases contain no workflow. Preserve the old copy, then point at the
         # canonical skill with the current invocation policy.
         if cmp -s <(awk -v n="wtf-$skill" '/^name:/ { print "name: " n; next } { print }' "$src/SKILL.md") "$dest/SKILL.md" &&

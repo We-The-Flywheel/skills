@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.37.0 — Approved skill names and combined website grounding
+
+- Rename videoedit, architectureaudit and idiocycheck; combine site brief and charter/KPI grounding as websitegrounding. Preserve explicit legacy shortcuts.
+
 ## 0.36.2 — Restore multillm
 
 - Restore `wtf:multillm` as the canonical command. Keep `wtf:multi-llm` as an explicit-only compatibility shortcut; clone upgrades back up the old implementation.

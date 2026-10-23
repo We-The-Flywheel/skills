@@ -101,13 +101,13 @@
       "notes": "Renamed locally from upstream 'receiving-code-review' to 'review-feedback'. Post-adopt edit: de-personalized voice (upstream addressed a named human partner directly; rewritten to neutral 'the user'/'User:'), and softened the blanket anti-gratitude rule (upstream banned any expression of thanks outright; rewritten to warn against empty praise standing in for substance) -- substantive content (verify-before-implementing, clarify-all-items-first, YAGNI grep-before-building check) unchanged."
     },
     {
-      "name": "improve-codebase-architecture",
+      "name": "architectureaudit",
       "source": "mattpocock-skills",
       "upstream_path": "skills/engineering/improve-codebase-architecture",
       "pinned_sha": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
       "last_synced": "2026-09-29",
       "local_modifications": true,
-      "notes": "One edit: the Skill-tool call to \"grilling\" is repointed to \"wtf:grilling\" so it resolves to this plugin's copy."
+      "notes": "One edit: the Skill-tool call to \"grilling\" is repointed to \"wtf:grilling\" so it resolves to this plugin's copy. Renamed locally to architectureaudit; original upstream path and license retained."
     },
     {
       "name": "codebase-design",
