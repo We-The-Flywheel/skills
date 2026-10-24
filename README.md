@@ -45,6 +45,7 @@ That's it. The skills are now available, namespaced under `wtf:`:
 - `wtf:screamingfrog-check`
 - `wtf:video-analyze`
 - `wtf:videoedit`
+- `wtf:mcp-server`
 
 To update later: `/plugin marketplace update flywheel`.
 
@@ -63,7 +64,7 @@ cd skills
 ```
 
 `install.sh` copies each skill into `~/.claude/skills/` with a `wtf-` prefix
-(`wtf-humanizer`, `wtf-multillm`, `wtf-visual-qa`, `wtf-premortem`, `wtf-wrapup`, `wtf-idiocycheck`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-websitegrounding`, `wtf-grilling`, `wtf-skill-test`, `wtf-verify-claim`, `wtf-review-feedback`, `wtf-knowledgepanel`, `wtf-axi`, `wtf-debug`, `wtf-memory-consolidate`, `wtf-sop`, `wtf-lavish`, `wtf-screamingfrog-check`, `wtf-video-analyze`, `wtf-videoedit`) so they never clash
+(`wtf-humanizer`, `wtf-multillm`, `wtf-visual-qa`, `wtf-premortem`, `wtf-wrapup`, `wtf-idiocycheck`, `wtf-release-gate`, `wtf-content-gate`, `wtf-og-meta-check`, `wtf-moodboard`, `wtf-websitegrounding`, `wtf-grilling`, `wtf-skill-test`, `wtf-verify-claim`, `wtf-review-feedback`, `wtf-knowledgepanel`, `wtf-axi`, `wtf-debug`, `wtf-memory-consolidate`, `wtf-sop`, `wtf-lavish`, `wtf-screamingfrog-check`, `wtf-video-analyze`, `wtf-videoedit`, `wtf-mcp-server`) so they never clash
 with same-named skills you may already have. Re-running it skips anything already
 installed.
 Existing aliases are refreshed with a backup under `~/.claude/skills-disabled`;
