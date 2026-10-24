@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Reusable Claude Code skills maintained by The Flywheel.",
-    "version": "0.37.0"
+    "version": "0.38.0"
   },
   "plugins": [
     {
       "name": "wtf",
       "source": "./plugins/wtf",
-      "description": "The Flywheel skill pack: humanizer, multillm, visual-qa, premortem, wrapup, idiocycheck, release-gate, content-gate, og-meta-check, moodboard, websitegrounding, riff, grilling, skill-test, verify-claim, review-feedback, knowledgepanel, mission, architectureaudit, codebase-design, tdd, domain-modeling, axi, debug, memory-consolidate, sop, lavish, screamingfrog-check, video-analyze, videoedit; RPI commands (research_codebase, create_plan, iterate_plan, implement_plan, validate_plan) and codebase-locator/analyzer/pattern-finder agents. Skills resolve as wtf:<name>."
+      "description": "The Flywheel skill pack: humanizer, multillm, visual-qa, premortem, wrapup, idiocycheck, release-gate, content-gate, og-meta-check, moodboard, websitegrounding, riff, grilling, skill-test, verify-claim, review-feedback, knowledgepanel, mission, architectureaudit, codebase-design, tdd, domain-modeling, axi, debug, memory-consolidate, sop, lavish, screamingfrog-check, video-analyze, videoedit; RPI commands (research_codebase, create_plan, iterate_plan, implement_plan, validate_plan) and codebase-locator/analyzer/pattern-finder agents. Skills resolve as wtf:<name>, mcp-server."
     }
   ]
 }

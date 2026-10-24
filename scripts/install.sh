@@ -10,7 +10,7 @@ set -euo pipefail
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/plugins/wtf/skills"
 DEST_ROOT="$HOME/.claude/skills"
 
-SKILLS=(humanizer mission multillm multi-llm visual-qa premortem wrapup end idiocycheck idiocy-check release-gate content-gate og-meta-check moodboard websitegrounding website-build riff grilling grillme skill-test verify-claim review-feedback knowledgepanel architectureaudit improve-codebase-architecture codebase-design tdd domain-modeling axi debug memory-consolidate sop lavish screamingfrog-check video-analyze videoedit video-use)
+SKILLS=(humanizer mission multillm multi-llm visual-qa premortem wrapup end idiocycheck idiocy-check release-gate content-gate og-meta-check moodboard websitegrounding website-build riff grilling grillme skill-test verify-claim review-feedback knowledgepanel architectureaudit improve-codebase-architecture codebase-design tdd domain-modeling axi debug memory-consolidate sop lavish screamingfrog-check video-analyze videoedit video-use mcp-server)
 
 # Skills moved to archive/: archive copies left by earlier installs.
 RETIRED=(grill-me pangram ultrahumanizer longterm diagnose writing-for-agents skill-writing)
