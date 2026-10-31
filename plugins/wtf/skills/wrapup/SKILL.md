@@ -117,11 +117,11 @@ Read `references/decisions-harvest.md` (what to promote from the handoff `## Dec
 
 ### 6. Codify Learnings
 
-Skip if session was trivial, or `force`/`skip-map` provided.
+Skip if `force`/`skip-map` provided. A short or code-free interaction still qualifies when it contains a reusable correction or an agent mistake.
 
 Codify the session's learnings: read `references/learnings.md` (use a `/learnings`-style skill if installed, else do the same work inline, with a dedup check so entries are updated, not duplicated).
 
-**After learnings are codified, check memory health** (skip if the project has no memory store). Read `references/memory-health.md` for the check script and the consolidate-or-skip judgment table.
+**After learnings are codified, check memory health** (skip if the project has no memory store, or its policy does not authorize maintenance). Read `references/memory-health.md` for the check script and the consolidate-or-skip judgment table.
 
 ### 7. Generate PROJECT_MAP.md + AGENTS.md Context
 

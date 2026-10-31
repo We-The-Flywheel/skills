@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.37.1 — Learn from interactions and mistakes
+
+- Wrapup reviews user corrections and agent errors, including short interactions, and saves concrete prevention guidance with evidence in an authorized durable location.
+
 ## 0.37.0 — Approved skill names and combined website grounding
 
 - Rename videoedit, architectureaudit and idiocycheck; combine site brief and charter/KPI grounding as websitegrounding. Preserve explicit legacy shortcuts.
